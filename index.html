@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ivoiservice - Trouvez des prestataires locaux en Côte d'Ivoire : garagiste, plombier, électricien, menuisier et plus encore.">
+  <title>Ivoiservice - Prestataires Locaux en Côte d'Ivoire</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <i class="fas fa-handshake"></i>
+          <span>Ivoiservice</span>
+        </a>
+        
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="search.html">Trouver un prestataire</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#about">À propos</a></li>
+          <li id="authLinks">
+            <a href="login.html" class="btn btn-outline btn-sm">Connexion</a>
+            <a href="register-client.html" class="btn btn-primary btn-sm">S'inscrire</a>
+          </li>
+        </ul>
+        
+        <button class="nav-toggle" id="navToggle" style="display: none;">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Overlay pour mobile -->
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Trouvez le bon prestataire<br>près de chez vous 🇨🇮</h1>
+      <p>
+        Mettez-vous en relation avec des professionnels qualifiés et vérifiés
+        pour tous vos besoins : plomberie, électricité, mécanique et plus encore.
+      </p>
+      <div class="hero-buttons">
+        <a href="search.html" class="btn btn-primary btn-lg">
+          <i class="fas fa-search"></i> Rechercher un prestataire
+        </a>
+        <a href="register-provider.html" class="btn btn-secondary btn-lg">
+          <i class="fas fa-user-tie"></i> Devenir prestataire
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="services" id="services">
+    <div class="container">
+      <h2 class="section-title">Nos Services</h2>
+      <p class="section-subtitle">
+        Une large gamme de services professionnels à votre disposition
+      </p>
+      
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-car"></i>
+          </div>
+          <h3>Garagiste</h3>
+          <p>Réparation et entretien de véhicules</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-wrench"></i>
+          </div>
+          <h3>Plombier</h3>
+          <p>Installation et dépannage plomberie</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3>Électricien</h3>
+          <p>Travaux électriques et câblage</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-hammer"></i>
+          </div>
+          <h3>Menuisier</h3>
+          <p>Fabrication de meubles sur mesure</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-snowflake"></i>
+          </div>
+          <h3>Frigoriste</h3>
+          <p>Réparation de climatiseurs et frigos</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-hard-hat"></i>
+          </div>
+          <h3>Maçon</h3>
+          <p>Construction et rénovation</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-paint-roller"></i>
+          </div>
+          <h3>Peintre</h3>
+          <p>Peinture intérieure et extérieure</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-key"></i>
+          </div>
+          <h3>Serrurier</h3>
+          <p>Ouverture et installation de serrures</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-mobile-alt"></i>
+          </div>
+          <h3>Réparateur téléphone</h3>
+          <p>Réparation de smartphones et tablettes</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-motorcycle"></i>
+          </div>
+          <h3>Mécanicien moto</h3>
+          <p>Entretien et réparation de motos</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works Section -->
+  <section class="services" style="background-color: white;">
+    <div class="container">
+      <h2 class="section-title">Comment ça marche ?</h2>
+      <p class="section-subtitle">
+        Trois étapes simples pour trouver votre prestataire
+      </p>
+      
+      <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <div class="service-card">
+          <div class="service-icon" style="color: #3B82F6;">
+            <i class="fas fa-search"></i>
+          </div>
+          <h3>1. Recherchez</h3>
+          <p>Sélectionnez le service dont vous avez besoin et définissez votre rayon de recherche</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon" style="color: #8B5CF6;">
+            <i class="fas fa-user-check"></i>
+          </div>
+          <h3>2. Comparez</h3>
+          <p>Consultez les profils, avis et tarifs des prestataires disponibles près de chez vous</p>
+        </div>
+        
+        <div class="service-card">
+          <div class="service-icon" style="color: #10B981;">
+            <i class="fas fa-handshake"></i>
+          </div>
+          <h3>3. Contactez</h3>
+          <p>Demandez un service directement au prestataire de votre choix</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="services" id="about">
+    <div class="container">
+      <h2 class="section-title">Pourquoi Ivoiservice ?</h2>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">500+</div>
+          <div class="stat-label">Prestataires vérifiés</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value">10</div>
+          <div class="stat-label">Services disponibles</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value">1000+</div>
+          <div class="stat-label">Clients satisfaits</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-value">4.8/5</div>
+          <div class="stat-label">Note moyenne</div>
+        </div>
+      </div>
+      
+      <div class="card mt-lg">
+        <div class="grid-responsive" style="align-items: center;">
+          <div>
+            <h3 style="font-size: 1.75rem; margin-bottom: 1rem; color: var(--primary);">
+              <i class="fas fa-shield-alt"></i> Sécurité et confiance
+            </h3>
+            <p style="color: var(--text-light); margin-bottom: 1rem;">
+              Tous nos prestataires sont vérifiés avec pièce d'identité et selfie. 
+              Consultez les avis clients pour faire le bon choix en toute confiance.
+            </p>
+            <ul style="list-style: none; padding: 0;">
+              <li style="margin-bottom: 0.5rem;">
+                <i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i>
+                Identité vérifiée par notre équipe
+              </li>
+              <li style="margin-bottom: 0.5rem;">
+                <i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i>
+                Avis et notes authentiques
+              </li>
+              <li style="margin-bottom: 0.5rem;">
+                <i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i>
+                Support client disponible
+              </li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 style="font-size: 1.75rem; margin-bottom: 1rem; color: var(--primary);">
+              <i class="fas fa-map-marker-alt"></i> Proximité garantie
+            </h3>
+            <p style="color: var(--text-light); margin-bottom: 1rem;">
+              Trouvez des prestataires dans un rayon de 5 à 20 km autour de vous. 
+              Réduisez les délais d'intervention et les frais de déplacement.
+            </p>
+            <ul style="list-style: none; padding: 0;">
+              <li style="margin-bottom: 0.5rem;">
+                <i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i>
+                Recherche géolocalisée
+              </li>
+              <li style="margin-bottom: 0.5rem;">
+                <i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i>
+                Distance calculée en temps réel
+              </li>
+              <li style="margin-bottom: 0.5rem;">
+                <i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i>
+                Intervention rapide
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="hero" style="padding: 3rem 0;">
+    <div class="container" style="text-align: center;">
+      <h2 style="font-size: 2rem; margin-bottom: 1rem;">Prêt à commencer ?</h2>
+      <p style="margin-bottom: 2rem; opacity: 0.95;">
+        Rejoignez des milliers d'utilisateurs qui font confiance à Ivoiservice
+      </p>
+      <div class="hero-buttons">
+        <a href="register-client.html" class="btn btn-secondary btn-lg" style="background-color: white; color: var(--primary);">
+          <i class="fas fa-user-plus"></i> Créer un compte client
+        </a>
+        <a href="register-provider.html" class="btn btn-outline btn-lg" style="border-color: white; color: white;">
+          <i class="fas fa-briefcase"></i> Devenir prestataire
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Ivoiservice</h3>
+          <p style="color: rgba(255, 255, 255, 0.8);">
+            La plateforme de référence pour trouver des prestataires locaux de confiance en Côte d'Ivoire.
+          </p>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Services</h3>
+          <ul>
+            <li><a href="search.html">Rechercher</a></li>
+            <li><a href="register-provider.html">Devenir prestataire</a></li>
+            <li><a href="subscription.html">Abonnement</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Entreprise</h3>
+          <ul>
+            <li><a href="#about">À propos</a></li>
+            <li><a href="#">Conditions d'utilisation</a></li>
+            <li><a href="#">Politique de confidentialité</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-section">
+          <h3>Contact</h3>
+          <ul>
+            <li><i class="fas fa-envelope"></i> contact@ivoiservice.ci</li>
+            <li><i class="fas fa-phone"></i> +225 XX XX XX XX XX</li>
+            <li><i class="fas fa-map-marker-alt"></i> Abidjan, Côte d'Ivoire</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/utils.js"></script>
+  <script>
+    // Gestion du menu mobile
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    const navOverlay = document.getElementById('navOverlay');
+    
+    // Afficher le bouton toggle sur mobile
+    if (window.innerWidth <= 768) {
+      navToggle.style.display = 'block';
+    }
+    
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 768) {
+        navToggle.style.display = 'block';
+      } else {
+        navToggle.style.display = 'none';
+        navLinks.classList.remove('active');
+        navOverlay.classList.remove('active');
+      }
+    });
+    
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+      navOverlay.classList.toggle('active');
+    });
+    
+    navOverlay.addEventListener('click', () => {
+      navLinks.classList.remove('active');
+      navOverlay.classList.remove('active');
+    });
+    
+    // Gestion de l'affichage des liens d'authentification
+    function updateAuthLinks() {
+      const authLinksContainer = document.getElementById('authLinks');
+      
+      if (Utils.Session.isLoggedIn()) {
+        const user = Utils.Session.getCurrentUser();
+        let dashboardUrl = 'client-dashboard.html';
+        
+        if (user.role === 'PROVIDER') {
+          dashboardUrl = 'provider-dashboard.html';
+        } else if (user.role === 'ADMIN') {
+          dashboardUrl = 'admin-dashboard.html';
+        }
+        
+        authLinksContainer.innerHTML = `
+          <a href="${dashboardUrl}" class="btn btn-outline btn-sm">
+            <i class="fas fa-user"></i> Mon compte
+          </a>
+          <button onclick="logout()" class="btn btn-primary btn-sm">
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+          </button>
+        `;
+      }
+    }
+    
+    function logout() {
+      if (Utils.confirmAction('Êtes-vous sûr de vouloir vous déconnecter ?', () => {
+        Utils.Session.logout();
+        Utils.showToast('Vous êtes déconnecté', 'success');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }));
+    }
+    
+    // Initialiser au chargement
+    document.addEventListener('DOMContentLoaded', () => {
+      updateAuthLinks();
+      
+      // Smooth scroll pour les liens d'ancrage
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          const href = this.getAttribute('href');
+          if (href !== '#' && href !== '') {
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+              target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
