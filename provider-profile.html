@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil Prestataire - Ivoiservice</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <i class="fas fa-handshake"></i>
+          <span>Ivoiservice</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="search.html"><i class="fas fa-arrow-left"></i> Retour à la recherche</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="services">
+    <div class="container">
+      <div style="max-width: 900px; margin: 0 auto;">
+        <div id="providerContent"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal" id="contactModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeContactModal()"><i class="fas fa-times"></i></button>
+      <h2 style="margin-bottom: 1rem;"><i class="fas fa-paper-plane text-primary"></i> Demander un service</h2>
+      <div class="form-group">
+        <label class="form-label">Décrivez votre besoin</label>
+        <textarea id="serviceDescription" class="form-input" rows="5" placeholder="Exemple : J'ai besoin d'un plombier pour réparer une fuite dans ma salle de bain..."></textarea>
+      </div>
+      <button onclick="sendServiceRequest()" class="btn btn-primary btn-full">
+        <i class="fas fa-paper-plane"></i> Envoyer la demande
+      </button>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/subscription.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const providerId = urlParams.get('id');
+    
+    if (!providerId) {
+      window.location.href = 'search.html';
+    } else {
+      loadProviderProfile();
+    }
+    
+    function loadProviderProfile() {
+      const provider = Search.getProviderById(providerId);
+      
+      if (!provider) {
+        document.getElementById('providerContent').innerHTML = `
+          <div class="alert alert-error">Prestataire non trouvé</div>
+        `;
+        return;
+      }
+      
+      const professionIcon = Utils.PROFESSION_ICONS[provider.profession] || 'fa-briefcase';
+      const professionName = Utils.PROFESSIONS[provider.profession];
+      
+      document.getElementById('providerContent').innerHTML = `
+        <div class="card">
+          <div style="display: flex; align-items: flex-start; gap: 2rem; flex-wrap: wrap;">
+            <div style="flex: 0 0 150px; height: 150px; background: linear-gradient(135deg, var(--primary-soft) 0%, var(--primary) 100%); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: white; font-size: 4rem;">
+              <i class="fas ${professionIcon}"></i>
+            </div>
+            <div style="flex: 1; min-width: 250px;">
+              <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">
+                ${provider.firstName} ${provider.lastName}
+                ${provider.isVerified ? '<i class="fas fa-check-circle" style="color: var(--success); font-size: 1.5rem;" title="Identité vérifiée"></i>' : ''}
+              </h1>
+              <p style="font-size: 1.25rem; color: var(--primary); font-weight: 600; margin-bottom: 1rem;">
+                <i class="fas ${professionIcon}"></i> ${professionName}
+              </p>
+              <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                ${Utils.generateStars(provider.rating || 0)}
+                <span style="font-weight: 600;">${(provider.rating || 0).toFixed(1)}</span>
+                <span style="color: var(--text-light);">(${provider.reviewCount || 0} avis)</span>
+              </div>
+              <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                <span><i class="fas fa-map-marker-alt text-primary"></i> Rayon ${provider.radius} km</span>
+                <span><i class="fas fa-money-bill-wave text-primary"></i> ${Utils.formatPrice(provider.basePrice)}</span>
+                <span><i class="fas fa-phone text-primary"></i> ${Utils.formatPhoneNumber(provider.phone)}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+            <h3 style="margin-bottom: 1rem;"><i class="fas fa-info-circle text-primary"></i> Description</h3>
+            <p style="color: var(--text-light); line-height: 1.8;">
+              ${provider.description || 'Aucune description disponible.'}
+            </p>
+          </div>
+          
+          <div style="margin-top: 2rem;">
+            <button onclick="openContactModal()" class="btn btn-primary btn-lg btn-full">
+              <i class="fas fa-paper-plane"></i> Demander un service
+            </button>
+          </div>
+        </div>
+        
+        <div class="card mt-lg">
+          <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-star text-warning"></i> Avis clients</h3>
+          <div id="reviewsList"></div>
+        </div>
+      `;
+      
+      loadReviews();
+    }
+    
+    function loadReviews() {
+      const reviews = Search.getProviderReviews(providerId);
+      const reviewsList = document.getElementById('reviewsList');
+      
+      if (reviews.length === 0) {
+        reviewsList.innerHTML = '<p class="text-light text-center">Aucun avis pour le moment</p>';
+        return;
+      }
+      
+      reviewsList.innerHTML = reviews.map(review => `
+        <div style="padding: 1.5rem; border-bottom: 1px solid var(--border);">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <strong>${review.clientName}</strong>
+            <span class="text-light">${Utils.formatDate(review.createdAt)}</span>
+          </div>
+          <div style="margin-bottom: 0.5rem;">
+            ${Utils.generateStars(review.rating)}
+          </div>
+          <p style="color: var(--text-light);">${review.comment}</p>
+        </div>
+      `).join('');
+    }
+    
+    function openContactModal() {
+      if (!Utils.Session.isLoggedIn()) {
+        Utils.showToast('Vous devez être connecté', 'error');
+        setTimeout(() => window.location.href = 'login.html', 1000);
+        return;
+      }
+      
+      const user = Utils.Session.getCurrentUser();
+      if (user.role !== 'CLIENT') {
+        Utils.showToast('Seuls les clients peuvent contacter des prestataires', 'error');
+        return;
+      }
+      
+      if (!Auth.hasActiveSubscription(user.id)) {
+        Utils.showToast('Vous devez avoir un abonnement actif', 'warning');
+        setTimeout(() => window.location.href = 'subscription.html', 1500);
+        return;
+      }
+      
+      document.getElementById('contactModal').classList.add('show');
+    }
+    
+    function closeContactModal() {
+      document.getElementById('contactModal').classList.remove('show');
+    }
+    
+    function sendServiceRequest() {
+      const description = document.getElementById('serviceDescription').value.trim();
+      
+      if (!description) {
+        Utils.showToast('Veuillez décrire votre besoin', 'error');
+        return;
+      }
+      
+      const result = Search.createServiceRequest(providerId, description);
+      
+      if (result.success) {
+        Utils.showToast('Demande envoyée avec succès !', 'success');
+        closeContactModal();
+        document.getElementById('serviceDescription').value = '';
+      } else if (result.requireSubscription) {
+        Utils.showToast(result.message, 'warning');
+        setTimeout(() => window.location.href = 'subscription.html', 1500);
+      } else {
+        Utils.showToast(result.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>
