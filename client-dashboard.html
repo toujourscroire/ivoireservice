@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Client - Ivoiservice</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <i class="fas fa-handshake"></i>
+          <span>Ivoiservice</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="search.html">Rechercher</a></li>
+          <li><button onclick="logout()" class="btn btn-outline btn-sm">Déconnexion</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="services">
+    <div class="container">
+      <h1 class="section-title">
+        <i class="fas fa-user-circle text-primary"></i>
+        Mon espace client
+      </h1>
+      
+      <div id="subscriptionStatus" class="card mb-lg"></div>
+      
+      <div class="card">
+        <h2><i class="fas fa-file-alt text-primary"></i> Mes demandes de service</h2>
+        <div id="requestsList"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/subscription.js"></script>
+  <script>
+    if (!Utils.requireRole('CLIENT')) {
+      // Redirection gérée par requireRole
+    } else {
+      loadDashboard();
+    }
+    
+    function loadDashboard() {
+      const user = Utils.Session.getCurrentUser();
+      loadSubscriptionStatus();
+      loadRequests();
+    }
+    
+    function loadSubscriptionStatus() {
+      const user = Utils.Session.getCurrentUser();
+      const subscription = Subscription.getSubscription(user.id);
+      const isActive = Subscription.isSubscriptionActive(user.id);
+      const daysRemaining = Subscription.getDaysRemaining(user.id);
+      
+      const statusDiv = document.getElementById('subscriptionStatus');
+      
+      if (isActive) {
+        statusDiv.innerHTML = `
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <div style="flex: 1;">
+              <strong>Abonnement actif</strong>
+              <p style="margin: 0.5rem 0 0;">Expire dans ${daysRemaining} jour${daysRemaining > 1 ? 's' : ''} (${Utils.formatDate(subscription.endDate)})</p>
+            </div>
+            <a href="subscription.html" class="btn btn-outline btn-sm">Renouveler</a>
+          </div>
+        `;
+      } else {
+        statusDiv.innerHTML = `
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div style="flex: 1;">
+              <strong>Abonnement expiré</strong>
+              <p style="margin: 0.5rem 0 0;">Souscrivez pour contacter des prestataires</p>
+            </div>
+            <a href="subscription.html" class="btn btn-primary btn-sm">Souscrire</a>
+          </div>
+        `;
+      }
+    }
+    
+    function loadRequests() {
+      const user = Utils.Session.getCurrentUser();
+      const requests = Search.getClientRequests(user.id);
+      const requestsList = document.getElementById('requestsList');
+      
+      if (requests.length === 0) {
+        requestsList.innerHTML = '<p class="text-light text-center" style="padding: 2rem;">Aucune demande pour le moment</p>';
+        return;
+      }
+      
+      const users = Utils.Storage.get('users', []);
+      requestsList.innerHTML = requests.map(request => {
+        const provider = users.find(u => u.id === request.providerId);
+        const statusColors = { PENDING: 'warning', ACCEPTED: 'success', COMPLETED: 'success', CANCELLED: 'error' };
+        return `
+          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <strong>${provider ? provider.firstName + ' ' + provider.lastName : 'Prestataire'}</strong>
+                <p style="color: var(--text-light); margin: 0.5rem 0;">${request.description}</p>
+                <small class="text-light">${Utils.formatDateTime(request.createdAt)}</small>
+              </div>
+              <span class="badge badge-${statusColors[request.status]}">${request.status}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    function logout() {
+      if (confirm('Voulez-vous vous déconnecter ?')) {
+        Utils.Session.logout();
+        Utils.showToast('Déconnexion réussie', 'success');
+        setTimeout(() => window.location.href = 'index.html', 1000);
+      }
+    }
+  </script>
+</body>
+</html>
