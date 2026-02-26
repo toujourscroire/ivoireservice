@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recherche de prestataires - Ivoiservice</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <i class="fas fa-handshake"></i>
+          <span>Ivoiservice</span>
+        </a>
+        
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="search.html">Rechercher</a></li>
+          <li id="authLinks">
+            <a href="login.html" class="btn btn-outline btn-sm">Connexion</a>
+          </li>
+        </ul>
+        
+        <button class="nav-toggle" id="navToggle" style="display: none;">
+          <i class="fas fa-bars"></i>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Overlay pour mobile -->
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <!-- Search Section -->
+  <section class="services">
+    <div class="container">
+      <h1 class="section-title">
+        <i class="fas fa-search text-primary"></i>
+        Trouver un prestataire
+      </h1>
+      <p class="section-subtitle">
+        Utilisez les filtres pour trouver le professionnel qu'il vous faut
+      </p>
+      
+      <!-- Filters -->
+      <div class="card mb-lg">
+        <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+          <i class="fas fa-filter text-primary"></i>
+          Filtres de recherche
+        </h3>
+        
+        <div class="grid-responsive">
+          <div class="form-group">
+            <label class="form-label" for="professionFilter">
+              <i class="fas fa-briefcase"></i> Profession
+            </label>
+            <select id="professionFilter" class="form-input">
+              <option value="ALL">Tous les métiers</option>
+              <option value="GARAGISTE">Garagiste</option>
+              <option value="PLOMBIER">Plombier</option>
+              <option value="ELECTRICIEN">Électricien</option>
+              <option value="MENUISIER">Menuisier</option>
+              <option value="FRIGORISTE">Frigoriste</option>
+              <option value="MACON">Maçon</option>
+              <option value="PEINTRE">Peintre</option>
+              <option value="SERRURIER">Serrurier</option>
+              <option value="REPARATEUR_TELEPHONE">Réparateur téléphone</option>
+              <option value="MECANICIEN_MOTO">Mécanicien moto</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="distanceFilter">
+              <i class="fas fa-map-marker-alt"></i> Distance maximale
+            </label>
+            <select id="distanceFilter" class="form-input">
+              <option value="">Toutes distances</option>
+              <option value="5">5 km</option>
+              <option value="10">10 km</option>
+              <option value="15">15 km</option>
+              <option value="20">20 km</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="sortFilter">
+              <i class="fas fa-sort"></i> Trier par
+            </label>
+            <select id="sortFilter" class="form-input">
+              <option value="default">Recommandés</option>
+              <option value="distance">Distance</option>
+              <option value="rating">Note</option>
+              <option value="price">Prix</option>
+            </select>
+          </div>
+        </div>
+        
+        <button onclick="applyFilters()" class="btn btn-primary btn-full mt-md">
+          <i class="fas fa-search"></i> Rechercher
+        </button>
+      </div>
+      
+      <!-- Results count -->
+      <div id="resultsCount" class="mb-md" style="display: none;">
+        <p style="color: var(--text-light);">
+          <i class="fas fa-info-circle"></i>
+          <span id="countText"></span>
+        </p>
+      </div>
+      
+      <!-- Loading -->
+      <div id="loading" class="hidden">
+        <div class="spinner"></div>
+      </div>
+      
+      <!-- Results -->
+      <div id="results" class="services-grid"></div>
+      
+      <!-- No results -->
+      <div id="noResults" class="hidden">
+        <div class="card text-center">
+          <i class="fas fa-search" style="font-size: 4rem; color: var(--text-lighter); margin-bottom: 1rem;"></i>
+          <h3 style="color: var(--text); margin-bottom: 0.5rem;">Aucun prestataire trouvé</h3>
+          <p class="text-light">
+            Essayez d'élargir vos critères de recherche ou de changer de métier.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/search.js"></script>
+  <script>
+    const resultsContainer = document.getElementById('results');
+    const loadingElement = document.getElementById('loading');
+    const noResultsElement = document.getElementById('noResults');
+    const resultsCountElement = document.getElementById('resultsCount');
+    const countTextElement = document.getElementById('countText');
+    
+    // Gestion menu mobile
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    const navOverlay = document.getElementById('navOverlay');
+    
+    if (window.innerWidth <= 768) {
+      navToggle.style.display = 'block';
+    }
+    
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= 768) {
+        navToggle.style.display = 'block';
+      } else {
+        navToggle.style.display = 'none';
+        navLinks.classList.remove('active');
+        navOverlay.classList.remove('active');
+      }
+    });
+    
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+      navOverlay.classList.toggle('active');
+    });
+    
+    navOverlay.addEventListener('click', () => {
+      navLinks.classList.remove('active');
+      navOverlay.classList.remove('active');
+    });
+    
+    // Gestion auth links
+    function updateAuthLinks() {
+      const authLinksContainer = document.getElementById('authLinks');
+      
+      if (Utils.Session.isLoggedIn()) {
+        const user = Utils.Session.getCurrentUser();
+        let dashboardUrl = 'client-dashboard.html';
+        
+        if (user.role === 'PROVIDER') {
+          dashboardUrl = 'provider-dashboard.html';
+        } else if (user.role === 'ADMIN') {
+          dashboardUrl = 'admin-dashboard.html';
+        }
+        
+        authLinksContainer.innerHTML = `
+          <a href="${dashboardUrl}" class="btn btn-outline btn-sm">
+            <i class="fas fa-user"></i> Mon compte
+          </a>
+        `;
+      }
+    }
+    
+    // Appliquer les filtres
+    function applyFilters() {
+      const profession = document.getElementById('professionFilter').value;
+      const maxDistance = document.getElementById('distanceFilter').value;
+      const sortBy = document.getElementById('sortFilter').value;
+      
+      // Afficher le loading
+      loadingElement.classList.remove('hidden');
+      resultsContainer.innerHTML = '';
+      noResultsElement.classList.add('hidden');
+      resultsCountElement.style.display = 'none';
+      
+      // Simuler un délai de recherche
+      setTimeout(() => {
+        const providers = Search.searchProviders({
+          profession: profession,
+          maxDistance: maxDistance ? parseInt(maxDistance) : null,
+          sortBy: sortBy === 'default' ? null : sortBy
+        });
+        
+        displayResults(providers);
+        loadingElement.classList.add('hidden');
+      }, 500);
+    }
+    
+    // Afficher les résultats
+    function displayResults(providers) {
+      resultsContainer.innerHTML = '';
+      
+      if (providers.length === 0) {
+        noResultsElement.classList.remove('hidden');
+        resultsCountElement.style.display = 'none';
+        return;
+      }
+      
+      // Afficher le nombre de résultats
+      resultsCountElement.style.display = 'block';
+      countTextElement.textContent = `${providers.length} prestataire${providers.length > 1 ? 's' : ''} trouvé${providers.length > 1 ? 's' : ''}`;
+      
+      providers.forEach(provider => {
+        const card = createProviderCard(provider);
+        resultsContainer.appendChild(card);
+      });
+    }
+    
+    // Créer une carte prestataire
+    function createProviderCard(provider) {
+      const card = document.createElement('div');
+      card.className = 'provider-card';
+      card.onclick = () => window.location.href = `provider-profile.html?id=${provider.userId}`;
+      
+      const professionIcon = Utils.PROFESSION_ICONS[provider.profession] || 'fa-briefcase';
+      const professionName = Utils.PROFESSIONS[provider.profession] || provider.profession;
+      
+      card.innerHTML = `
+        <div class="provider-avatar">
+          <i class="fas ${professionIcon}"></i>
+        </div>
+        <div class="provider-info">
+          <h3 class="provider-name">
+            ${provider.firstName} ${provider.lastName}
+            ${provider.isVerified ? '<i class="fas fa-check-circle" style="color: var(--success); font-size: 1rem;" title="Identité vérifiée"></i>' : ''}
+          </h3>
+          <p class="provider-profession">
+            <i class="fas ${professionIcon}"></i>
+            ${professionName}
+          </p>
+          <div class="provider-rating">
+            ${Utils.generateStars(provider.rating || 0)}
+            <span style="color: var(--text); margin-left: 0.25rem;">
+              ${provider.rating ? provider.rating.toFixed(1) : '0.0'} (${provider.reviewCount || 0} avis)
+            </span>
+          </div>
+          <div class="provider-meta">
+            <span>
+              <i class="fas fa-map-marker-alt"></i>
+              ${provider.distance ? provider.distance.toFixed(1) + ' km' : 'N/A'}
+            </span>
+            <span style="font-weight: 600; color: var(--primary);">
+              ${Utils.formatPrice(provider.basePrice)}
+            </span>
+          </div>
+        </div>
+      `;
+      
+      return card;
+    }
+    
+    // Charger les résultats au chargement de la page
+    document.addEventListener('DOMContentLoaded', () => {
+      updateAuthLinks();
+      applyFilters();
+      
+      // Appliquer les filtres en temps réel
+      document.getElementById('professionFilter').addEventListener('change', applyFilters);
+      document.getElementById('distanceFilter').addEventListener('change', applyFilters);
+      document.getElementById('sortFilter').addEventListener('change', applyFilters);
+    });
+  </script>
+</body>
+</html>
