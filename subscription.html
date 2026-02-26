@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abonnement - Ivoiservice</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <i class="fas fa-handshake"></i>
+          <span>Ivoiservice</span>
+        </a>
+        
+        <ul class="nav-links">
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="client-dashboard.html">Mon compte</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Subscription Section -->
+  <section class="services">
+    <div class="container">
+      <div style="max-width: 700px; margin: 0 auto;">
+        <!-- Statut abonnement actuel -->
+        <div id="currentStatus" class="card mb-lg" style="display: none;">
+          <h3 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+            <i class="fas fa-info-circle text-primary"></i>
+            Mon abonnement actuel
+          </h3>
+          <div id="statusContent"></div>
+        </div>
+        
+        <!-- Offre d'abonnement -->
+        <div class="card">
+          <div class="card-header text-center">
+            <h1 class="card-title">
+              <i class="fas fa-crown" style="color: #F59E0B;"></i>
+              Abonnement Ivoiservice
+            </h1>
+            <p class="text-light">Accédez à tous les prestataires de la plateforme</p>
+          </div>
+          
+          <!-- Pricing -->
+          <div style="text-align: center; padding: 2rem 0; background: linear-gradient(135deg, var(--primary-soft) 0%, white 100%); border-radius: var(--radius-lg); margin-bottom: 2rem;">
+            <div style="font-size: 3.5rem; font-weight: 800; color: var(--primary); line-height: 1;">
+              5 000
+            </div>
+            <div style="font-size: 1.25rem; color: var(--text-light); margin-top: 0.5rem;">
+              FCFA / mois
+            </div>
+          </div>
+          
+          <!-- Features -->
+          <h3 style="margin-bottom: 1rem;">
+            <i class="fas fa-check-circle text-success"></i>
+            Ce qui est inclus :
+          </h3>
+          
+          <ul style="list-style: none; padding: 0; margin-bottom: 2rem;">
+            <li style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+              <i class="fas fa-check" style="color: var(--success); font-size: 1.25rem;"></i>
+              <span>Accès illimité à tous les prestataires</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+              <i class="fas fa-check" style="color: var(--success); font-size: 1.25rem;"></i>
+              <span>Contactez autant de professionnels que vous voulez</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+              <i class="fas fa-check" style="color: var(--success); font-size: 1.25rem;"></i>
+              <span>Recherche géolocalisée personnalisée</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+              <i class="fas fa-check" style="color: var(--success); font-size: 1.25rem;"></i>
+              <span>Consultez les avis et notes des prestataires</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+              <i class="fas fa-check" style="color: var(--success); font-size: 1.25rem;"></i>
+              <span>Support client prioritaire</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 0;">
+              <i class="fas fa-check" style="color: var(--success); font-size: 1.25rem;"></i>
+              <span>Résiliez à tout moment</span>
+            </li>
+          </ul>
+          
+          <!-- Payment Method -->
+          <h3 style="margin-bottom: 1rem;">
+            <i class="fas fa-credit-card text-primary"></i>
+            Mode de paiement
+          </h3>
+          
+          <div class="form-group">
+            <label class="form-label">Sélectionnez votre mode de paiement</label>
+            <div style="display: grid; gap: 1rem;">
+              <label class="card" style="cursor: pointer; padding: 1rem; display: flex; align-items: center; gap: 1rem; transition: var(--transition); border: 2px solid var(--border);">
+                <input type="radio" name="paymentMethod" value="orange_money" checked style="width: auto;">
+                <i class="fas fa-mobile-alt" style="font-size: 2rem; color: #FF6600;"></i>
+                <div>
+                  <strong>Orange Money</strong>
+                  <p style="font-size: 0.875rem; color: var(--text-light); margin: 0;">Paiement sécurisé via Orange Money</p>
+                </div>
+              </label>
+              
+              <label class="card" style="cursor: pointer; padding: 1rem; display: flex; align-items: center; gap: 1rem; transition: var(--transition); border: 2px solid var(--border);">
+                <input type="radio" name="paymentMethod" value="mtn_money" style="width: auto;">
+                <i class="fas fa-mobile-alt" style="font-size: 2rem; color: #FFCC00;"></i>
+                <div>
+                  <strong>MTN Mobile Money</strong>
+                  <p style="font-size: 0.875rem; color: var(--text-light); margin: 0;">Paiement sécurisé via MTN</p>
+                </div>
+              </label>
+              
+              <label class="card" style="cursor: pointer; padding: 1rem; display: flex; align-items: center; gap: 1rem; transition: var(--transition); border: 2px solid var(--border);">
+                <input type="radio" name="paymentMethod" value="wave" style="width: auto;">
+                <i class="fas fa-wallet" style="font-size: 2rem; color: #00D9A5;"></i>
+                <div>
+                  <strong>Wave</strong>
+                  <p style="font-size: 0.875rem; color: var(--text-light); margin: 0;">Paiement sécurisé via Wave</p>
+                </div>
+              </label>
+            </div>
+          </div>
+          
+          <div class="alert alert-info mt-md">
+            <i class="fas fa-lock"></i>
+            <span>Tous les paiements sont sécurisés et cryptés. Vos données bancaires ne sont jamais stockées.</span>
+          </div>
+          
+          <button onclick="processSubscription()" class="btn btn-primary btn-full btn-lg mt-lg" id="payBtn">
+            <i class="fas fa-lock"></i> Payer 5 000 FCFA
+          </button>
+          
+          <p style="text-align: center; margin-top: 1rem; font-size: 0.875rem; color: var(--text-light);">
+            En souscrivant, vous acceptez nos 
+            <a href="#" style="color: var(--primary);">conditions d'utilisation</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/subscription.js"></script>
+  <script>
+    const currentStatusDiv = document.getElementById('currentStatus');
+    const statusContentDiv = document.getElementById('statusContent');
+    const payBtn = document.getElementById('payBtn');
+    
+    // Vérifier l'authentification
+    if (!Utils.Session.isLoggedIn()) {
+      Utils.showToast('Vous devez être connecté', 'error');
+      setTimeout(() => {
+        window.location.href = 'login.html';
+      }, 1500);
+    } else {
+      const user = Utils.Session.getCurrentUser();
+      
+      if (user.role !== 'CLIENT') {
+        Utils.showToast('Seuls les clients peuvent souscrire à un abonnement', 'error');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1500);
+      } else {
+        loadCurrentStatus();
+      }
+    }
+    
+    // Charger le statut actuel
+    function loadCurrentStatus() {
+      const user = Utils.Session.getCurrentUser();
+      const subscription = Subscription.getSubscription(user.id);
+      
+      if (subscription) {
+        currentStatusDiv.style.display = 'block';
+        
+        const isActive = Subscription.isSubscriptionActive(user.id);
+        const daysRemaining = Subscription.getDaysRemaining(user.id);
+        
+        if (isActive) {
+          statusContentDiv.innerHTML = `
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle"></i>
+              <div>
+                <strong>Abonnement actif</strong>
+                <p style="margin: 0.5rem 0 0;">
+                  Votre abonnement expire dans <strong>${daysRemaining} jour${daysRemaining > 1 ? 's' : ''}</strong>
+                  <br>
+                  <small>Date d'expiration : ${Utils.formatDate(subscription.endDate)}</small>
+                </p>
+              </div>
+            </div>
+          `;
+          
+          payBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Renouveler l\'abonnement';
+        } else {
+          statusContentDiv.innerHTML = `
+            <div class="alert alert-warning">
+              <i class="fas fa-exclamation-triangle"></i>
+              <div>
+                <strong>Abonnement expiré</strong>
+                <p style="margin: 0.5rem 0 0;">
+                  Votre abonnement a expiré le ${Utils.formatDate(subscription.endDate)}
+                  <br>
+                  Renouvelez pour continuer à accéder aux prestataires.
+                </p>
+              </div>
+            </div>
+          `;
+        }
+      }
+    }
+    
+    // Traiter l'abonnement
+    async function processSubscription() {
+      const user = Utils.Session.getCurrentUser();
+      const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+      
+      // Désactiver le bouton
+      payBtn.disabled = true;
+      payBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement du paiement...';
+      
+      try {
+        // Simuler le paiement
+        const paymentResult = await Subscription.processPayment(user.id, 5000, paymentMethod);
+        
+        if (paymentResult.success) {
+          // Créer ou renouveler l'abonnement
+          const subscription = Subscription.getSubscription(user.id);
+          let result;
+          
+          if (subscription) {
+            result = Subscription.renewSubscription(user.id);
+          } else {
+            result = Subscription.createSubscription(user.id);
+          }
+          
+          if (result.success) {
+            Utils.showToast('Abonnement activé avec succès !', 'success');
+            
+            // Rediriger vers le dashboard
+            setTimeout(() => {
+              window.location.href = 'client-dashboard.html';
+            }, 1500);
+          } else {
+            Utils.showToast(result.message, 'error');
+            payBtn.disabled = false;
+            payBtn.innerHTML = '<i class="fas fa-lock"></i> Payer 5 000 FCFA';
+          }
+        } else {
+          Utils.showToast(paymentResult.message, 'error');
+          payBtn.disabled = false;
+          payBtn.innerHTML = '<i class="fas fa-lock"></i> Payer 5 000 FCFA';
+        }
+      } catch (error) {
+        Utils.showToast('Une erreur est survenue', 'error');
+        payBtn.disabled = false;
+        payBtn.innerHTML = '<i class="fas fa-lock"></i> Payer 5 000 FCFA';
+      }
+    }
+    
+    // Animation au survol des options de paiement
+    document.querySelectorAll('label.card').forEach(label => {
+      const radio = label.querySelector('input[type="radio"]');
+      
+      radio.addEventListener('change', function() {
+        document.querySelectorAll('label.card').forEach(l => {
+          l.style.borderColor = 'var(--border)';
+          l.style.backgroundColor = 'var(--card)';
+        });
+        
+        if (this.checked) {
+          label.style.borderColor = 'var(--primary)';
+          label.style.backgroundColor = 'var(--primary-soft)';
+        }
+      });
+      
+      // Initialiser le style pour l'option cochée
+      if (radio.checked) {
+        label.style.borderColor = 'var(--primary)';
+        label.style.backgroundColor = 'var(--primary-soft)';
+      }
+    });
+  </script>
+</body>
+</html>
