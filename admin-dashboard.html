@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin - Ivoiservice</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <i class="fas fa-handshake"></i>
+          <span>Ivoiservice</span>
+        </a>
+        <ul class="nav-links">
+          <li><button onclick="logout()" class="btn btn-outline btn-sm">Déconnexion</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="services">
+    <div class="container">
+      <h1 class="section-title">
+        <i class="fas fa-shield-alt text-primary"></i>
+        Dashboard Administrateur
+      </h1>
+      
+      <div class="stats-grid mb-lg">
+        <div class="stat-card">
+          <div class="stat-value" id="totalUsers">0</div>
+          <div class="stat-label">Utilisateurs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="totalClients">0</div>
+          <div class="stat-label">Clients</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="totalProviders">0</div>
+          <div class="stat-label">Prestataires</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="activeSubscriptions">0</div>
+          <div class="stat-label">Abonnements actifs</div>
+        </div>
+      </div>
+      
+      <div class="tabs mb-md">
+        <button class="tab active" onclick="switchTab('users')">Utilisateurs</button>
+        <button class="tab" onclick="switchTab('providers')">Prestataires à vérifier</button>
+        <button class="tab" onclick="switchTab('subscriptions')">Abonnements</button>
+      </div>
+      
+      <div class="tab-content active" id="users-content">
+        <div class="card">
+          <h2><i class="fas fa-users text-primary"></i> Tous les utilisateurs</h2>
+          <div class="table-container">
+            <table id="usersTable"></table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="tab-content" id="providers-content">
+        <div class="card">
+          <h2><i class="fas fa-user-check text-primary"></i> Prestataires en attente de vérification</h2>
+          <div id="providersVerificationList"></div>
+        </div>
+      </div>
+      
+      <div class="tab-content" id="subscriptions-content">
+        <div class="card">
+          <h2><i class="fas fa-receipt text-primary"></i> Abonnements</h2>
+          <div class="table-container">
+            <table id="subscriptionsTable"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/subscription.js"></script>
+  <script>
+    if (!Utils.requireRole('ADMIN')) {
+      // Redirection gérée par requireRole
+    } else {
+      loadDashboard();
+    }
+    
+    function loadDashboard() {
+      loadStats();
+      loadUsers();
+      loadProvidersVerification();
+      loadSubscriptions();
+    }
+    
+    function loadStats() {
+      const users = Utils.Storage.get('users', []);
+      const clients = users.filter(u => u.role === 'CLIENT');
+      const providers = users.filter(u => u.role === 'PROVIDER');
+      const subStats = Subscription.getSubscriptionStats();
+      
+      document.getElementById('totalUsers').textContent = users.length;
+      document.getElementById('totalClients').textContent = clients.length;
+      document.getElementById('totalProviders').textContent = providers.length;
+      document.getElementById('activeSubscriptions').textContent = subStats.active;
+    }
+    
+    function loadUsers() {
+      const users = Utils.Storage.get('users', []);
+      const table = document.getElementById('usersTable');
+      
+      const roleColors = { CLIENT: 'primary', PROVIDER: 'warning', ADMIN: 'error' };
+      
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Rôle</th>
+            <th>Date d'inscription</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${users.map(user => `
+            <tr>
+              <td>${user.firstName} ${user.lastName}</td>
+              <td>${user.email}</td>
+              <td>${Utils.formatPhoneNumber(user.phone)}</td>
+              <td><span class="badge badge-${roleColors[user.role]}">${user.role}</span></td>
+              <td>${Utils.formatDate(user.createdAt)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      `;
+    }
+    
+    function loadProvidersVerification() {
+      const providerProfiles = Utils.Storage.get('providerProfiles', []);
+      const users = Utils.Storage.get('users', []);
+      const list = document.getElementById('providersVerificationList');
+      
+      const unverified = providerProfiles.filter(p => !p.isVerified);
+      
+      if (unverified.length === 0) {
+        list.innerHTML = '<p class="text-light text-center" style="padding: 2rem;">Tous les prestataires sont vérifiés</p>';
+        return;
+      }
+      
+      list.innerHTML = unverified.map(profile => {
+        const user = users.find(u => u.id === profile.userId);
+        if (!user) return '';
+        
+        const professionName = Utils.PROFESSIONS[profile.profession];
+        
+        return `
+          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <strong>${user.firstName} ${user.lastName}</strong>
+                <p style="color: var(--text-light); margin: 0.25rem 0;">
+                  ${professionName} - ${Utils.formatPhoneNumber(user.phone)}
+                </p>
+                <small class="text-light">Inscrit le ${Utils.formatDate(user.createdAt)}</small>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button onclick="verifyProvider('${profile.id}', true)" class="btn btn-success btn-sm">
+                  <i class="fas fa-check"></i> Vérifier
+                </button>
+                <button onclick="verifyProvider('${profile.id}', false)" class="btn btn-outline btn-sm">
+                  <i class="fas fa-times"></i> Refuser
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    function loadSubscriptions() {
+      const subscriptions = Utils.Storage.get('subscriptions', []);
+      const users = Utils.Storage.get('users', []);
+      const table = document.getElementById('subscriptionsTable');
+      
+      const statusColors = { ACTIVE: 'success', EXPIRED: 'warning', CANCELLED: 'error' };
+      
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Montant</th>
+            <th>Date début</th>
+            <th>Date fin</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${subscriptions.map(sub => {
+            const user = users.find(u => u.id === sub.userId);
+            return `
+              <tr>
+                <td>${user ? user.firstName + ' ' + user.lastName : 'N/A'}</td>
+                <td>${Utils.formatPrice(sub.amount)}</td>
+                <td>${Utils.formatDate(sub.startDate)}</td>
+                <td>${Utils.formatDate(sub.endDate)}</td>
+                <td><span class="badge badge-${statusColors[sub.status]}">${sub.status}</span></td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      `;
+    }
+    
+    function verifyProvider(profileId, approve) {
+      const providerProfiles = Utils.Storage.get('providerProfiles', []);
+      const index = providerProfiles.findIndex(p => p.id === profileId);
+      
+      if (index === -1) return;
+      
+      if (approve) {
+        providerProfiles[index].isVerified = true;
+        Utils.Storage.set('providerProfiles', providerProfiles);
+        Utils.showToast('Prestataire vérifié avec succès', 'success');
+      } else {
+        Utils.showToast('Vérification refusée', 'info');
+      }
+      
+      loadDashboard();
+    }
+    
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(tabName + '-content').classList.add('active');
+    }
+    
+    function logout() {
+      if (confirm('Voulez-vous vous déconnecter ?')) {
+        Utils.Session.logout();
+        Utils.showToast('Déconnexion réussie', 'success');
+        setTimeout(() => window.location.href = 'index.html', 1000);
+      }
+    }
+  </script>
+</body>
+</html>
