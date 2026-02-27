@@ -17,6 +17,176 @@
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+  
+  <style>
+    /* Toggle Switch */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--background);
+      border-radius: var(--radius-md);
+      margin-bottom: 1.5rem;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      width: 60px;
+      height: 30px;
+      background: #ccc;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .toggle-switch.active {
+      background: var(--primary);
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .toggle-switch.active .toggle-slider {
+      transform: translateX(30px);
+    }
+    
+    .toggle-label {
+      flex: 1;
+      cursor: pointer;
+    }
+    
+    .toggle-label strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+    
+    .toggle-label span {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+    
+    /* Upload CNI */
+    .upload-box {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-md);
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      background: var(--background);
+    }
+    
+    .upload-box:hover {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+    
+    .upload-box.has-file {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+    
+    .upload-preview {
+      max-width: 300px;
+      max-height: 200px;
+      margin: 1rem auto;
+      border-radius: var(--radius-md);
+      display: none;
+    }
+    
+    .upload-preview.show {
+      display: block;
+    }
+    
+    /* Freelance Categories Grid */
+    .freelance-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .freelance-category {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .freelance-category:hover {
+      border-color: var(--primary);
+      background: var(--background);
+    }
+    
+    .freelance-category input[type="radio"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+    
+    .freelance-category.selected {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+    
+    .category-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      color: white;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+    
+    .category-info {
+      flex: 1;
+    }
+    
+    .category-info strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+    
+    .category-info span {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+    
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      transition: all 0.3s;
+    }
+    
+    .back-btn:hover {
+      gap: 0.75rem;
+    }
+  </style>
 </head>
 <body>
   <!-- Header -->
@@ -39,7 +209,13 @@
   <!-- Register Section -->
   <section class="services">
     <div class="container">
-      <div style="max-width: 700px; margin: 0 auto;">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <!-- Bouton Retour -->
+        <a href="javascript:history.back()" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+          Retour
+        </a>
+        
         <div class="card">
           <div class="card-header text-center">
             <h1 class="card-title">
@@ -54,6 +230,19 @@
           
           <!-- Formulaire d'inscription -->
           <form id="registerForm">
+            <!-- Toggle Freelance -->
+            <div class="toggle-container" id="toggleContainer">
+              <div class="toggle-switch" id="freelanceToggle">
+                <div class="toggle-slider"></div>
+              </div>
+              <div class="toggle-label" onclick="document.getElementById('freelanceToggle').click()">
+                <strong>Mode Freelance / Mission courte durée</strong>
+                <span>Activez pour proposer des services freelance (marketing digital, développement, design...)</span>
+              </div>
+            </div>
+            
+            <input type="hidden" id="isFreelance" name="isFreelance" value="false">
+            
             <!-- Informations personnelles -->
             <h3 style="margin-bottom: 1rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem;">
               <i class="fas fa-user"></i>
@@ -163,15 +352,15 @@
               Informations professionnelles
             </h3>
             
-            <div class="form-group">
+            <!-- Profession Classique (visible par défaut) -->
+            <div id="classicProfession" class="form-group">
               <label class="form-label" for="profession">
                 <i class="fas fa-tools"></i> Profession *
               </label>
               <select 
                 id="profession" 
                 name="profession" 
-                class="form-input" 
-                required
+                class="form-input"
               >
                 <option value="">Sélectionnez votre métier</option>
                 <option value="GARAGISTE">Garagiste</option>
@@ -186,6 +375,96 @@
                 <option value="MECANICIEN_MOTO">Mécanicien moto</option>
               </select>
               <div class="form-error" id="professionError"></div>
+            </div>
+            
+            <!-- Catégories Freelance (masqué par défaut) -->
+            <div id="freelanceProfession" class="form-group" style="display: none;">
+              <label class="form-label">
+                <i class="fas fa-laptop"></i> Choisissez votre spécialité Freelance *
+              </label>
+              <div class="freelance-grid">
+                <div class="freelance-category" data-value="MARKETING_DIGITAL">
+                  <input type="radio" name="freelanceProfession" value="MARKETING_DIGITAL">
+                  <div class="category-icon"><i class="fas fa-bullhorn"></i></div>
+                  <div class="category-info">
+                    <strong>Marketing Digital</strong>
+                    <span>Publicité en ligne, campagnes</span>
+                  </div>
+                </div>
+                
+                <div class="freelance-category" data-value="COMMUNICATION">
+                  <input type="radio" name="freelanceProfession" value="COMMUNICATION">
+                  <div class="category-icon"><i class="fas fa-comments"></i></div>
+                  <div class="category-info">
+                    <strong>Communication</strong>
+                    <span>Relations publiques, stratégie</span>
+                  </div>
+                </div>
+                
+                <div class="freelance-category" data-value="DEVELOPPEUR_WEB">
+                  <input type="radio" name="freelanceProfession" value="DEVELOPPEUR_WEB">
+                  <div class="category-icon"><i class="fas fa-code"></i></div>
+                  <div class="category-info">
+                    <strong>Développeur Web/App</strong>
+                    <span>Sites web, applications mobiles</span>
+                  </div>
+                </div>
+                
+                <div class="freelance-category" data-value="GRAPHISTE">
+                  <input type="radio" name="freelanceProfession" value="GRAPHISTE">
+                  <div class="category-icon"><i class="fas fa-palette"></i></div>
+                  <div class="category-info">
+                    <strong>Graphiste</strong>
+                    <span>Design, identité visuelle</span>
+                  </div>
+                </div>
+                
+                <div class="freelance-category" data-value="REDACTEUR_WEB">
+                  <input type="radio" name="freelanceProfession" value="REDACTEUR_WEB">
+                  <div class="category-icon"><i class="fas fa-pen"></i></div>
+                  <div class="category-info">
+                    <strong>Rédacteur Web</strong>
+                    <span>Contenu, articles, copywriting</span>
+                  </div>
+                </div>
+                
+                <div class="freelance-category" data-value="COMMUNITY_MANAGER">
+                  <input type="radio" name="freelanceProfession" value="COMMUNITY_MANAGER">
+                  <div class="category-icon"><i class="fas fa-users"></i></div>
+                  <div class="category-info">
+                    <strong>Community Manager</strong>
+                    <span>Réseaux sociaux, engagement</span>
+                  </div>
+                </div>
+                
+                <div class="freelance-category" data-value="DATA_ANALYST">
+                  <input type="radio" name="freelanceProfession" value="DATA_ANALYST">
+                  <div class="category-icon"><i class="fas fa-chart-line"></i></div>
+                  <div class="category-info">
+                    <strong>Analyste de Données</strong>
+                    <span>Analyse, reporting, insights</span>
+                  </div>
+                </div>
+                
+                <div class="freelance-category" data-value="CHEF_PROJET_DIGITAL">
+                  <input type="radio" name="freelanceProfession" value="CHEF_PROJET_DIGITAL">
+                  <div class="category-icon"><i class="fas fa-tasks"></i></div>
+                  <div class="category-info">
+                    <strong>Chef de Projet Digital</strong>
+                    <span>Gestion de projets numériques</span>
+                  </div>
+                </div>
+                
+                <div class="freelance-category" data-value="CONSULTANT_SEO">
+                  <input type="radio" name="freelanceProfession" value="CONSULTANT_SEO">
+                  <div class="category-icon"><i class="fas fa-search"></i></div>
+                  <div class="category-info">
+                    <strong>Consultant SEO</strong>
+                    <span>Référencement naturel</span>
+                  </div>
+                </div>
+              </div>
+              <div class="form-error" id="freelanceProfessionError"></div>
             </div>
             
             <div class="grid-responsive">
@@ -203,13 +482,13 @@
                   step="1000"
                   required
                 >
-                <div class="form-help">Prix moyen de vos prestations</div>
+                <div class="form-help" id="priceHelp">Prix moyen de vos prestations</div>
                 <div class="form-error" id="basePriceError"></div>
               </div>
               
               <div class="form-group">
                 <label class="form-label" for="radius">
-                  <i class="fas fa-map-marker-alt"></i> Rayon d'intervention (km) *
+                  <i class="fas fa-map-marker-alt"></i> <span id="radiusLabel">Rayon d'intervention (km)</span> *
                 </label>
                 <select 
                   id="radius" 
@@ -221,6 +500,8 @@
                   <option value="10" selected>10 km</option>
                   <option value="15">15 km</option>
                   <option value="20">20 km</option>
+                  <option value="50">50 km (Freelance)</option>
+                  <option value="100">100 km (Freelance)</option>
                 </select>
                 <div class="form-error" id="radiusError"></div>
               </div>
@@ -228,7 +509,7 @@
             
             <div class="form-group">
               <label class="form-label" for="description">
-                <i class="fas fa-align-left"></i> Description de vos services
+                <i class="fas fa-align-left"></i> <span id="descriptionLabel">Description de vos services</span>
               </label>
               <textarea 
                 id="description" 
@@ -237,16 +518,40 @@
                 rows="4"
                 placeholder="Décrivez votre expérience, vos spécialités, vos certifications..."
               ></textarea>
-              <div class="form-help">Optionnel - Aide les clients à mieux vous connaître</div>
+              <div class="form-help" id="descriptionHelp">Optionnel - Aide les clients à mieux vous connaître</div>
+            </div>
+            
+            <!-- Upload CNI obligatoire -->
+            <div class="form-group">
+              <label class="form-label">
+                <i class="fas fa-id-card"></i> Document d'identité (CNI ou Passeport) *
+              </label>
+              <div class="upload-box" id="uploadBox">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <p style="margin: 0;"><strong>Cliquez pour télécharger</strong></p>
+                <p style="margin: 0.5rem 0 0; font-size: 0.875rem; color: var(--text-light);">
+                  Photo de votre CNI ou Passeport (JPG, PNG - Max 2MB)
+                </p>
+                <input 
+                  type="file" 
+                  id="idDocument" 
+                  name="idDocument" 
+                  accept="image/jpeg,image/png,image/jpg"
+                  style="display: none;"
+                  required
+                >
+                <img id="uploadPreview" class="upload-preview" alt="Aperçu du document">
+              </div>
+              <div class="form-error" id="idDocumentError"></div>
             </div>
             
             <div class="alert alert-info">
-              <i class="fas fa-info-circle"></i>
+              <i class="fas fa-shield-alt"></i>
               <div>
-                <strong>Vérification d'identité requise</strong>
+                <strong>Vérification d'identité obligatoire</strong>
                 <p style="margin-top: 0.5rem; margin-bottom: 0;">
-                  Après inscription, vous devrez soumettre une photo de votre CNI et un selfie 
-                  pour être vérifié par notre équipe. Cela garantit la confiance sur la plateforme.
+                  Votre document d'identité sera vérifié par notre équipe d'administration dans les 24-48h. 
+                  Cela garantit la confiance et la sécurité de tous les utilisateurs de la plateforme.
                 </p>
               </div>
             </div>
@@ -255,8 +560,8 @@
               <label style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.875rem;">
                 <input type="checkbox" name="terms" required style="width: auto; margin-top: 0.25rem;">
                 <span>
-                  J'accepte les <a href="#" style="color: var(--primary);">conditions d'utilisation</a> 
-                  et la <a href="#" style="color: var(--primary);">politique de confidentialité</a>
+                  J'accepte les <a href="privacy.html" style="color: var(--primary);">conditions d'utilisation</a> 
+                  et la <a href="privacy.html" style="color: var(--primary);">politique de confidentialité</a>
                 </span>
               </label>
             </div>
@@ -300,11 +605,85 @@
   <script>
     const registerForm = document.getElementById('registerForm');
     const alertContainer = document.getElementById('alertContainer');
+    const freelanceToggle = document.getElementById('freelanceToggle');
+    const isFreelanceInput = document.getElementById('isFreelance');
+    const classicProfession = document.getElementById('classicProfession');
+    const freelanceProfession = document.getElementById('freelanceProfession');
+    const uploadBox = document.getElementById('uploadBox');
+    const uploadInput = document.getElementById('idDocument');
+    const uploadPreview = document.getElementById('uploadPreview');
     
     // Rediriger si déjà connecté
     if (Utils.Session.isLoggedIn()) {
       window.location.href = 'provider-dashboard.html';
     }
+    
+    // Toggle Freelance Mode
+    freelanceToggle.addEventListener('click', function() {
+      this.classList.toggle('active');
+      const isFreelance = this.classList.contains('active');
+      isFreelanceInput.value = isFreelance;
+      
+      if (isFreelance) {
+        classicProfession.style.display = 'none';
+        freelanceProfession.style.display = 'block';
+        document.getElementById('profession').removeAttribute('required');
+        document.getElementById('priceHelp').textContent = 'Prix par mission/projet';
+        document.getElementById('radiusLabel').textContent = 'Zone de travail (km)';
+        document.getElementById('descriptionLabel').textContent = 'Compétences et expériences';
+        document.getElementById('descriptionHelp').textContent = 'Décrivez vos compétences, projets réalisés, certifications...';
+      } else {
+        classicProfession.style.display = 'block';
+        freelanceProfession.style.display = 'none';
+        document.getElementById('profession').setAttribute('required', 'required');
+        document.getElementById('priceHelp').textContent = 'Prix moyen de vos prestations';
+        document.getElementById('radiusLabel').textContent = 'Rayon d\'intervention (km)';
+        document.getElementById('descriptionLabel').textContent = 'Description de vos services';
+        document.getElementById('descriptionHelp').textContent = 'Optionnel - Aide les clients à mieux vous connaître';
+      }
+    });
+    
+    // Gestion des catégories freelance
+    document.querySelectorAll('.freelance-category').forEach(category => {
+      category.addEventListener('click', function() {
+        document.querySelectorAll('.freelance-category').forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+        this.querySelector('input[type="radio"]').checked = true;
+      });
+    });
+    
+    // Upload CNI
+    uploadBox.addEventListener('click', () => uploadInput.click());
+    
+    uploadInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      
+      if (file) {
+        // Vérifier la taille (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+          Utils.showToast('Fichier trop volumineux (max 2MB)', 'error');
+          this.value = '';
+          return;
+        }
+        
+        // Vérifier le type
+        if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+          Utils.showToast('Format non supporté. Utilisez JPG ou PNG', 'error');
+          this.value = '';
+          return;
+        }
+        
+        // Afficher l'aperçu
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          uploadPreview.src = e.target.result;
+          uploadPreview.classList.add('show');
+          uploadBox.classList.add('has-file');
+          uploadBox.querySelector('p').innerHTML = '<strong style="color: var(--primary);">✓ Document chargé</strong>';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
     
     // Afficher un message d'erreur
     function showError(message) {
@@ -327,6 +706,34 @@
       
       // Récupérer les données du formulaire
       const formData = new FormData(registerForm);
+      const isFreelance = isFreelanceInput.value === 'true';
+      
+      let profession;
+      if (isFreelance) {
+        profession = formData.get('freelanceProfession');
+        if (!profession) {
+          document.getElementById('freelanceProfessionError').textContent = 'Sélectionnez une spécialité freelance';
+          document.getElementById('freelanceProfessionError').classList.add('show');
+          return;
+        }
+      } else {
+        profession = formData.get('profession');
+        if (!profession) {
+          document.getElementById('professionError').textContent = 'Sélectionnez votre profession';
+          document.getElementById('professionError').classList.add('show');
+          return;
+        }
+      }
+      
+      // Vérifier l'upload CNI
+      const idFile = uploadInput.files[0];
+      if (!idFile) {
+        document.getElementById('idDocumentError').textContent = 'Le document d\'identité est obligatoire';
+        document.getElementById('idDocumentError').classList.add('show');
+        Utils.showToast('Veuillez télécharger votre CNI ou Passeport', 'error');
+        return;
+      }
+      
       const data = {
         firstName: formData.get('firstName').trim(),
         lastName: formData.get('lastName').trim(),
@@ -334,10 +741,12 @@
         phone: formData.get('phone').trim().replace(/\s/g, ''),
         password: formData.get('password'),
         confirmPassword: formData.get('confirmPassword'),
-        profession: formData.get('profession'),
+        profession: profession,
+        isFreelance: isFreelance,
         basePrice: parseInt(formData.get('basePrice')),
         radius: parseInt(formData.get('radius')),
-        description: formData.get('description').trim()
+        description: formData.get('description').trim(),
+        idDocument: uploadPreview.src // Base64 de l'image
       };
       
       // Validation
@@ -379,12 +788,6 @@
         hasError = true;
       }
       
-      if (!data.profession) {
-        document.getElementById('professionError').textContent = 'Sélectionnez votre profession';
-        document.getElementById('professionError').classList.add('show');
-        hasError = true;
-      }
-      
       if (!data.basePrice || data.basePrice < 1000) {
         document.getElementById('basePriceError').textContent = 'Prix minimum : 1000 FCFA';
         document.getElementById('basePriceError').classList.add('show');
@@ -420,13 +823,13 @@
         alertContainer.innerHTML = `
           <div class="alert alert-success">
             <i class="fas fa-check-circle"></i>
-            <span>Votre compte prestataire a été créé ! Redirection vers votre espace...</span>
+            <span>Votre compte prestataire a été créé ! Votre document d'identité sera vérifié sous 24-48h. Redirection...</span>
           </div>
         `;
         
         setTimeout(() => {
           window.location.href = 'provider-dashboard.html';
-        }, 1500);
+        }, 2000);
       } else {
         showError(result.message);
         submitBtn.disabled = false;
