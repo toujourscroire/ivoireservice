@@ -1,182 +1,529 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Prestataire - Ivoiservice</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive.css">
-</head>
-<body>
-  <header class="header">
-    <div class="container">
-      <nav class="navbar">
-        <a href="index.html" class="logo">
-          <i class="fas fa-handshake"></i>
-          <span>Ivoiservice</span>
-        </a>
-        <ul class="nav-links">
-          <li><button onclick="logout()" class="btn btn-outline btn-sm">Déconnexion</button></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
-  <section class="services">
-    <div class="container">
-      <h1 class="section-title">
-        <i class="fas fa-user-tie text-primary"></i>
-        Mon espace prestataire
-      </h1>
-      
-      <div id="verificationStatus" class="card mb-lg"></div>
-      
-      <div class="stats-grid mb-lg">
-        <div class="stat-card">
-          <div class="stat-value" id="ratingValue">0.0</div>
-          <div class="stat-label">Note moyenne</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="reviewsValue">0</div>
-          <div class="stat-label">Avis clients</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value" id="requestsValue">0</div>
-          <div class="stat-label">Demandes reçues</div>
-        </div>
-      </div>
-      
-      <div class="card">
-        <h2><i class="fas fa-inbox text-primary"></i> Demandes de service</h2>
-        <div id="requestsList"></div>
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-bottom">
-        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
-      </div>
-    </div>
-  </footer>
-
-  <script src="js/utils.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/search.js"></script>
-  <script>
-    if (!Utils.requireRole('PROVIDER')) {
-      // Redirection gérée par requireRole
-    } else {
-      loadDashboard();
-    }
-    
-    function loadDashboard() {
-      const user = Utils.Session.getCurrentUser();
-      const profile = Auth.getProviderProfile(user.id);
-      
-      if (!profile) {
-        Utils.showToast('Profil prestataire non trouvé', 'error');
-        return;
-      }
-      
-      loadVerificationStatus(profile);
-      loadStats(profile);
-      loadRequests();
-    }
-    
-    function loadVerificationStatus(profile) {
-      const statusDiv = document.getElementById('verificationStatus');
-      
-      if (profile.isVerified) {
-        statusDiv.innerHTML = `
-          <div class="alert alert-success">
-            <i class="fas fa-check-circle"></i>
-            <span><strong>Profil vérifié</strong> - Votre identité a été validée par notre équipe</span>
-          </div>
-        `;
-      } else {
-        statusDiv.innerHTML = `
-          <div class="alert alert-warning">
-            <i class="fas fa-exclamation-triangle"></i>
-            <div style="flex: 1;">
-              <strong>Vérification en attente</strong>
-              <p style="margin: 0.5rem 0 0;">Soumettez votre CNI et un selfie pour être vérifié et gagner la confiance des clients</p>
-            </div>
-          </div>
-        `;
-      }
-    }
-    
-    function loadStats(profile) {
-      document.getElementById('ratingValue').textContent = (profile.rating || 0).toFixed(1);
-      document.getElementById('reviewsValue').textContent = profile.reviewCount || 0;
-      
-      const user = Utils.Session.getCurrentUser();
-      const requests = Search.getProviderRequests(user.id);
-      document.getElementById('requestsValue').textContent = requests.length;
-    }
-    
-    function loadRequests() {
-      const user = Utils.Session.getCurrentUser();
-      const requests = Search.getProviderRequests(user.id);
-      const requestsList = document.getElementById('requestsList');
-      
-      if (requests.length === 0) {
-        requestsList.innerHTML = '<p class="text-light text-center" style="padding: 2rem;">Aucune demande pour le moment</p>';
-        return;
-      }
-      
-      const users = Utils.Storage.get('users', []);
-      requestsList.innerHTML = requests.map(request => {
-        const client = users.find(u => u.id === request.clientId);
-        const statusColors = { PENDING: 'warning', ACCEPTED: 'success', COMPLETED: 'success', CANCELLED: 'error' };
-        return `
-          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border);">
-            <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 1rem;">
-              <div style="flex: 1;">
-                <strong>${client ? client.firstName + ' ' + client.lastName : 'Client'}</strong>
-                ${client ? '<span class="text-light"> - ' + Utils.formatPhoneNumber(client.phone) + '</span>' : ''}
-                <p style="color: var(--text-light); margin: 0.5rem 0;">${request.description}</p>
-                <small class="text-light">${Utils.formatDateTime(request.createdAt)}</small>
-              </div>
-              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                <span class="badge badge-${statusColors[request.status]}">${request.status}</span>
-                ${request.status === 'PENDING' ? `
-                  <button onclick="updateStatus('${request.id}', 'ACCEPTED')" class="btn btn-primary btn-sm">Accepter</button>
-                  <button onclick="updateStatus('${request.id}', 'CANCELLED')" class="btn btn-outline btn-sm">Refuser</button>
-                ` : ''}
-                ${request.status === 'ACCEPTED' ? `
-                  <button onclick="updateStatus('${request.id}', 'COMPLETED')" class="btn btn-success btn-sm">Terminer</button>
-                ` : ''}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-    
-    function updateStatus(requestId, status) {
-      const result = Search.updateRequestStatus(requestId, status);
-      
-      if (result.success) {
-        Utils.showToast('Statut mis à jour', 'success');
-        loadDashboard();
-      } else {
-        Utils.showToast(result.message, 'error');
-      }
-    }
-    
-    function logout() {
-      if (confirm('Voulez-vous vous déconnecter ?')) {
-        Utils.Session.logout();
-        Utils.showToast('Déconnexion réussie', 'success');
-        setTimeout(() => window.location.href = 'index.html', 1000);
-      }
-    }
-  </script>
-</body>
-</html>
+1	<!DOCTYPE html>
+     2	<html lang="fr">
+     3	<head>
+     4	  <meta charset="UTF-8">
+     5	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6	  <title>Dashboard Prestataire - Ivoiservice</title>
+     7	  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
+     8	  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+     9	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    10	  <link rel="stylesheet" href="css/style.css">
+    11	  <link rel="stylesheet" href="css/responsive.css">
+    12	  <style>
+    13	    .upload-zone {
+    14	      border: 2px dashed var(--primary);
+    15	      border-radius: var(--radius-lg);
+    16	      padding: 3rem;
+    17	      text-align: center;
+    18	      background: var(--card-bg);
+    19	      cursor: pointer;
+    20	      transition: all 0.3s ease;
+    21	      margin-bottom: 2rem;
+    22	    }
+    23	    
+    24	    .upload-zone:hover {
+    25	      background: var(--primary-soft);
+    26	      border-color: var(--primary-dark);
+    27	    }
+    28	    
+    29	    .upload-zone.drag-over {
+    30	      background: var(--primary-soft);
+    31	      border-color: var(--primary-dark);
+    32	      transform: scale(1.02);
+    33	    }
+    34	    
+    35	    .upload-placeholder i {
+    36	      font-size: 4rem;
+    37	      color: var(--primary);
+    38	      margin-bottom: 1rem;
+    39	    }
+    40	    
+    41	    .upload-placeholder p {
+    42	      color: var(--text-light);
+    43	      margin-bottom: 1rem;
+    44	    }
+    45	    
+    46	    .photo-gallery {
+    47	      display: grid;
+    48	      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    49	      gap: 1rem;
+    50	      margin-top: 2rem;
+    51	    }
+    52	    
+    53	    .photo-item {
+    54	      position: relative;
+    55	      border-radius: var(--radius-md);
+    56	      overflow: hidden;
+    57	      aspect-ratio: 1;
+    58	      background: var(--card-bg);
+    59	      border: 2px solid var(--border);
+    60	    }
+    61	    
+    62	    .photo-item img {
+    63	      width: 100%;
+    64	      height: 100%;
+    65	      object-fit: cover;
+    66	      cursor: pointer;
+    67	    }
+    68	    
+    69	    .photo-item .status-badge {
+    70	      position: absolute;
+    71	      top: 0.5rem;
+    72	      left: 0.5rem;
+    73	      padding: 0.25rem 0.75rem;
+    74	      border-radius: var(--radius-sm);
+    75	      font-size: 0.75rem;
+    76	      font-weight: 600;
+    77	      background: rgba(0, 0, 0, 0.7);
+    78	      color: white;
+    79	    }
+    80	    
+    81	    .photo-item .status-badge.pending {
+    82	      background: #F59E0B;
+    83	    }
+    84	    
+    85	    .photo-item .status-badge.approved {
+    86	      background: #10B981;
+    87	    }
+    88	    
+    89	    .photo-item .status-badge.rejected {
+    90	      background: #EF4444;
+    91	    }
+    92	    
+    93	    .photo-item .delete-btn {
+    94	      position: absolute;
+    95	      top: 0.5rem;
+    96	      right: 0.5rem;
+    97	      width: 32px;
+    98	      height: 32px;
+    99	      border-radius: 50%;
+   100	      background: rgba(239, 68, 68, 0.9);
+   101	      border: none;
+   102	      color: white;
+   103	      cursor: pointer;
+   104	      display: flex;
+   105	      align-items: center;
+   106	      justify-content: center;
+   107	      transition: all 0.3s ease;
+   108	    }
+   109	    
+   110	    .photo-item .delete-btn:hover {
+   111	      background: #DC2626;
+   112	      transform: scale(1.1);
+   113	    }
+   114	    
+   115	    .modal {
+   116	      display: none;
+   117	      position: fixed;
+   118	      top: 0;
+   119	      left: 0;
+   120	      right: 0;
+   121	      bottom: 0;
+   122	      background: rgba(0, 0, 0, 0.9);
+   123	      z-index: 10000;
+   124	      align-items: center;
+   125	      justify-content: center;
+   126	      padding: 2rem;
+   127	    }
+   128	    
+   129	    .modal.active {
+   130	      display: flex;
+   131	    }
+   132	    
+   133	    .modal img {
+   134	      max-width: 90%;
+   135	      max-height: 90vh;
+   136	      border-radius: var(--radius-lg);
+   137	    }
+   138	    
+   139	    .modal .close-btn {
+   140	      position: absolute;
+   141	      top: 2rem;
+   142	      right: 2rem;
+   143	      width: 48px;
+   144	      height: 48px;
+   145	      border-radius: 50%;
+   146	      background: white;
+   147	      border: none;
+   148	      font-size: 1.5rem;
+   149	      cursor: pointer;
+   150	      display: flex;
+   151	      align-items: center;
+   152	      justify-content: center;
+   153	    }
+   154	  </style>
+   155	</head>
+   156	<body>
+   157	  <header class="header">
+   158	    <div class="container">
+   159	      <nav class="navbar">
+   160	        <a href="index.html" class="logo">
+   161	          <i class="fas fa-handshake"></i>
+   162	          <span>Ivoiservice</span>
+   163	        </a>
+   164	        <ul class="nav-links">
+   165	          <li><button onclick="logout()" class="btn btn-outline btn-sm">Déconnexion</button></li>
+   166	        </ul>
+   167	      </nav>
+   168	    </div>
+   169	  </header>
+   170	
+   171	  <section class="services">
+   172	    <div class="container">
+   173	      <h1 class="section-title">
+   174	        <i class="fas fa-user-tie text-primary"></i>
+   175	        Mon espace prestataire
+   176	      </h1>
+   177	      
+   178	      <div id="verificationStatus" class="card mb-lg"></div>
+   179	      
+   180	      <div class="stats-grid mb-lg">
+   181	        <div class="stat-card">
+   182	          <div class="stat-value" id="ratingValue">0.0</div>
+   183	          <div class="stat-label">Note moyenne</div>
+   184	        </div>
+   185	        <div class="stat-card">
+   186	          <div class="stat-value" id="reviewsValue">0</div>
+   187	          <div class="stat-label">Avis clients</div>
+   188	        </div>
+   189	        <div class="stat-card">
+   190	          <div class="stat-value" id="requestsValue">0</div>
+   191	          <div class="stat-label">Demandes reçues</div>
+   192	        </div>
+   193	        <div class="stat-card">
+   194	          <div class="stat-value" id="photosValue">0</div>
+   195	          <div class="stat-label">Photos publiées</div>
+   196	        </div>
+   197	      </div>
+   198	      
+   199	      <!-- NOUVELLE SECTION: Upload Photos -->
+   200	      <div class="card mb-lg">
+   201	        <h2><i class="fas fa-camera text-primary"></i> Mes photos de travail</h2>
+   202	        <p class="text-light" style="margin-bottom: 2rem;">Ajoutez jusqu'à 10 photos de vos réalisations pour rassurer vos clients (max 2 MB chacune)</p>
+   203	        
+   204	        <div class="upload-zone" id="uploadZone">
+   205	          <input type="file" id="photoInput" accept="image/jpeg,image/png,image/jpg" multiple hidden>
+   206	          <div class="upload-placeholder">
+   207	            <i class="fas fa-cloud-upload-alt"></i>
+   208	            <p>Cliquez ou glissez vos photos ici</p>
+   209	            <button onclick="document.getElementById('photoInput').click()" class="btn btn-primary">
+   210	              <i class="fas fa-camera"></i> Choisir des photos
+   211	            </button>
+   212	          </div>
+   213	        </div>
+   214	        
+   215	        <div class="photo-gallery" id="photoGallery">
+   216	          <!-- Les photos seront affichées ici -->
+   217	        </div>
+   218	      </div>
+   219	      
+   220	      <div class="card">
+   221	        <h2><i class="fas fa-inbox text-primary"></i> Demandes de service</h2>
+   222	        <div id="requestsList"></div>
+   223	      </div>
+   224	    </div>
+   225	  </section>
+   226	
+   227	  <footer class="footer">
+   228	    <div class="container">
+   229	      <div class="footer-bottom">
+   230	        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
+   231	      </div>
+   232	    </div>
+   233	  </footer>
+   234	
+   235	  <!-- Modal pour afficher photo en grand -->
+   236	  <div class="modal" id="photoModal">
+   237	    <button class="close-btn" onclick="closePhotoModal()">
+   238	      <i class="fas fa-times"></i>
+   239	    </button>
+   240	    <img id="modalImage" src="" alt="Photo">
+   241	  </div>
+   242	
+   243	  <script src="js/utils.js"></script>
+   244	  <script src="js/auth.js"></script>
+   245	  <script src="js/search.js"></script>
+   246	  <script>
+   247	    if (!Utils.requireRole('PROVIDER')) {
+   248	      // Redirection gérée par requireRole
+   249	    } else {
+   250	      loadDashboard();
+   251	      initPhotoUpload();
+   252	    }
+   253	    
+   254	    function loadDashboard() {
+   255	      const user = Utils.Session.getCurrentUser();
+   256	      const profile = Auth.getProviderProfile(user.id);
+   257	      
+   258	      if (!profile) {
+   259	        Utils.showToast('Profil prestataire non trouvé', 'error');
+   260	        return;
+   261	      }
+   262	      
+   263	      loadVerificationStatus(profile);
+   264	      loadStats(profile);
+   265	      loadRequests();
+   266	      loadPhotos();
+   267	    }
+   268	    
+   269	    function loadVerificationStatus(profile) {
+   270	      const statusDiv = document.getElementById('verificationStatus');
+   271	      
+   272	      if (profile.isVerified) {
+   273	        statusDiv.innerHTML = `
+   274	          <div class="alert alert-success">
+   275	            <i class="fas fa-check-circle"></i>
+   276	            <span><strong>Profil vérifié</strong> - Votre identité a été validée par notre équipe</span>
+   277	          </div>
+   278	        `;
+   279	      } else {
+   280	        statusDiv.innerHTML = `
+   281	          <div class="alert alert-warning">
+   282	            <i class="fas fa-exclamation-triangle"></i>
+   283	            <div style="flex: 1;">
+   284	              <strong>Vérification en attente</strong>
+   285	              <p style="margin: 0.5rem 0 0;">Soumettez votre CNI et ajoutez des photos de vos travaux pour être vérifié et gagner la confiance des clients</p>
+   286	            </div>
+   287	          </div>
+   288	        `;
+   289	      }
+   290	    }
+   291	    
+   292	    function loadStats(profile) {
+   293	      document.getElementById('ratingValue').textContent = (profile.rating || 0).toFixed(1);
+   294	      document.getElementById('reviewsValue').textContent = profile.reviewCount || 0;
+   295	      
+   296	      const user = Utils.Session.getCurrentUser();
+   297	      const requests = Search.getProviderRequests(user.id);
+   298	      document.getElementById('requestsValue').textContent = requests.length;
+   299	      
+   300	      // Compter seulement les photos approuvées
+   301	      const approvedPhotos = (profile.photos || []).filter(p => p.status === 'APPROVED');
+   302	      document.getElementById('photosValue').textContent = approvedPhotos.length;
+   303	    }
+   304	    
+   305	    function loadRequests() {
+   306	      const user = Utils.Session.getCurrentUser();
+   307	      const requests = Search.getProviderRequests(user.id);
+   308	      const requestsList = document.getElementById('requestsList');
+   309	      
+   310	      if (requests.length === 0) {
+   311	        requestsList.innerHTML = '<p class="text-light text-center" style="padding: 2rem;">Aucune demande pour le moment</p>';
+   312	        return;
+   313	      }
+   314	      
+   315	      const users = Utils.Storage.get('users', []);
+   316	      requestsList.innerHTML = requests.map(request => {
+   317	        const client = users.find(u => u.id === request.clientId);
+   318	        const statusColors = { PENDING: 'warning', ACCEPTED: 'success', COMPLETED: 'success', CANCELLED: 'error' };
+   319	        return `
+   320	          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border);">
+   321	            <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 1rem;">
+   322	              <div style="flex: 1;">
+   323	                <strong>${client ? client.firstName + ' ' + client.lastName : 'Client'}</strong>
+   324	                ${client ? '<span class="text-light"> - ' + Utils.formatPhoneNumber(client.phone) + '</span>' : ''}
+   325	                <p style="color: var(--text-light); margin: 0.5rem 0;">${request.description}</p>
+   326	                <small class="text-light">${Utils.formatDateTime(request.createdAt)}</small>
+   327	              </div>
+   328	              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+   329	                <span class="badge badge-${statusColors[request.status]}">${request.status}</span>
+   330	                ${request.status === 'PENDING' ? `
+   331	                  <button onclick="updateStatus('${request.id}', 'ACCEPTED')" class="btn btn-primary btn-sm">Accepter</button>
+   332	                  <button onclick="updateStatus('${request.id}', 'CANCELLED')" class="btn btn-outline btn-sm">Refuser</button>
+   333	                ` : ''}
+   334	                ${request.status === 'ACCEPTED' ? `
+   335	                  <button onclick="updateStatus('${request.id}', 'COMPLETED')" class="btn btn-success btn-sm">Terminer</button>
+   336	                ` : ''}
+   337	              </div>
+   338	            </div>
+   339	          </div>
+   340	        `;
+   341	      }).join('');
+   342	    }
+   343	    
+   344	    // ========================================
+   345	    // GESTION DES PHOTOS
+   346	    // ========================================
+   347	    
+   348	    function initPhotoUpload() {
+   349	      const uploadZone = document.getElementById('uploadZone');
+   350	      const photoInput = document.getElementById('photoInput');
+   351	      
+   352	      // Click sur la zone
+   353	      uploadZone.addEventListener('click', (e) => {
+   354	        if (e.target !== photoInput) {
+   355	          photoInput.click();
+   356	        }
+   357	      });
+   358	      
+   359	      // Drag & Drop
+   360	      uploadZone.addEventListener('dragover', (e) => {
+   361	        e.preventDefault();
+   362	        uploadZone.classList.add('drag-over');
+   363	      });
+   364	      
+   365	      uploadZone.addEventListener('dragleave', () => {
+   366	        uploadZone.classList.remove('drag-over');
+   367	      });
+   368	      
+   369	      uploadZone.addEventListener('drop', (e) => {
+   370	        e.preventDefault();
+   371	        uploadZone.classList.remove('drag-over');
+   372	        const files = e.dataTransfer.files;
+   373	        handleFiles(files);
+   374	      });
+   375	      
+   376	      // Changement d'input
+   377	      photoInput.addEventListener('change', (e) => {
+   378	        handleFiles(e.target.files);
+   379	      });
+   380	    }
+   381	    
+   382	    async function handleFiles(files) {
+   383	      const user = Utils.Session.getCurrentUser();
+   384	      const profile = Auth.getProviderProfile(user.id);
+   385	      
+   386	      if (!profile.photos) profile.photos = [];
+   387	      
+   388	      // Vérifier limite 10 photos
+   389	      if (profile.photos.length >= 10) {
+   390	        Utils.showToast('Maximum 10 photos autorisées', 'error');
+   391	        return;
+   392	      }
+   393	      
+   394	      const remainingSlots = 10 - profile.photos.length;
+   395	      const filesToProcess = Array.from(files).slice(0, remainingSlots);
+   396	      
+   397	      if (files.length > remainingSlots) {
+   398	        Utils.showToast(`Seulement ${remainingSlots} photo(s) ajoutée(s) (limite de 10)`, 'warning');
+   399	      }
+   400	      
+   401	      let addedCount = 0;
+   402	      
+   403	      for (let file of filesToProcess) {
+   404	        // Vérifier le type
+   405	        if (!file.type.match(/^image\/(jpeg|png|jpg)$/)) {
+   406	          Utils.showToast(`${file.name} n'est pas une image valide (JPG/PNG uniquement)`, 'error');
+   407	          continue;
+   408	        }
+   409	        
+   410	        // Vérifier la taille (2 MB max)
+   411	        if (file.size > 2 * 1024 * 1024) {
+   412	          Utils.showToast(`${file.name} dépasse 2 MB`, 'error');
+   413	          continue;
+   414	        }
+   415	        
+   416	        // Convertir en Base64
+   417	        try {
+   418	          const base64 = await fileToBase64(file);
+   419	          
+   420	          // Ajouter au profil
+   421	          const result = Auth.addProviderPhoto(user.id, base64);
+   422	          
+   423	          if (result.success) {
+   424	            addedCount++;
+   425	          } else {
+   426	            Utils.showToast(result.message, 'error');
+   427	          }
+   428	        } catch (error) {
+   429	          Utils.showToast(`Erreur lors du chargement de ${file.name}`, 'error');
+   430	        }
+   431	      }
+   432	      
+   433	      if (addedCount > 0) {
+   434	        Utils.showToast(`${addedCount} photo(s) ajoutée(s) avec succès`, 'success');
+   435	        loadDashboard();
+   436	      }
+   437	      
+   438	      // Réinitialiser l'input
+   439	      document.getElementById('photoInput').value = '';
+   440	    }
+   441	    
+   442	    function fileToBase64(file) {
+   443	      return new Promise((resolve, reject) => {
+   444	        const reader = new FileReader();
+   445	        reader.onload = () => resolve(reader.result);
+   446	        reader.onerror = reject;
+   447	        reader.readAsDataURL(file);
+   448	      });
+   449	    }
+   450	    
+   451	    function loadPhotos() {
+   452	      const user = Utils.Session.getCurrentUser();
+   453	      const profile = Auth.getProviderProfile(user.id);
+   454	      const gallery = document.getElementById('photoGallery');
+   455	      
+   456	      if (!profile.photos || profile.photos.length === 0) {
+   457	        gallery.innerHTML = '<p class="text-light text-center" style="padding: 2rem; grid-column: 1/-1;">Aucune photo pour le moment</p>';
+   458	        return;
+   459	      }
+   460	      
+   461	      const statusLabels = {
+   462	        PENDING: '⏳ En attente',
+   463	        APPROVED: '✅ Approuvée',
+   464	        REJECTED: '❌ Rejetée'
+   465	      };
+   466	      
+   467	      gallery.innerHTML = profile.photos.map(photo => `
+   468	        <div class="photo-item">
+   469	          <img src="${photo.url}" onclick="openPhotoModal('${photo.url}')" alt="Photo de travail">
+   470	          <div class="status-badge ${photo.status.toLowerCase()}">${statusLabels[photo.status]}</div>
+   471	          <button class="delete-btn" onclick="deletePhoto('${photo.id}')" title="Supprimer">
+   472	            <i class="fas fa-trash"></i>
+   473	          </button>
+   474	        </div>
+   475	      `).join('');
+   476	    }
+   477	    
+   478	    function openPhotoModal(url) {
+   479	      document.getElementById('modalImage').src = url;
+   480	      document.getElementById('photoModal').classList.add('active');
+   481	    }
+   482	    
+   483	    function closePhotoModal() {
+   484	      document.getElementById('photoModal').classList.remove('active');
+   485	    }
+   486	    
+   487	    function deletePhoto(photoId) {
+   488	      if (!confirm('Voulez-vous vraiment supprimer cette photo ?')) return;
+   489	      
+   490	      const user = Utils.Session.getCurrentUser();
+   491	      const result = Auth.deleteProviderPhoto(user.id, photoId);
+   492	      
+   493	      if (result.success) {
+   494	        Utils.showToast('Photo supprimée', 'success');
+   495	        loadDashboard();
+   496	      } else {
+   497	        Utils.showToast(result.message, 'error');
+   498	      }
+   499	    }
+   500	    
+   501	    function updateStatus(requestId, status) {
+   502	      const result = Search.updateRequestStatus(requestId, status);
+   503	      
+   504	      if (result.success) {
+   505	        Utils.showToast('Statut mis à jour', 'success');
+   506	        loadDashboard();
+   507	      } else {
+   508	        Utils.showToast(result.message, 'error');
+   509	      }
+   510	    }
+   511	    
+   512	    function logout() {
+   513	      if (confirm('Voulez-vous vous déconnecter ?')) {
+   514	        Utils.Session.logout();
+   515	        Utils.showToast('Déconnexion réussie', 'success');
+   516	        setTimeout(() => window.location.href = 'index.html', 1000);
+   517	      }
+   518	    }
+   519	    
+   520	    // Fermer le modal en cliquant en dehors
+   521	    document.getElementById('photoModal').addEventListener('click', (e) => {
+   522	      if (e.target.id === 'photoModal') {
+   523	        closePhotoModal();
+   524	      }
+   525	    });
+   526	  </script>
+   527	</body>
+   528	</html>
+   529	
