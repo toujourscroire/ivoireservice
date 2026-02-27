@@ -20,6 +20,116 @@
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+  
+  <style>
+    /* Auth buttons redesign - Modern and attractive */
+    .auth-buttons-container {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    
+    .btn-login-modern {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0, 158, 96, 0.1);
+    }
+    
+    .btn-login-modern:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 158, 96, 0.2);
+    }
+    
+    .btn-signup-modern {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(0, 158, 96, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-signup-modern::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn-signup-modern:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 158, 96, 0.4);
+    }
+    
+    .btn-signup-modern:hover::before {
+      left: 100%;
+    }
+    
+    .btn-signup-modern i {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    
+    /* Hero CTA buttons enhanced */
+    .hero-btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      box-shadow: 0 8px 25px rgba(0, 158, 96, 0.3);
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .hero-btn-primary:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 35px rgba(0, 158, 96, 0.4);
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    
+    /* Mobile responsiveness for auth buttons */
+    @media (max-width: 768px) {
+      .auth-buttons-container {
+        flex-direction: column;
+        width: 100%;
+      }
+      
+      .btn-login-modern,
+      .btn-signup-modern {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header -->
@@ -36,9 +146,15 @@
           <li><a href="search.html">Trouver un prestataire</a></li>
           <li><a href="#services">Services</a></li>
           <li><a href="#about">À propos</a></li>
-          <li id="authLinks">
-            <a href="login.html" class="btn btn-outline btn-sm">Connexion</a>
-            <a href="register-client.html" class="btn btn-primary btn-sm">S'inscrire</a>
+          <li id="authLinks" class="auth-buttons-container">
+            <a href="login.html" class="btn-login-modern">
+              <i class="fas fa-sign-in-alt"></i>
+              Connexion
+            </a>
+            <a href="register-client.html" class="btn-signup-modern">
+              <i class="fas fa-user-plus"></i>
+              S'inscrire
+            </a>
           </li>
         </ul>
         
@@ -61,7 +177,7 @@
         pour tous vos besoins : plomberie, électricité, mécanique et plus encore.
       </p>
       <div class="hero-buttons">
-        <a href="search.html" class="btn btn-primary btn-lg">
+        <a href="search.html" class="btn btn-primary btn-lg hero-btn-primary">
           <i class="fas fa-search"></i> Rechercher un prestataire
         </a>
         <a href="register-provider.html" class="btn btn-secondary btn-lg">
@@ -322,8 +438,8 @@
           <h3>Entreprise</h3>
           <ul>
             <li><a href="#about">À propos</a></li>
-            <li><a href="#">Conditions d'utilisation</a></li>
-            <li><a href="#">Politique de confidentialité</a></li>
+            <li><a href="privacy.html">Conditions d'utilisation</a></li>
+            <li><a href="privacy.html">Politique de confidentialité</a></li>
           </ul>
         </div>
         
@@ -345,6 +461,7 @@
 
   <!-- Scripts -->
   <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
   <script>
     // Gestion du menu mobile
     const navToggle = document.getElementById('navToggle');
@@ -383,18 +500,21 @@
       if (Utils.Session.isLoggedIn()) {
         const user = Utils.Session.getCurrentUser();
         let dashboardUrl = 'client-dashboard.html';
+        let dashboardLabel = 'Mon espace';
         
         if (user.role === 'PROVIDER') {
           dashboardUrl = 'provider-dashboard.html';
+          dashboardLabel = 'Mon espace pro';
         } else if (user.role === 'ADMIN') {
           dashboardUrl = 'admin-dashboard.html';
+          dashboardLabel = 'Administration';
         }
         
         authLinksContainer.innerHTML = `
-          <a href="${dashboardUrl}" class="btn btn-outline btn-sm">
-            <i class="fas fa-user"></i> Mon compte
+          <a href="${dashboardUrl}" class="btn-login-modern">
+            <i class="fas fa-user"></i> ${dashboardLabel}
           </a>
-          <button onclick="logout()" class="btn btn-primary btn-sm">
+          <button onclick="logout()" class="btn-signup-modern" style="cursor: pointer;">
             <i class="fas fa-sign-out-alt"></i> Déconnexion
           </button>
         `;
@@ -402,13 +522,13 @@
     }
     
     function logout() {
-      if (Utils.confirmAction('Êtes-vous sûr de vouloir vous déconnecter ?', () => {
+      if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
         Utils.Session.logout();
-        Utils.showToast('Vous êtes déconnecté', 'success');
+        Utils.showToast('À bientôt !', 'success');
         setTimeout(() => {
           window.location.reload();
         }, 1000);
-      }));
+      }
     }
     
     // Initialiser au chargement
