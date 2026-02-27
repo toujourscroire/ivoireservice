@@ -9,6 +9,107 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+  
+  <style>
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      transition: all 0.3s;
+    }
+    
+    .back-btn:hover {
+      gap: 0.75rem;
+    }
+    
+    .map-container {
+      width: 100%;
+      height: 350px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-top: 2rem;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .map-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    
+    .portfolio-item {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+    
+    .portfolio-item:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .portfolio-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background: var(--background);
+    }
+    
+    .portfolio-info {
+      padding: 1rem;
+      background: white;
+    }
+    
+    .portfolio-info h4 {
+      margin: 0 0 0.5rem 0;
+      color: var(--text);
+      font-size: 1rem;
+    }
+    
+    .portfolio-info p {
+      margin: 0;
+      color: var(--text-light);
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+    
+    .freelance-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-left: 1rem;
+    }
+    
+    .distance-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--primary-soft);
+      color: var(--primary-dark);
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+  </style>
 </head>
 <body>
   <header class="header">
@@ -19,7 +120,7 @@
           <span>Ivoiservice</span>
         </a>
         <ul class="nav-links">
-          <li><a href="search.html"><i class="fas fa-arrow-left"></i> Retour à la recherche</a></li>
+          <li><a href="search.html" class="back-btn"><i class="fas fa-arrow-left"></i> Retour à la recherche</a></li>
         </ul>
       </nav>
     </div>
@@ -27,7 +128,13 @@
 
   <section class="services">
     <div class="container">
-      <div style="max-width: 900px; margin: 0 auto;">
+      <div style="max-width: 1000px; margin: 0 auto;">
+        <!-- Bouton Retour supplémentaire -->
+        <a href="search.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+          Retour à la recherche
+        </a>
+        
         <div id="providerContent"></div>
       </div>
     </div>
@@ -41,6 +148,7 @@
     </div>
   </footer>
 
+  <!-- Modal Contact -->
   <div class="modal" id="contactModal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeContactModal()"><i class="fas fa-times"></i></button>
@@ -52,6 +160,14 @@
       <button onclick="sendServiceRequest()" class="btn btn-primary btn-full">
         <i class="fas fa-paper-plane"></i> Envoyer la demande
       </button>
+    </div>
+  </div>
+
+  <!-- Modal Portfolio Image -->
+  <div class="modal" id="portfolioModal">
+    <div class="modal-content" style="max-width: 800px;">
+      <button class="modal-close" onclick="closePortfolioModal()"><i class="fas fa-times"></i></button>
+      <div id="portfolioModalContent"></div>
     </div>
   </div>
 
@@ -80,7 +196,53 @@
       }
       
       const professionIcon = Utils.PROFESSION_ICONS[provider.profession] || 'fa-briefcase';
-      const professionName = Utils.PROFESSIONS[provider.profession];
+      const professionName = Utils.PROFESSIONS[provider.profession] || Utils.FREELANCE_PROFESSIONS[provider.profession] || provider.profession;
+      
+      let portfolioSection = '';
+      if (provider.isFreelance && provider.portfolio && provider.portfolio.length > 0) {
+        portfolioSection = `
+          <div class="card mt-lg">
+            <h3 style="margin-bottom: 1.5rem;">
+              <i class="fas fa-briefcase text-primary"></i> Portfolio
+            </h3>
+            <div class="portfolio-grid">
+              ${provider.portfolio.map((item, index) => `
+                <div class="portfolio-item" onclick="openPortfolioModal(${index})">
+                  <img src="${item.imageUrl}" alt="${item.title}" class="portfolio-image">
+                  <div class="portfolio-info">
+                    <h4>${item.title}</h4>
+                    <p>${item.description}</p>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+      
+      // Carte Google Maps
+      const mapSection = provider.latitude && provider.longitude ? `
+        <div class="card mt-lg">
+          <h3 style="margin-bottom: 1rem;">
+            <i class="fas fa-map-marked-alt text-primary"></i> Localisation
+          </h3>
+          <div class="map-container">
+            <iframe 
+              src="https://maps.google.com/maps?q=${provider.latitude},${provider.longitude}&z=14&output=embed"
+              allowfullscreen
+              loading="lazy">
+            </iframe>
+          </div>
+          ${provider.distance ? `
+            <div style="margin-top: 1rem; text-align: center;">
+              <span class="distance-badge">
+                <i class="fas fa-route"></i>
+                Distance : ${provider.distance.toFixed(1)} km de votre position
+              </span>
+            </div>
+          ` : ''}
+        </div>
+      ` : '';
       
       document.getElementById('providerContent').innerHTML = `
         <div class="card">
@@ -89,9 +251,10 @@
               <i class="fas ${professionIcon}"></i>
             </div>
             <div style="flex: 1; min-width: 250px;">
-              <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">
+              <h1 style="font-size: 2rem; margin-bottom: 0.5rem; display: flex; align-items: center; flex-wrap: wrap;">
                 ${provider.firstName} ${provider.lastName}
-                ${provider.isVerified ? '<i class="fas fa-check-circle" style="color: var(--success); font-size: 1.5rem;" title="Identité vérifiée"></i>' : ''}
+                ${provider.isVerified ? '<i class="fas fa-check-circle" style="color: var(--success); font-size: 1.5rem; margin-left: 0.5rem;" title="Identité vérifiée"></i>' : ''}
+                ${provider.isFreelance ? '<span class="freelance-badge">FREELANCE</span>' : ''}
               </h1>
               <p style="font-size: 1.25rem; color: var(--primary); font-weight: 600; margin-bottom: 1rem;">
                 <i class="fas ${professionIcon}"></i> ${professionName}
@@ -102,15 +265,18 @@
                 <span style="color: var(--text-light);">(${provider.reviewCount || 0} avis)</span>
               </div>
               <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
-                <span><i class="fas fa-map-marker-alt text-primary"></i> Rayon ${provider.radius} km</span>
-                <span><i class="fas fa-money-bill-wave text-primary"></i> ${Utils.formatPrice(provider.basePrice)}</span>
+                <span><i class="fas fa-map-marker-alt text-primary"></i> ${provider.isFreelance ? 'Zone' : 'Rayon'} ${provider.radius} km</span>
+                <span><i class="fas fa-money-bill-wave text-primary"></i> ${Utils.formatPrice(provider.basePrice)}${provider.isFreelance ? '/mission' : ''}</span>
                 <span><i class="fas fa-phone text-primary"></i> ${Utils.formatPhoneNumber(provider.phone)}</span>
               </div>
             </div>
           </div>
           
           <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);">
-            <h3 style="margin-bottom: 1rem;"><i class="fas fa-info-circle text-primary"></i> Description</h3>
+            <h3 style="margin-bottom: 1rem;">
+              <i class="fas fa-info-circle text-primary"></i> 
+              ${provider.isFreelance ? 'Compétences et expériences' : 'Description'}
+            </h3>
             <p style="color: var(--text-light); line-height: 1.8;">
               ${provider.description || 'Aucune description disponible.'}
             </p>
@@ -118,10 +284,14 @@
           
           <div style="margin-top: 2rem;">
             <button onclick="openContactModal()" class="btn btn-primary btn-lg btn-full">
-              <i class="fas fa-paper-plane"></i> Demander un service
+              <i class="fas fa-paper-plane"></i> ${provider.isFreelance ? 'Proposer une mission' : 'Demander un service'}
             </button>
           </div>
         </div>
+        
+        ${portfolioSection}
+        
+        ${mapSection}
         
         <div class="card mt-lg">
           <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-star text-warning"></i> Avis clients</h3>
@@ -130,6 +300,9 @@
       `;
       
       loadReviews();
+      
+      // Stocker le provider pour les modals
+      window.currentProvider = provider;
     }
     
     function loadReviews() {
@@ -201,6 +374,24 @@
       } else {
         Utils.showToast(result.message, 'error');
       }
+    }
+    
+    // Modal Portfolio
+    function openPortfolioModal(index) {
+      const provider = window.currentProvider;
+      const item = provider.portfolio[index];
+      
+      document.getElementById('portfolioModalContent').innerHTML = `
+        <img src="${item.imageUrl}" alt="${item.title}" style="width: 100%; border-radius: var(--radius-lg); margin-bottom: 1rem;">
+        <h3 style="margin-bottom: 0.5rem;">${item.title}</h3>
+        <p style="color: var(--text-light); line-height: 1.6;">${item.description}</p>
+      `;
+      
+      document.getElementById('portfolioModal').classList.add('show');
+    }
+    
+    function closePortfolioModal() {
+      document.getElementById('portfolioModal').classList.remove('show');
     }
   </script>
 </body>
