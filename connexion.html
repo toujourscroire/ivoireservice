@@ -1,494 +1,415 @@
-1	<!DOCTYPE html>
-     2	<html lang="fr">
-     3	<head>
-     4	  <meta charset="UTF-8">
-     5	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     6	  <title>Connexion - Ivoiservice</title>
-     7	  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
-     8	  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-     9	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    10	  <style>
-    11	    * {
-    12	      margin: 0;
-    13	      padding: 0;
-    14	      box-sizing: border-box;
-    15	    }
-    16	    :root {
-    17	      --primary: #4CAF50;
-    18	      --primary-dark: #388E3C;
-    19	      --primary-soft: #E8F5E9;
-    20	      --text: #212121;
-    21	      --text-light: #666;
-    22	      --border: #e0e0e0;
-    23	      --radius: 8px;
-    24	    }
-    25	    body {
-    26	      font-family: 'Inter', sans-serif;
-    27	      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    28	      min-height: 100vh;
-    29	      display: flex;
-    30	      align-items: center;
-    31	      justify-content: center;
-    32	      padding: 1rem;
-    33	    }
-    34	    .auth-container {
-    35	      background: white;
-    36	      border-radius: 16px;
-    37	      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-    38	      padding: 2.5rem;
-    39	      max-width: 450px;
-    40	      width: 100%;
-    41	      animation: slideIn 0.5s ease-out;
-    42	    }
-    43	    @keyframes slideIn {
-    44	      from { opacity: 0; transform: translateY(-20px); }
-    45	      to { opacity: 1; transform: translateY(0); }
-    46	    }
-    47	    .logo {
-    48	      text-align: center;
-    49	      margin-bottom: 2rem;
-    50	    }
-    51	    .logo h1 {
-    52	      font-size: 2rem;
-    53	      color: var(--primary);
-    54	      margin-bottom: 0.5rem;
-    55	    }
-    56	    .logo p {
-    57	      color: var(--text-light);
-    58	      font-size: 0.95rem;
-    59	    }
-    60	    .logout-section {
-    61	      background: #FFF3E0;
-    62	      padding: 1rem;
-    63	      border-radius: var(--radius);
-    64	      margin-bottom: 1.5rem;
-    65	      border-left: 4px solid #FF9800;
-    66	      display: none;
-    67	    }
-    68	    .logout-section.active {
-    69	      display: block;
-    70	    }
-    71	    .alert {
-    72	      padding: 1rem;
-    73	      border-radius: var(--radius);
-    74	      margin-bottom: 1rem;
-    75	      display: none;
-    76	      align-items: center;
-    77	      gap: 0.5rem;
-    78	    }
-    79	    .alert.show {
-    80	      display: flex;
-    81	    }
-    82	    .alert-error {
-    83	      background: #FFEBEE;
-    84	      color: #C62828;
-    85	      border: 1px solid #EF5350;
-    86	    }
-    87	    .alert-success {
-    88	      background: #E8F5E9;
-    89	      color: #2E7D32;
-    90	      border: 1px solid #66BB6A;
-    91	    }
-    92	    .form-group {
-    93	      margin-bottom: 1.25rem;
-    94	    }
-    95	    .form-group label {
-    96	      display: block;
-    97	      margin-bottom: 0.5rem;
-    98	      font-weight: 500;
-    99	      color: var(--text);
-   100	    }
-   101	    .input-wrapper {
-   102	      position: relative;
-   103	    }
-   104	    .input-wrapper i {
-   105	      position: absolute;
-   106	      left: 1rem;
-   107	      top: 50%;
-   108	      transform: translateY(-50%);
-   109	      color: var(--text-light);
-   110	    }
-   111	    .input-wrapper input {
-   112	      width: 100%;
-   113	      padding: 0.875rem 1rem 0.875rem 2.75rem;
-   114	      border: 2px solid var(--border);
-   115	      border-radius: var(--radius);
-   116	      font-size: 1rem;
-   117	      transition: all 0.3s;
-   118	    }
-   119	    .input-wrapper input:focus {
-   120	      outline: none;
-   121	      border-color: var(--primary);
-   122	      box-shadow: 0 0 0 3px var(--primary-soft);
-   123	    }
-   124	    .btn {
-   125	      width: 100%;
-   126	      padding: 1rem;
-   127	      border: none;
-   128	      border-radius: var(--radius);
-   129	      font-size: 1rem;
-   130	      font-weight: 600;
-   131	      cursor: pointer;
-   132	      transition: all 0.3s;
-   133	      display: flex;
-   134	      align-items: center;
-   135	      justify-content: center;
-   136	      gap: 0.5rem;
-   137	    }
-   138	    .btn-primary {
-   139	      background: var(--primary);
-   140	      color: white;
-   141	    }
-   142	    .btn-primary:hover {
-   143	      background: var(--primary-dark);
-   144	      transform: translateY(-2px);
-   145	      box-shadow: 0 4px 12px rgba(76,175,80,0.3);
-   146	    }
-   147	    .btn-secondary {
-   148	      background: #f44336;
-   149	      color: white;
-   150	      margin-bottom: 1rem;
-   151	    }
-   152	    .btn-secondary:hover {
-   153	      background: #d32f2f;
-   154	    }
-   155	    .demo-accounts {
-   156	      margin-top: 1.5rem;
-   157	      padding: 1rem;
-   158	      background: var(--primary-soft);
-   159	      border-radius: var(--radius);
-   160	    }
-   161	    .demo-accounts h3 {
-   162	      font-size: 0.9rem;
-   163	      color: var(--primary-dark);
-   164	      margin-bottom: 0.5rem;
-   165	    }
-   166	    .demo-accounts p {
-   167	      font-size: 0.85rem;
-   168	      color: var(--text);
-   169	      margin: 0.25rem 0;
-   170	    }
-   171	    .back-link {
-   172	      text-align: center;
-   173	      margin-top: 1rem;
-   174	    }
-   175	    .back-link a {
-   176	      color: var(--primary);
-   177	      text-decoration: none;
-   178	      font-size: 0.9rem;
-   179	    }
-   180	    .back-link a:hover {
-   181	      text-decoration: underline;
-   182	    }
-   183	  </style>
-   184	</head>
-   185	<body>
-   186	  <div class="auth-container">
-   187	    <div class="logo">
-   188	      <h1>🇨🇮 Ivoiservice</h1>
-   189	      <p>Connectez-vous à votre compte</p>
-   190	    </div>
-   191	
-   192	    <!-- Section déconnexion -->
-   193	    <div class="logout-section" id="logoutSection">
-   194	      <p style="font-weight: 600; margin-bottom: 0.5rem;">
-   195	        <i class="fas fa-user-check"></i> Vous êtes déjà connecté
-   196	      </p>
-   197	      <p id="userInfo" style="font-size: 0.9rem; margin-bottom: 1rem;"></p>
-   198	      <button class="btn btn-secondary" onclick="forceLogout()">
-   199	        <i class="fas fa-sign-out-alt"></i> Se déconnecter
-   200	      </button>
-   201	    </div>
-   202	
-   203	    <!-- Section formulaire -->
-   204	    <div id="loginFormSection">
-   205	      <div class="alert alert-error" id="alertError">
-   206	        <i class="fas fa-exclamation-circle"></i>
-   207	        <span id="errorMessage"></span>
-   208	      </div>
-   209	      
-   210	      <div class="alert alert-success" id="alertSuccess">
-   211	        <i class="fas fa-check-circle"></i>
-   212	        <span id="successMessage"></span>
-   213	      </div>
-   214	
-   215	      <form id="loginForm">
-   216	        <div class="form-group">
-   217	          <label for="email">Adresse email</label>
-   218	          <div class="input-wrapper">
-   219	            <i class="fas fa-envelope"></i>
-   220	            <input type="email" id="email" name="email" required placeholder="votre.email@exemple.ci" autocomplete="email">
-   221	          </div>
-   222	        </div>
-   223	
-   224	        <div class="form-group">
-   225	          <label for="password">Mot de passe</label>
-   226	          <div class="input-wrapper">
-   227	            <i class="fas fa-lock"></i>
-   228	            <input type="password" id="password" name="password" required placeholder="Votre mot de passe" autocomplete="current-password">
-   229	          </div>
-   230	        </div>
-   231	
-   232	        <button type="submit" class="btn btn-primary">
-   233	          <i class="fas fa-sign-in-alt"></i> Se connecter
-   234	        </button>
-   235	      </form>
-   236	
-   237	      <div class="demo-accounts">
-   238	        <h3><i class="fas fa-info-circle"></i> Comptes de démonstration</h3>
-   239	        <p><strong>Client:</strong> client@demo.com / demo123</p>
-   240	        <p><strong>Prestataire:</strong> prestataire@demo.com / demo123</p>
-   241	        <p style="color: var(--text-light); font-size: 0.8rem; margin-top: 0.5rem;">
-   242	          <i class="fas fa-shield-alt"></i> Le compte admin n'est pas public
-   243	        </p>
-   244	      </div>
-   245	
-   246	      <div class="back-link">
-   247	        <a href="index.html"><i class="fas fa-arrow-left"></i> Retour à l'accueil</a>
-   248	      </div>
-   249	    </div>
-   250	  </div>
-   251	
-   252	  <script>
-   253	    // ==========================================
-   254	    // UTILITAIRES
-   255	    // ==========================================
-   256	    const Storage = {
-   257	      get: (key, defaultValue = null) => {
-   258	        try {
-   259	          const item = localStorage.getItem(key);
-   260	          return item ? JSON.parse(item) : defaultValue;
-   261	        } catch (e) {
-   262	          console.error('Storage error:', e);
-   263	          return defaultValue;
-   264	        }
-   265	      },
-   266	      set: (key, value) => {
-   267	        try {
-   268	          localStorage.setItem(key, JSON.stringify(value));
-   269	        } catch (e) {
-   270	          console.error('Storage error:', e);
-   271	        }
-   272	      }
-   273	    };
-   274	
-   275	    const Session = {
-   276	      login: (user) => {
-   277	        Storage.set('currentUser', user);
-   278	        Storage.set('isLoggedIn', true);
-   279	      },
-   280	      logout: () => {
-   281	        localStorage.removeItem('currentUser');
-   282	        localStorage.removeItem('isLoggedIn');
-   283	      },
-   284	      isLoggedIn: () => Storage.get('isLoggedIn', false) === true,
-   285	      getCurrentUser: () => Storage.get('currentUser', null)
-   286	    };
-   287	
-   288	    function hashPassword(password) {
-   289	      let hash = 0;
-   290	      for (let i = 0; i < password.length; i++) {
-   291	        const char = password.charCodeAt(i);
-   292	        hash = ((hash << 5) - hash) + char;
-   293	        hash = hash & hash;
-   294	      }
-   295	      return 'hashed_' + Math.abs(hash).toString(36).substring(0, 6);
-   296	    }
-   297	
-   298	    function generateUUID() {
-   299	      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-   300	        const r = Math.random() * 16 | 0;
-   301	        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-   302	        return v.toString(16);
-   303	      });
-   304	    }
-   305	
-   306	    // ==========================================
-   307	    // CONFIGURATION ADMIN
-   308	    // ==========================================
-   309	    const ADMIN_EMAIL = 'admin@ivoiservice.ci';
-   310	    const ADMIN_PASSWORD = 'admin2024';
-   311	
-   312	    // ==========================================
-   313	    // INITIALISATION DES DONNÉES DEMO
-   314	    // ==========================================
-   315	    function initDemoUsers() {
-   316	      const users = Storage.get('users', []);
-   317	      if (users.length === 0) {
-   318	        const demoUsers = [
-   319	          {
-   320	            id: generateUUID(),
-   321	            email: 'client@demo.com',
-   322	            password: hashPassword('demo123'),
-   323	            firstName: 'Kouassi',
-   324	            lastName: 'Konan',
-   325	            phone: '+2250701020304',
-   326	            role: 'CLIENT',
-   327	            latitude: 5.3213,
-   328	            longitude: -4.0114,
-   329	            createdAt: Date.now()
-   330	          },
-   331	          {
-   332	            id: generateUUID(),
-   333	            email: 'prestataire@demo.com',
-   334	            password: hashPassword('demo123'),
-   335	            firstName: 'Adjoua',
-   336	            lastName: 'Yao',
-   337	            phone: '+2250705060708',
-   338	            role: 'PROVIDER',
-   339	            latitude: 5.3480,
-   340	            longitude: -3.9838,
-   341	            createdAt: Date.now()
-   342	          }
-   343	        ];
-   344	        Storage.set('users', demoUsers);
-   345	        
-   346	        // Provider profile
-   347	        Storage.set('providerProfiles', [{
-   348	          id: generateUUID(),
-   349	          userId: demoUsers[1].id,
-   350	          profession: 'PLOMBIER',
-   351	          basePrice: 15000,
-   352	          radius: 10,
-   353	          description: 'Plombier professionnel. Intervention rapide.',
-   354	          photos: [],
-   355	          rating: 4.5,
-   356	          reviewCount: 12,
-   357	          isVerified: true,
-   358	          isFreelance: false,
-   359	          createdAt: Date.now()
-   360	        }]);
-   361	        
-   362	        // Subscription
-   363	        Storage.set('subscriptions', [{
-   364	          id: generateUUID(),
-   365	          userId: demoUsers[0].id,
-   366	          amount: 5000,
-   367	          duration: 30,
-   368	          startDate: Date.now(),
-   369	          endDate: Date.now() + (30 * 24 * 60 * 60 * 1000),
-   370	          status: 'ACTIVE',
-   371	          createdAt: Date.now()
-   372	        }]);
-   373	        
-   374	        console.log('✅ Demo users created');
-   375	      }
-   376	    }
-   377	
-   378	    // ==========================================
-   379	    // FONCTIONS D'AFFICHAGE
-   380	    // ==========================================
-   381	    function showError(message) {
-   382	      const alert = document.getElementById('alertError');
-   383	      document.getElementById('errorMessage').textContent = message;
-   384	      alert.classList.add('show');
-   385	      setTimeout(() => alert.classList.remove('show'), 5000);
-   386	    }
-   387	
-   388	    function showSuccess(message) {
-   389	      const alert = document.getElementById('alertSuccess');
-   390	      document.getElementById('successMessage').textContent = message;
-   391	      alert.classList.add('show');
-   392	    }
-   393	
-   394	    function checkLoginStatus() {
-   395	      if (Session.isLoggedIn()) {
-   396	        const user = Session.getCurrentUser();
-   397	        document.getElementById('logoutSection').classList.add('active');
-   398	        document.getElementById('loginFormSection').style.display = 'none';
-   399	        document.getElementById('userInfo').innerHTML = `
-   400	          <strong>${user.firstName} ${user.lastName}</strong><br>
-   401	          <span style="color: var(--text-light);">${user.email} - ${user.role}</span>
-   402	        `;
-   403	      }
-   404	    }
-   405	
-   406	    function forceLogout() {
-   407	      Session.logout();
-   408	      document.getElementById('logoutSection').classList.remove('active');
-   409	      document.getElementById('loginFormSection').style.display = 'block';
-   410	      showSuccess('Déconnexion réussie');
-   411	    }
-   412	
-   413	    // ==========================================
-   414	    // CONNEXION
-   415	    // ==========================================
-   416	    function login(email, password) {
-   417	      // Vérifier admin
-   418	      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-   419	        const adminUser = {
-   420	          id: generateUUID(),
-   421	          email: ADMIN_EMAIL,
-   422	          firstName: 'Admin',
-   423	          lastName: 'Master',
-   424	          phone: '+2250700000000',
-   425	          role: 'ADMIN',
-   426	          createdAt: Date.now()
-   427	        };
-   428	        Session.login(adminUser);
-   429	        return { success: true, user: adminUser };
-   430	      }
-   431	
-   432	      // Vérifier utilisateurs normaux
-   433	      const users = Storage.get('users', []);
-   434	      const hashedPassword = hashPassword(password);
-   435	      const user = users.find(u => u.email === email && u.password === hashedPassword);
-   436	
-   437	      if (user) {
-   438	        const userSession = { ...user };
-   439	        delete userSession.password;
-   440	        Session.login(userSession);
-   441	        return { success: true, user: userSession };
-   442	      }
-   443	
-   444	      return { success: false, message: 'Email ou mot de passe incorrect' };
-   445	    }
-   446	
-   447	    // ==========================================
-   448	    // GESTION DU FORMULAIRE
-   449	    // ==========================================
-   450	    document.getElementById('loginForm').addEventListener('submit', function(e) {
-   451	      e.preventDefault();
-   452	
-   453	      const email = document.getElementById('email').value.trim();
-   454	      const password = document.getElementById('password').value;
-   455	
-   456	      if (!email || !email.includes('@')) {
-   457	        showError('Adresse email invalide');
-   458	        return;
-   459	      }
-   460	
-   461	      if (!password || password.length < 6) {
-   462	        showError('Mot de passe requis (minimum 6 caractères)');
-   463	        return;
-   464	      }
-   465	
-   466	      const result = login(email, password);
-   467	
-   468	      if (result.success) {
-   469	        showSuccess('✅ Connexion réussie ! Redirection...');
-   470	        
-   471	        setTimeout(() => {
-   472	          let url = 'client-dashboard.html';
-   473	          if (result.user.role === 'PROVIDER') url = 'provider-dashboard.html';
-   474	          if (result.user.role === 'ADMIN') url = 'admin-dashboard.html';
-   475	          window.location.href = url;
-   476	        }, 1500);
-   477	      } else {
-   478	        showError(result.message);
-   479	      }
-   480	    });
-   481	
-   482	    // ==========================================
-   483	    // INITIALISATION
-   484	    // ==========================================
-   485	    initDemoUsers();
-   486	    checkLoginStatus();
-   487	    
-   488	    console.log('✅ Login page ready');
-   489	    console.log('📦 Demo accounts: client@demo.com / demo123, prestataire@demo.com / demo123');
-   490	    console.log('🔒 Admin: ' + ADMIN_EMAIL + ' / ' + ADMIN_PASSWORD);
-   491	  </script>
-   492	</body>
-   493	</html>
-   494	
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion - Ivoiservice</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #388E3C;
+      --primary-soft: #E8F5E9;
+      --text: #212121;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --radius: 8px;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .auth-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      padding: 2.5rem;
+      max-width: 450px;
+      width: 100%;
+      animation: slideIn 0.5s ease-out;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .logo { text-align: center; margin-bottom: 2rem; }
+    .logo h1 { font-size: 2rem; color: var(--primary); margin-bottom: 0.5rem; }
+    .logo p { color: var(--text-light); font-size: 0.95rem; }
+    .logout-section {
+      background: #FFF3E0;
+      padding: 1rem;
+      border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+      border-left: 4px solid #FF9800;
+      display: none;
+    }
+    .logout-section.active { display: block; }
+    .alert {
+      padding: 1rem;
+      border-radius: var(--radius);
+      margin-bottom: 1rem;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .alert.show { display: flex; }
+    .alert-error { background: #FFEBEE; color: #C62828; border: 1px solid #EF5350; }
+    .alert-success { background: #E8F5E9; color: #2E7D32; border: 1px solid #66BB6A; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text); }
+    .input-wrapper { position: relative; }
+    .input-wrapper i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+    }
+    .input-wrapper input {
+      width: 100%;
+      padding: 0.875rem 1rem 0.875rem 2.75rem;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    .input-wrapper input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76,175,80,0.3);
+    }
+    .btn-secondary { background: #f44336; color: white; margin-bottom: 1rem; }
+    .btn-secondary:hover { background: #d32f2f; }
+    .demo-accounts {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: var(--primary-soft);
+      border-radius: var(--radius);
+    }
+    .demo-accounts h3 {
+      font-size: 0.9rem;
+      color: var(--primary-dark);
+      margin-bottom: 0.5rem;
+    }
+    .demo-accounts p {
+      font-size: 0.85rem;
+      color: var(--text);
+      margin: 0.25rem 0;
+    }
+    .back-link { text-align: center; margin-top: 1rem; }
+    .back-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .back-link a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="logo">
+      <h1>🇨🇮 Ivoiservice</h1>
+      <p>Connectez-vous à votre compte</p>
+    </div>
+
+    <div class="logout-section" id="logoutSection">
+      <p style="font-weight: 600; margin-bottom: 0.5rem;">
+        <i class="fas fa-user-check"></i> Vous êtes déjà connecté
+      </p>
+      <p id="userInfo" style="font-size: 0.9rem; margin-bottom: 1rem;"></p>
+      <button class="btn btn-secondary" onclick="forceLogout()">
+        <i class="fas fa-sign-out-alt"></i> Se déconnecter
+      </button>
+    </div>
+
+    <div id="loginFormSection">
+      <div class="alert alert-error" id="alertError">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="errorMessage"></span>
+      </div>
+      
+      <div class="alert alert-success" id="alertSuccess">
+        <i class="fas fa-check-circle"></i>
+        <span id="successMessage"></span>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Adresse email</label>
+          <div class="input-wrapper">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" name="email" required placeholder="votre.email@exemple.ci" autocomplete="email">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" name="password" required placeholder="Votre mot de passe" autocomplete="current-password">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-sign-in-alt"></i> Se connecter
+        </button>
+      </form>
+
+      <div class="demo-accounts">
+        <h3><i class="fas fa-info-circle"></i> Comptes de démonstration</h3>
+        <p><strong>Client:</strong> client@demo.com / demo123</p>
+        <p><strong>Prestataire:</strong> prestataire@demo.com / demo123</p>
+        <p style="color: var(--text-light); font-size: 0.8rem; margin-top: 0.5rem;">
+          <i class="fas fa-shield-alt"></i> Le compte admin n'est pas public
+        </p>
+      </div>
+
+      <div class="back-link">
+        <a href="index.html"><i class="fas fa-arrow-left"></i> Retour à l'accueil</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const Storage = {
+      get: (key, defaultValue = null) => {
+        try {
+          const item = localStorage.getItem(key);
+          return item ? JSON.parse(item) : defaultValue;
+        } catch (e) {
+          console.error('Storage error:', e);
+          return defaultValue;
+        }
+      },
+      set: (key, value) => {
+        try {
+          localStorage.setItem(key, JSON.stringify(value));
+        } catch (e) {
+          console.error('Storage error:', e);
+        }
+      }
+    };
+
+    const Session = {
+      login: (user) => {
+        Storage.set('currentUser', user);
+        Storage.set('isLoggedIn', true);
+      },
+      logout: () => {
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('isLoggedIn');
+      },
+      isLoggedIn: () => Storage.get('isLoggedIn', false) === true,
+      getCurrentUser: () => Storage.get('currentUser', null)
+    };
+
+    function hashPassword(password) {
+      let hash = 0;
+      for (let i = 0; i < password.length; i++) {
+        const char = password.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+      }
+      return 'hashed_' + Math.abs(hash).toString(36).substring(0, 6);
+    }
+
+    function generateUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    const ADMIN_EMAIL = 'admin@ivoiservice.ci';
+    const ADMIN_PASSWORD = 'admin2024';
+
+    function initDemoUsers() {
+      const users = Storage.get('users', []);
+      if (users.length === 0) {
+        const demoUsers = [
+          {
+            id: generateUUID(),
+            email: 'client@demo.com',
+            password: hashPassword('demo123'),
+            firstName: 'Kouassi',
+            lastName: 'Konan',
+            phone: '+2250701020304',
+            role: 'CLIENT',
+            latitude: 5.3213,
+            longitude: -4.0114,
+            createdAt: Date.now()
+          },
+          {
+            id: generateUUID(),
+            email: 'prestataire@demo.com',
+            password: hashPassword('demo123'),
+            firstName: 'Adjoua',
+            lastName: 'Yao',
+            phone: '+2250705060708',
+            role: 'PROVIDER',
+            latitude: 5.3480,
+            longitude: -3.9838,
+            createdAt: Date.now()
+          }
+        ];
+        Storage.set('users', demoUsers);
+        
+        Storage.set('providerProfiles', [{
+          id: generateUUID(),
+          userId: demoUsers[1].id,
+          profession: 'PLOMBIER',
+          basePrice: 15000,
+          radius: 10,
+          description: 'Plombier professionnel. Intervention rapide.',
+          photos: [],
+          rating: 4.5,
+          reviewCount: 12,
+          isVerified: true,
+          isFreelance: false,
+          createdAt: Date.now()
+        }]);
+        
+        Storage.set('subscriptions', [{
+          id: generateUUID(),
+          userId: demoUsers[0].id,
+          amount: 5000,
+          duration: 30,
+          startDate: Date.now(),
+          endDate: Date.now() + (30 * 24 * 60 * 60 * 1000),
+          status: 'ACTIVE',
+          createdAt: Date.now()
+        }]);
+        
+        console.log('✅ Demo users created');
+      }
+    }
+
+    function showError(message) {
+      const alert = document.getElementById('alertError');
+      document.getElementById('errorMessage').textContent = message;
+      alert.classList.add('show');
+      setTimeout(() => alert.classList.remove('show'), 5000);
+    }
+
+    function showSuccess(message) {
+      const alert = document.getElementById('alertSuccess');
+      document.getElementById('successMessage').textContent = message;
+      alert.classList.add('show');
+    }
+
+    function checkLoginStatus() {
+      if (Session.isLoggedIn()) {
+        const user = Session.getCurrentUser();
+        document.getElementById('logoutSection').classList.add('active');
+        document.getElementById('loginFormSection').style.display = 'none';
+        document.getElementById('userInfo').innerHTML = `
+          <strong>${user.firstName} ${user.lastName}</strong><br>
+          <span style="color: var(--text-light);">${user.email} - ${user.role}</span>
+        `;
+      }
+    }
+
+    function forceLogout() {
+      Session.logout();
+      document.getElementById('logoutSection').classList.remove('active');
+      document.getElementById('loginFormSection').style.display = 'block';
+      showSuccess('Déconnexion réussie');
+    }
+
+    function login(email, password) {
+      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        const adminUser = {
+          id: generateUUID(),
+          email: ADMIN_EMAIL,
+          firstName: 'Admin',
+          lastName: 'Master',
+          phone: '+2250700000000',
+          role: 'ADMIN',
+          createdAt: Date.now()
+        };
+        Session.login(adminUser);
+        return { success: true, user: adminUser };
+      }
+
+      const users = Storage.get('users', []);
+      const hashedPassword = hashPassword(password);
+      const user = users.find(u => u.email === email && u.password === hashedPassword);
+
+      if (user) {
+        const userSession = { ...user };
+        delete userSession.password;
+        Session.login(userSession);
+        return { success: true, user: userSession };
+      }
+
+      return { success: false, message: 'Email ou mot de passe incorrect' };
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!email || !email.includes('@')) {
+        showError('Adresse email invalide');
+        return;
+      }
+
+      if (!password || password.length < 6) {
+        showError('Mot de passe requis (minimum 6 caractères)');
+        return;
+      }
+
+      const result = login(email, password);
+
+      if (result.success) {
+        showSuccess('✅ Connexion réussie ! Redirection...');
+        
+        setTimeout(() => {
+          let url = 'client-dashboard.html';
+          if (result.user.role === 'PROVIDER') url = 'provider-dashboard.html';
+          if (result.user.role === 'ADMIN') url = 'admin-dashboard.html';
+          window.location.href = url;
+        }, 1500);
+      } else {
+        showError(result.message);
+      }
+    });
+
+    initDemoUsers();
+    checkLoginStatus();
+    
+    console.log('✅ Login page ready');
+  </script>
+</body>
+</html>
