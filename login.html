@@ -1,258 +1,259 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion - Ivoiservice</title>
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
-  
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-  
-  <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive.css">
-</head>
-<body>
-  <!-- Header -->
-  <header class="header">
-    <div class="container">
-      <nav class="navbar">
-        <a href="index.html" class="logo">
-          <i class="fas fa-handshake"></i>
-          <span>Ivoiservice</span>
-        </a>
-        
-        <ul class="nav-links">
-          <li><a href="index.html">Accueil</a></li>
-          <li><a href="search.html">Rechercher</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Login Section -->
-  <section class="services">
-    <div class="container">
-      <div style="max-width: 500px; margin: 0 auto;">
-        <div class="card">
-          <div class="card-header text-center">
-            <h1 class="card-title">
-              <i class="fas fa-sign-in-alt text-primary"></i>
-              Connexion
-            </h1>
-            <p class="text-light">Connectez-vous à votre compte Ivoiservice</p>
-          </div>
-          
-          <!-- Alert pour les messages -->
-          <div id="alertContainer"></div>
-          
-          <!-- Formulaire de connexion -->
-          <form id="loginForm">
-            <div class="form-group">
-              <label class="form-label" for="email">
-                <i class="fas fa-envelope"></i> Email
-              </label>
-              <input 
-                type="email" 
-                id="email" 
-                name="email" 
-                class="form-input" 
-                placeholder="votre@email.com"
-                required
-              >
-              <div class="form-error" id="emailError"></div>
-            </div>
-            
-            <div class="form-group">
-              <label class="form-label" for="password">
-                <i class="fas fa-lock"></i> Mot de passe
-              </label>
-              <input 
-                type="password" 
-                id="password" 
-                name="password" 
-                class="form-input" 
-                placeholder="••••••••"
-                required
-              >
-              <div class="form-error" id="passwordError"></div>
-            </div>
-            
-            <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
-              <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
-                <input type="checkbox" name="remember" style="width: auto;">
-                Se souvenir de moi
-              </label>
-              <a href="#" style="font-size: 0.875rem; color: var(--primary);">
-                Mot de passe oublié ?
-              </a>
-            </div>
-            
-            <button type="submit" class="btn btn-primary btn-full btn-lg">
-              <i class="fas fa-sign-in-alt"></i> Se connecter
-            </button>
-          </form>
-          
-          <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center;">
-            <p class="text-light">
-              Pas encore de compte ?
-            </p>
-            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-              <a href="register-client.html" class="btn btn-outline" style="flex: 1;">
-                <i class="fas fa-user"></i> Client
-              </a>
-              <a href="register-provider.html" class="btn btn-outline" style="flex: 1;">
-                <i class="fas fa-user-tie"></i> Prestataire
-              </a>
-            </div>
-          </div>
-          
-          <!-- Comptes de démonstration -->
-          <div style="margin-top: 1.5rem; padding: 1rem; background-color: var(--primary-soft); border-radius: var(--radius-md);">
-            <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-dark);">
-              <i class="fas fa-info-circle"></i> Comptes de démonstration
-            </p>
-            <div style="font-size: 0.875rem; color: var(--text);">
-              <p style="margin-bottom: 0.25rem;">
-                <strong>Client:</strong> client@demo.com / demo123
-              </p>
-              <p style="margin-bottom: 0.25rem;">
-                <strong>Prestataire:</strong> prestataire@demo.com / demo123
-              </p>
-              <p style="margin-bottom: 0;">
-                <strong>Admin:</strong> admin@ivoiservice.ci / admin123
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-bottom">
-        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Scripts -->
-  <script src="js/utils.js"></script>
-  <script src="js/auth.js"></script>
-  <script>
-    const loginForm = document.getElementById('loginForm');
-    const alertContainer = document.getElementById('alertContainer');
-    
-    // Rediriger si déjà connecté
-    if (Utils.Session.isLoggedIn()) {
-      const user = Utils.Session.getCurrentUser();
-      let redirectUrl = 'client-dashboard.html';
-      
-      if (user.role === 'PROVIDER') {
-        redirectUrl = 'provider-dashboard.html';
-      } else if (user.role === 'ADMIN') {
-        redirectUrl = 'admin-dashboard.html';
-      }
-      
-      window.location.href = redirectUrl;
-    }
-    
-    // Afficher un message d'erreur
-    function showError(message) {
-      alertContainer.innerHTML = `
-        <div class="alert alert-error">
-          <i class="fas fa-exclamation-circle"></i>
-          <span>${message}</span>
-        </div>
-      `;
-    }
-    
-    // Gestion de la soumission du formulaire
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      // Réinitialiser les erreurs
-      alertContainer.innerHTML = '';
-      document.getElementById('emailError').classList.remove('show');
-      document.getElementById('passwordError').classList.remove('show');
-      
-      // Récupérer les données du formulaire
-      const formData = new FormData(loginForm);
-      const email = formData.get('email').trim();
-      const password = formData.get('password');
-      
-      // Validation
-      let hasError = false;
-      
-      if (!email || !Utils.isValidEmail(email)) {
-        document.getElementById('emailError').textContent = 'Email invalide';
-        document.getElementById('emailError').classList.add('show');
-        hasError = true;
-      }
-      
-      if (!password || password.length < 6) {
-        document.getElementById('passwordError').textContent = 'Mot de passe requis (min 6 caractères)';
-        document.getElementById('passwordError').classList.add('show');
-        hasError = true;
-      }
-      
-      if (hasError) return;
-      
-      // Tenter la connexion
-      const result = Auth.login(email, password);
-      
-      if (result.success) {
-        Utils.showToast('Connexion réussie !', 'success');
-        
-        // Rediriger selon le rôle
-        setTimeout(() => {
-          let redirectUrl = 'client-dashboard.html';
-          
-          if (result.user.role === 'PROVIDER') {
-            redirectUrl = 'provider-dashboard.html';
-          } else if (result.user.role === 'ADMIN') {
-            redirectUrl = 'admin-dashboard.html';
-          }
-          
-          window.location.href = redirectUrl;
-        }, 1000);
-      } else {
-        showError(result.message);
-      }
-    });
-    
-    // Validation en temps réel
-    document.getElementById('email').addEventListener('blur', function() {
-      const email = this.value.trim();
-      const errorElement = document.getElementById('emailError');
-      
-      if (email && !Utils.isValidEmail(email)) {
-        errorElement.textContent = 'Format d\'email invalide';
-        errorElement.classList.add('show');
-      } else {
-        errorElement.classList.remove('show');
-      }
-    });
-    
-    document.getElementById('password').addEventListener('input', function() {
-      const password = this.value;
-      const errorElement = document.getElementById('passwordError');
-      
-      if (password && password.length < 6) {
-        errorElement.textContent = 'Minimum 6 caractères';
-        errorElement.classList.add('show');
-      } else {
-        errorElement.classList.remove('show');
-      }
-    });
-  </script>
-</body>
-</html>
+1	<!DOCTYPE html>
+     2	<html lang="fr">
+     3	<head>
+     4	  <meta charset="UTF-8">
+     5	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6	  <title>Connexion - Ivoiservice</title>
+     7	  
+     8	  <!-- Favicon -->
+     9	  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
+    10	  
+    11	  <!-- Fonts -->
+    12	  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    13	  
+    14	  <!-- Font Awesome -->
+    15	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    16	  
+    17	  <!-- Styles -->
+    18	  <link rel="stylesheet" href="css/style.css">
+    19	  <link rel="stylesheet" href="css/responsive.css">
+    20	</head>
+    21	<body>
+    22	  <!-- Header -->
+    23	  <header class="header">
+    24	    <div class="container">
+    25	      <nav class="navbar">
+    26	        <a href="index.html" class="logo">
+    27	          <i class="fas fa-handshake"></i>
+    28	          <span>Ivoiservice</span>
+    29	        </a>
+    30	        
+    31	        <ul class="nav-links">
+    32	          <li><a href="index.html">Accueil</a></li>
+    33	          <li><a href="search.html">Rechercher</a></li>
+    34	        </ul>
+    35	      </nav>
+    36	    </div>
+    37	  </header>
+    38	
+    39	  <!-- Login Section -->
+    40	  <section class="services">
+    41	    <div class="container">
+    42	      <div style="max-width: 500px; margin: 0 auto;">
+    43	        <div class="card">
+    44	          <div class="card-header text-center">
+    45	            <h1 class="card-title">
+    46	              <i class="fas fa-sign-in-alt text-primary"></i>
+    47	              Connexion
+    48	            </h1>
+    49	            <p class="text-light">Connectez-vous à votre compte Ivoiservice</p>
+    50	          </div>
+    51	          
+    52	          <!-- Alert pour les messages -->
+    53	          <div id="alertContainer"></div>
+    54	          
+    55	          <!-- Formulaire de connexion -->
+    56	          <form id="loginForm">
+    57	            <div class="form-group">
+    58	              <label class="form-label" for="email">
+    59	                <i class="fas fa-envelope"></i> Email
+    60	              </label>
+    61	              <input 
+    62	                type="email" 
+    63	                id="email" 
+    64	                name="email" 
+    65	                class="form-input" 
+    66	                placeholder="votre@email.com"
+    67	                required
+    68	              >
+    69	              <div class="form-error" id="emailError"></div>
+    70	            </div>
+    71	            
+    72	            <div class="form-group">
+    73	              <label class="form-label" for="password">
+    74	                <i class="fas fa-lock"></i> Mot de passe
+    75	              </label>
+    76	              <input 
+    77	                type="password" 
+    78	                id="password" 
+    79	                name="password" 
+    80	                class="form-input" 
+    81	                placeholder="••••••••"
+    82	                required
+    83	              >
+    84	              <div class="form-error" id="passwordError"></div>
+    85	            </div>
+    86	            
+    87	            <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+    88	              <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem;">
+    89	                <input type="checkbox" name="remember" style="width: auto;">
+    90	                Se souvenir de moi
+    91	              </label>
+    92	              <a href="#" style="font-size: 0.875rem; color: var(--primary);">
+    93	                Mot de passe oublié ?
+    94	              </a>
+    95	            </div>
+    96	            
+    97	            <button type="submit" class="btn btn-primary btn-full btn-lg">
+    98	              <i class="fas fa-sign-in-alt"></i> Se connecter
+    99	            </button>
+   100	          </form>
+   101	          
+   102	          <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center;">
+   103	            <p class="text-light">
+   104	              Pas encore de compte ?
+   105	            </p>
+   106	            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+   107	              <a href="register-client.html" class="btn btn-outline" style="flex: 1;">
+   108	                <i class="fas fa-user"></i> Client
+   109	              </a>
+   110	              <a href="register-provider.html" class="btn btn-outline" style="flex: 1;">
+   111	                <i class="fas fa-user-tie"></i> Prestataire
+   112	              </a>
+   113	            </div>
+   114	          </div>
+   115	          
+   116	          <!-- Comptes de démonstration -->
+   117	          <div style="margin-top: 1.5rem; padding: 1rem; background-color: var(--primary-soft); border-radius: var(--radius-md);">
+   118	            <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-dark);">
+   119	              <i class="fas fa-info-circle"></i> Comptes de démonstration
+   120	            </p>
+   121	            <div style="font-size: 0.875rem; color: var(--text);">
+   122	              <p style="margin-bottom: 0.25rem;">
+   123	                <strong>Client:</strong> client@demo.com / demo123
+   124	              </p>
+   125	              <p style="margin-bottom: 0.25rem;">
+   126	                <strong>Prestataire:</strong> prestataire@demo.com / demo123
+   127	              </p>
+   128	              <p style="margin-bottom: 0;">
+   129	                <strong>Admin:</strong> admin@ivoiservice.ci / admin123
+   130	              </p>
+   131	            </div>
+   132	          </div>
+   133	        </div>
+   134	      </div>
+   135	    </div>
+   136	  </section>
+   137	
+   138	  <!-- Footer -->
+   139	  <footer class="footer">
+   140	    <div class="container">
+   141	      <div class="footer-bottom">
+   142	        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
+   143	      </div>
+   144	    </div>
+   145	  </footer>
+   146	
+   147	  <!-- Scripts -->
+   148	  <script src="js/utils.js"></script>
+   149	  <script src="js/auth.js"></script>
+   150	  <script>
+   151	    const loginForm = document.getElementById('loginForm');
+   152	    const alertContainer = document.getElementById('alertContainer');
+   153	    
+   154	    // Rediriger si déjà connecté
+   155	    if (Utils.Session.isLoggedIn()) {
+   156	      const user = Utils.Session.getCurrentUser();
+   157	      let redirectUrl = 'client-dashboard.html';
+   158	      
+   159	      if (user.role === 'PROVIDER') {
+   160	        redirectUrl = 'provider-dashboard.html';
+   161	      } else if (user.role === 'ADMIN') {
+   162	        redirectUrl = 'admin-dashboard.html';
+   163	      }
+   164	      
+   165	      window.location.href = redirectUrl;
+   166	    }
+   167	    
+   168	    // Afficher un message d'erreur
+   169	    function showError(message) {
+   170	      alertContainer.innerHTML = `
+   171	        <div class="alert alert-error">
+   172	          <i class="fas fa-exclamation-circle"></i>
+   173	          <span>${message}</span>
+   174	        </div>
+   175	      `;
+   176	    }
+   177	    
+   178	    // Gestion de la soumission du formulaire
+   179	    loginForm.addEventListener('submit', async (e) => {
+   180	      e.preventDefault();
+   181	      
+   182	      // Réinitialiser les erreurs
+   183	      alertContainer.innerHTML = '';
+   184	      document.getElementById('emailError').classList.remove('show');
+   185	      document.getElementById('passwordError').classList.remove('show');
+   186	      
+   187	      // Récupérer les données du formulaire
+   188	      const formData = new FormData(loginForm);
+   189	      const email = formData.get('email').trim();
+   190	      const password = formData.get('password');
+   191	      
+   192	      // Validation
+   193	      let hasError = false;
+   194	      
+   195	      if (!email || !Utils.isValidEmail(email)) {
+   196	        document.getElementById('emailError').textContent = 'Email invalide';
+   197	        document.getElementById('emailError').classList.add('show');
+   198	        hasError = true;
+   199	      }
+   200	      
+   201	      if (!password || password.length < 6) {
+   202	        document.getElementById('passwordError').textContent = 'Mot de passe requis (min 6 caractères)';
+   203	        document.getElementById('passwordError').classList.add('show');
+   204	        hasError = true;
+   205	      }
+   206	      
+   207	      if (hasError) return;
+   208	      
+   209	      // Tenter la connexion
+   210	      const result = Auth.login(email, password);
+   211	      
+   212	      if (result.success) {
+   213	        Utils.showToast('Connexion réussie !', 'success');
+   214	        
+   215	        // Rediriger selon le rôle
+   216	        setTimeout(() => {
+   217	          let redirectUrl = 'client-dashboard.html';
+   218	          
+   219	          if (result.user.role === 'PROVIDER') {
+   220	            redirectUrl = 'provider-dashboard.html';
+   221	          } else if (result.user.role === 'ADMIN') {
+   222	            redirectUrl = 'admin-dashboard.html';
+   223	          }
+   224	          
+   225	          window.location.href = redirectUrl;
+   226	        }, 1000);
+   227	      } else {
+   228	        showError(result.message);
+   229	      }
+   230	    });
+   231	    
+   232	    // Validation en temps réel
+   233	    document.getElementById('email').addEventListener('blur', function() {
+   234	      const email = this.value.trim();
+   235	      const errorElement = document.getElementById('emailError');
+   236	      
+   237	      if (email && !Utils.isValidEmail(email)) {
+   238	        errorElement.textContent = 'Format d\'email invalide';
+   239	        errorElement.classList.add('show');
+   240	      } else {
+   241	        errorElement.classList.remove('show');
+   242	      }
+   243	    });
+   244	    
+   245	    document.getElementById('password').addEventListener('input', function() {
+   246	      const password = this.value;
+   247	      const errorElement = document.getElementById('passwordError');
+   248	      
+   249	      if (password && password.length < 6) {
+   250	        errorElement.textContent = 'Minimum 6 caractères';
+   251	        errorElement.classList.add('show');
+   252	      } else {
+   253	        errorElement.classList.remove('show');
+   254	      }
+   255	    });
+   256	  </script>
+   257	</body>
+   258	</html>
+   259	
