@@ -1,461 +1,524 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Admin - Ivoiservice</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive.css">
-  
-  <style>
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--primary);
-      font-weight: 600;
-      margin-bottom: 1rem;
-      transition: all 0.3s;
-    }
-    
-    .back-btn:hover {
-      gap: 0.75rem;
-    }
-    
-    .verification-card {
-      border: 2px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      transition: all 0.3s;
-    }
-    
-    .verification-card:hover {
-      border-color: var(--primary);
-      box-shadow: var(--shadow-md);
-    }
-    
-    .id-document {
-      max-width: 300px;
-      border-radius: var(--radius-md);
-      cursor: pointer;
-      transition: transform 0.3s;
-      box-shadow: var(--shadow-md);
-    }
-    
-    .id-document:hover {
-      transform: scale(1.05);
-    }
-    
-    .freelance-tag {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-      color: white;
-      padding: 0.25rem 0.75rem;
-      border-radius: var(--radius-full);
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      margin-left: 0.5rem;
-    }
-    
-    .status-badge {
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius-md);
-      font-weight: 600;
-      font-size: 0.875rem;
-    }
-    
-    .status-pending {
-      background: #fff3cd;
-      color: #856404;
-    }
-    
-    .status-approved {
-      background: #d4edda;
-      color: #155724;
-    }
-    
-    .status-rejected {
-      background: #f8d7da;
-      color: #721c24;
-    }
-  </style>
-</head>
-<body>
-  <header class="header">
-    <div class="container">
-      <nav class="navbar">
-        <a href="index.html" class="logo">
-          <i class="fas fa-handshake"></i>
-          <span>Ivoiservice</span>
-        </a>
-        <ul class="nav-links">
-          <li><button onclick="logout()" class="btn btn-outline btn-sm"><i class="fas fa-sign-out-alt"></i> Déconnexion</button></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
-  <section class="services">
-    <div class="container">
-      <!-- Bouton Retour -->
-      <a href="index.html" class="back-btn">
-        <i class="fas fa-arrow-left"></i>
-        Retour à l'accueil
-      </a>
-      
-      <h1 class="section-title">
-        <i class="fas fa-shield-alt text-primary"></i>
-        Dashboard Administrateur
-      </h1>
-      
-      <!-- Stats -->
-      <div class="stats-grid mb-lg">
-        <div class="stat-card">
-          <div class="stat-icon" style="background: var(--primary);"><i class="fas fa-users"></i></div>
-          <div class="stat-value" id="totalUsers">0</div>
-          <div class="stat-label">Utilisateurs</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background: #3498db;"><i class="fas fa-user"></i></div>
-          <div class="stat-value" id="totalClients">0</div>
-          <div class="stat-label">Clients</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background: #f39c12;"><i class="fas fa-user-tie"></i></div>
-          <div class="stat-value" id="totalProviders">0</div>
-          <div class="stat-label">Prestataires</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background: #27ae60;"><i class="fas fa-crown"></i></div>
-          <div class="stat-value" id="activeSubscriptions">0</div>
-          <div class="stat-label">Abonnements actifs</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background: #e74c3c;"><i class="fas fa-clock"></i></div>
-          <div class="stat-value" id="pendingVerifications">0</div>
-          <div class="stat-label">CNI en attente</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background: #9b59b6;"><i class="fas fa-money-bill-wave"></i></div>
-          <div class="stat-value" id="totalRevenue">0</div>
-          <div class="stat-label">Revenus (FCFA)</div>
-        </div>
-      </div>
-      
-      <!-- Tabs -->
-      <div class="tabs mb-md">
-        <button class="tab active" onclick="switchTab('verification')"><i class="fas fa-id-card"></i> Validation CNI</button>
-        <button class="tab" onclick="switchTab('users')"><i class="fas fa-users"></i> Utilisateurs</button>
-        <button class="tab" onclick="switchTab('subscriptions')"><i class="fas fa-receipt"></i> Abonnements</button>
-      </div>
-      
-      <!-- Tab: Validation CNI -->
-      <div class="tab-content active" id="verification-content">
-        <div class="card">
-          <h2><i class="fas fa-id-card text-primary"></i> Documents d'identité à valider</h2>
-          <div id="verificationList"></div>
-        </div>
-      </div>
-      
-      <!-- Tab: Users -->
-      <div class="tab-content" id="users-content">
-        <div class="card">
-          <h2><i class="fas fa-users text-primary"></i> Tous les utilisateurs</h2>
-          <div class="table-container">
-            <table id="usersTable"></table>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Tab: Subscriptions -->
-      <div class="tab-content" id="subscriptions-content">
-        <div class="card">
-          <h2><i class="fas fa-receipt text-primary"></i> Abonnements</h2>
-          <div class="table-container">
-            <table id="subscriptionsTable"></table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-bottom">
-        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Modal Image CNI -->
-  <div class="modal" id="idModal">
-    <div class="modal-content" style="max-width: 900px;">
-      <button class="modal-close" onclick="closeIdModal()"><i class="fas fa-times"></i></button>
-      <div id="idModalContent"></div>
-    </div>
-  </div>
-
-  <script src="js/utils.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/search.js"></script>
-  <script src="js/subscription.js"></script>
-  <script>
-    if (!Utils.requireRole('ADMIN')) {
-      // Redirection gérée par requireRole
-    } else {
-      loadDashboard();
-    }
-    
-    function loadDashboard() {
-      loadStats();
-      loadVerificationList();
-      loadUsers();
-      loadSubscriptions();
-    }
-    
-    function loadStats() {
-      const users = Utils.Storage.get('users', []);
-      const clients = users.filter(u => u.role === 'CLIENT');
-      const providers = users.filter(u => u.role === 'PROVIDER');
-      const subStats = Subscription.getSubscriptionStats();
-      const pending = Auth.getPendingVerifications();
-      
-      document.getElementById('totalUsers').textContent = users.length;
-      document.getElementById('totalClients').textContent = clients.length;
-      document.getElementById('totalProviders').textContent = providers.length;
-      document.getElementById('activeSubscriptions').textContent = subStats.active;
-      document.getElementById('pendingVerifications').textContent = pending.length;
-      document.getElementById('totalRevenue').textContent = Utils.formatPrice(subStats.revenue).replace(' FCFA', '');
-    }
-    
-    function loadVerificationList() {
-      const pendingProfiles = Auth.getPendingVerifications();
-      const users = Utils.Storage.get('users', []);
-      const list = document.getElementById('verificationList');
-      
-      if (pendingProfiles.length === 0) {
-        list.innerHTML = `
-          <p class="text-light text-center" style="padding: 2rem;">
-            <i class="fas fa-check-circle" style="font-size: 3rem; display: block; margin-bottom: 1rem; color: var(--success);"></i>
-            Tous les documents sont validés !
-          </p>
-        `;
-        return;
-      }
-      
-      list.innerHTML = pendingProfiles.map(profile => {
-        const user = users.find(u => u.id === profile.userId);
-        if (!user) return '';
-        
-        const professionName = Utils.PROFESSIONS[profile.profession] || Utils.FREELANCE_PROFESSIONS[profile.profession] || profile.profession;
-        
-        const statusConfig = {
-          PENDING: { class: 'status-pending', icon: 'clock', text: 'En attente' },
-          APPROVED: { class: 'status-approved', icon: 'check-circle', text: 'Approuvé' },
-          REJECTED: { class: 'status-rejected', icon: 'times-circle', text: 'Rejeté' }
-        };
-        const status = statusConfig[profile.idDocumentStatus] || statusConfig.PENDING;
-        
-        return `
-          <div class="verification-card">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap;">
-              <div style="flex: 1; min-width: 300px;">
-                <h3 style="margin: 0 0 0.5rem 0; font-size: 1.25rem;">
-                  ${user.firstName} ${user.lastName}
-                  ${profile.isFreelance ? '<span class="freelance-tag">FREELANCE</span>' : ''}
-                </h3>
-                <p style="color: var(--text-light); margin: 0.25rem 0;">
-                  <i class="fas fa-briefcase"></i> ${professionName}
-                </p>
-                <p style="color: var(--text-light); margin: 0.25rem 0;">
-                  <i class="fas fa-envelope"></i> ${user.email}
-                </p>
-                <p style="color: var(--text-light); margin: 0.25rem 0;">
-                  <i class="fas fa-phone"></i> ${Utils.formatPhoneNumber(user.phone)}
-                </p>
-                <p style="color: var(--text-light); margin: 0.5rem 0 0;">
-                  <i class="fas fa-calendar"></i> Inscrit le ${Utils.formatDate(user.createdAt)}
-                </p>
-                
-                <div style="margin-top: 1rem;">
-                  <span class="status-badge ${status.class}">
-                    <i class="fas fa-${status.icon}"></i> ${status.text}
-                  </span>
-                </div>
-              </div>
-              
-              <div style="text-align: center;">
-                <p style="margin: 0 0 0.5rem; font-weight: 600; color: var(--text);">Document d'identité</p>
-                ${profile.idDocumentUrl ? `
-                  <img 
-                    src="${profile.idDocumentUrl}" 
-                    alt="CNI ${user.firstName}" 
-                    class="id-document"
-                    onclick="openIdModal('${profile.id}')"
-                  >
-                  <p style="margin: 1rem 0 0; font-size: 0.875rem; color: var(--text-light);">
-                    <i class="fas fa-search-plus"></i> Cliquer pour agrandir
-                  </p>
-                ` : '<p class="text-light">Aucun document</p>'}
-              </div>
-            </div>
-            
-            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; gap: 1rem; justify-content: flex-end;">
-              <button onclick="verifyDocument('${profile.id}', 'APPROVED')" class="btn btn-success">
-                <i class="fas fa-check"></i> Approuver
-              </button>
-              <button onclick="verifyDocument('${profile.id}', 'REJECTED')" class="btn btn-outline">
-                <i class="fas fa-times"></i> Rejeter
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-    
-    function openIdModal(profileId) {
-      const providerProfiles = Utils.Storage.get('providerProfiles', []);
-      const profile = providerProfiles.find(p => p.id === profileId);
-      const users = Utils.Storage.get('users', []);
-      const user = users.find(u => u.id === profile.userId);
-      
-      if (!profile || !user) return;
-      
-      document.getElementById('idModalContent').innerHTML = `
-        <h2 style="margin-bottom: 1rem;">
-          <i class="fas fa-id-card text-primary"></i> 
-          Document d'identité - ${user.firstName} ${user.lastName}
-        </h2>
-        <img 
-          src="${profile.idDocumentUrl}" 
-          alt="CNI" 
-          style="width: 100%; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);"
-        >
-        <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center;">
-          <button onclick="verifyDocument('${profile.id}', 'APPROVED'); closeIdModal();" class="btn btn-success btn-lg">
-            <i class="fas fa-check"></i> Approuver
-          </button>
-          <button onclick="verifyDocument('${profile.id}', 'REJECTED'); closeIdModal();" class="btn btn-outline btn-lg">
-            <i class="fas fa-times"></i> Rejeter
-          </button>
-        </div>
-      `;
-      
-      document.getElementById('idModal').classList.add('show');
-    }
-    
-    function closeIdModal() {
-      document.getElementById('idModal').classList.remove('show');
-    }
-    
-    function verifyDocument(profileId, status) {
-      const result = Auth.verifyIdDocument(profileId, status);
-      
-      if (result.success) {
-        if (status === 'APPROVED') {
-          Utils.showToast('Document approuvé avec succès', 'success');
-        } else {
-          Utils.showToast('Document rejeté', 'info');
-        }
-        loadDashboard();
-      } else {
-        Utils.showToast(result.message, 'error');
-      }
-    }
-    
-    function loadUsers() {
-      const users = Utils.Storage.get('users', []);
-      const table = document.getElementById('usersTable');
-      
-      const roleColors = { CLIENT: 'primary', PROVIDER: 'warning', ADMIN: 'error' };
-      
-      table.innerHTML = `
-        <thead>
-          <tr>
-            <th>Nom</th>
-            <th>Email</th>
-            <th>Téléphone</th>
-            <th>Rôle</th>
-            <th>Date d'inscription</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${users.map(user => `
-            <tr>
-              <td><strong>${user.firstName} ${user.lastName}</strong></td>
-              <td>${user.email}</td>
-              <td>${Utils.formatPhoneNumber(user.phone)}</td>
-              <td><span class="badge badge-${roleColors[user.role]}">${user.role}</span></td>
-              <td>${Utils.formatDate(user.createdAt)}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      `;
-    }
-    
-    function loadSubscriptions() {
-      const subscriptions = Utils.Storage.get('subscriptions', []);
-      const users = Utils.Storage.get('users', []);
-      const table = document.getElementById('subscriptionsTable');
-      
-      const statusColors = { ACTIVE: 'success', EXPIRED: 'warning', CANCELLED: 'error' };
-      const statusIcons = { ACTIVE: 'check-circle', EXPIRED: 'clock', CANCELLED: 'ban' };
-      
-      const sortedSubs = subscriptions.sort((a, b) => b.createdAt - a.createdAt);
-      
-      table.innerHTML = `
-        <thead>
-          <tr>
-            <th>Client</th>
-            <th>Montant</th>
-            <th>Paiement</th>
-            <th>Date début</th>
-            <th>Date fin</th>
-            <th>Statut</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${sortedSubs.map(sub => {
-            const user = users.find(u => u.id === sub.userId);
-            return `
-              <tr>
-                <td><strong>${user ? user.firstName + ' ' + user.lastName : 'N/A'}</strong></td>
-                <td><strong>${Utils.formatPrice(sub.amount)}</strong></td>
-                <td>${sub.paymentMethod || 'N/A'}</td>
-                <td>${Utils.formatDate(sub.startDate)}</td>
-                <td>${Utils.formatDate(sub.endDate)}</td>
-                <td>
-                  <span class="badge badge-${statusColors[sub.status]}">
-                    <i class="fas fa-${statusIcons[sub.status]}"></i> ${sub.status}
-                  </span>
-                </td>
-              </tr>
-            `;
-          }).join('')}
-        </tbody>
-      `;
-    }
-    
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      
-      event.target.classList.add('active');
-      document.getElementById(tabName + '-content').classList.add('active');
-    }
-    
-    function logout() {
-      if (confirm('Voulez-vous vous déconnecter ?')) {
-        Utils.Session.logout();
-        Utils.showToast('Déconnexion réussie', 'success');
-        setTimeout(() => window.location.href = 'index.html', 1000);
-      }
-    }
-  </script>
-</body>
-</html>
+ 1	<!DOCTYPE html>
+     2	<html lang="fr">
+     3	<head>
+     4	  <meta charset="UTF-8">
+     5	  <meta charset="UTF-8">
+     6	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     7	  <title>Dashboard Admin - Ivoiservice</title>
+     8	  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
+     9	  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    10	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    11	  <link rel="stylesheet" href="css/style.css">
+    12	  <link rel="stylesheet" href="css/responsive.css">
+    13	  <style>
+    14	    .photo-grid {
+    15	      display: grid;
+    16	      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    17	      gap: 1rem;
+    18	      margin-top: 1rem;
+    19	    }
+    20	    
+    21	    .photo-card {
+    22	      position: relative;
+    23	      aspect-ratio: 1;
+    24	      border-radius: var(--radius-md);
+    25	      overflow: hidden;
+    26	      border: 2px solid var(--border);
+    27	      cursor: pointer;
+    28	      transition: all 0.3s ease;
+    29	    }
+    30	    
+    31	    .photo-card:hover {
+    32	      transform: scale(1.05);
+    33	      box-shadow: var(--shadow-md);
+    34	    }
+    35	    
+    36	    .photo-card img {
+    37	      width: 100%;
+    38	      height: 100%;
+    39	      object-fit: cover;
+    40	    }
+    41	    
+    42	    .photo-modal {
+    43	      display: none;
+    44	      position: fixed;
+    45	      top: 0;
+    46	      left: 0;
+    47	      right: 0;
+    48	      bottom: 0;
+    49	      background: rgba(0, 0, 0, 0.95);
+    50	      z-index: 10000;
+    51	      align-items: center;
+    52	      justify-content: center;
+    53	      padding: 2rem;
+    54	    }
+    55	    
+    56	    .photo-modal.active {
+    57	      display: flex;
+    58	    }
+    59	    
+    60	    .photo-modal-content {
+    61	      position: relative;
+    62	      max-width: 90%;
+    63	      max-height: 90vh;
+    64	      display: flex;
+    65	      flex-direction: column;
+    66	      align-items: center;
+    67	      gap: 2rem;
+    68	    }
+    69	    
+    70	    .photo-modal img {
+    71	      max-width: 100%;
+    72	      max-height: 70vh;
+    73	      border-radius: var(--radius-lg);
+    74	      box-shadow: var(--shadow-lg);
+    75	    }
+    76	    
+    77	    .photo-modal-actions {
+    78	      display: flex;
+    79	      gap: 1rem;
+    80	    }
+    81	    
+    82	    .photo-modal .close-btn {
+    83	      position: absolute;
+    84	      top: -3rem;
+    85	      right: 0;
+    86	      width: 48px;
+    87	      height: 48px;
+    88	      border-radius: 50%;
+    89	      background: white;
+    90	      border: none;
+    91	      font-size: 1.5rem;
+    92	      cursor: pointer;
+    93	      display: flex;
+    94	      align-items: center;
+    95	      justify-content: center;
+    96	    }
+    97	    
+    98	    .provider-card {
+    99	      border-bottom: 1px solid var(--border);
+   100	      padding: 1.5rem;
+   101	    }
+   102	    
+   103	    .provider-card:last-child {
+   104	      border-bottom: none;
+   105	    }
+   106	    
+   107	    .pending-badge {
+   108	      display: inline-block;
+   109	      background: #F59E0B;
+   110	      color: white;
+   111	      padding: 0.25rem 0.75rem;
+   112	      border-radius: var(--radius-sm);
+   113	      font-size: 0.875rem;
+   114	      font-weight: 600;
+   115	      margin-left: 0.5rem;
+   116	    }
+   117	  </style>
+   118	</head>
+   119	<body>
+   120	  <header class="header">
+   121	    <div class="container">
+   122	      <nav class="navbar">
+   123	        <a href="index.html" class="logo">
+   124	          <i class="fas fa-handshake"></i>
+   125	          <span>Ivoiservice</span>
+   126	        </a>
+   127	        <ul class="nav-links">
+   128	          <li><button onclick="logout()" class="btn btn-outline btn-sm">Déconnexion</button></li>
+   129	        </ul>
+   130	      </nav>
+   131	    </div>
+   132	  </header>
+   133	
+   134	  <section class="services">
+   135	    <div class="container">
+   136	      <h1 class="section-title">
+   137	        <i class="fas fa-shield-alt text-primary"></i>
+   138	        Dashboard Administrateur
+   139	      </h1>
+   140	      
+   141	      <div class="stats-grid mb-lg">
+   142	        <div class="stat-card">
+   143	          <div class="stat-value" id="totalUsers">0</div>
+   144	          <div class="stat-label">Utilisateurs</div>
+   145	        </div>
+   146	        <div class="stat-card">
+   147	          <div class="stat-value" id="totalClients">0</div>
+   148	          <div class="stat-label">Clients</div>
+   149	        </div>
+   150	        <div class="stat-card">
+   151	          <div class="stat-value" id="totalProviders">0</div>
+   152	          <div class="stat-label">Prestataires</div>
+   153	        </div>
+   154	        <div class="stat-card">
+   155	          <div class="stat-value" id="activeSubscriptions">0</div>
+   156	          <div class="stat-label">Abonnements actifs</div>
+   157	        </div>
+   158	        <div class="stat-card">
+   159	          <div class="stat-value" id="pendingPhotos">0</div>
+   160	          <div class="stat-label">Photos en attente</div>
+   161	        </div>
+   162	      </div>
+   163	      
+   164	      <div class="tabs mb-md">
+   165	        <button class="tab active" onclick="switchTab('photos')">📷 Photos à valider</button>
+   166	        <button class="tab" onclick="switchTab('users')">Utilisateurs</button>
+   167	        <button class="tab" onclick="switchTab('providers')">Prestataires à vérifier</button>
+   168	        <button class="tab" onclick="switchTab('subscriptions')">Abonnements</button>
+   169	      </div>
+   170	      
+   171	      <!-- NOUVEL ONGLET: Validation des photos -->
+   172	      <div class="tab-content active" id="photos-content">
+   173	        <div class="card">
+   174	          <h2><i class="fas fa-camera text-primary"></i> Photos en attente de validation</h2>
+   175	          <div id="photosValidationList"></div>
+   176	        </div>
+   177	      </div>
+   178	      
+   179	      <div class="tab-content" id="users-content">
+   180	        <div class="card">
+   181	          <h2><i class="fas fa-users text-primary"></i> Tous les utilisateurs</h2>
+   182	          <div class="table-container">
+   183	            <table id="usersTable"></table>
+   184	          </div>
+   185	        </div>
+   186	      </div>
+   187	      
+   188	      <div class="tab-content" id="providers-content">
+   189	        <div class="card">
+   190	          <h2><i class="fas fa-user-check text-primary"></i> Prestataires en attente de vérification</h2>
+   191	          <div id="providersVerificationList"></div>
+   192	        </div>
+   193	      </div>
+   194	      
+   195	      <div class="tab-content" id="subscriptions-content">
+   196	        <div class="card">
+   197	          <h2><i class="fas fa-receipt text-primary"></i> Abonnements</h2>
+   198	          <div class="table-container">
+   199	            <table id="subscriptionsTable"></table>
+   200	          </div>
+   201	        </div>
+   202	      </div>
+   203	    </div>
+   204	  </section>
+   205	
+   206	  <footer class="footer">
+   207	    <div class="container">
+   208	      <div class="footer-bottom">
+   209	        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
+   210	      </div>
+   211	    </div>
+   212	  </footer>
+   213	
+   214	  <!-- Modal pour afficher photo en grand -->
+   215	  <div class="photo-modal" id="photoModal">
+   216	    <div class="photo-modal-content">
+   217	      <button class="close-btn" onclick="closePhotoModal()">
+   218	        <i class="fas fa-times"></i>
+   219	      </button>
+   220	      <img id="modalImage" src="" alt="Photo">
+   221	      <div class="photo-modal-actions">
+   222	        <button class="btn btn-success btn-lg" onclick="approveCurrentPhoto()">
+   223	          <i class="fas fa-check"></i> Approuver
+   224	        </button>
+   225	        <button class="btn btn-error btn-lg" onclick="rejectCurrentPhoto()">
+   226	          <i class="fas fa-times"></i> Rejeter
+   227	        </button>
+   228	      </div>
+   229	    </div>
+   230	  </div>
+   231	
+   232	  <script src="js/utils.js"></script>
+   233	  <script src="js/auth.js"></script>
+   234	  <script src="js/search.js"></script>
+   235	  <script src="js/subscription.js"></script>
+   236	  <script>
+   237	    let currentPhotoData = null; // Stocke les données de la photo actuellement affichée
+   238	    
+   239	    if (!Utils.requireRole('ADMIN')) {
+   240	      // Redirection gérée par requireRole
+   241	    } else {
+   242	      loadDashboard();
+   243	    }
+   244	    
+   245	    function loadDashboard() {
+   246	      loadStats();
+   247	      loadPhotosValidation();
+   248	      loadUsers();
+   249	      loadProvidersVerification();
+   250	      loadSubscriptions();
+   251	    }
+   252	    
+   253	    function loadStats() {
+   254	      const users = Utils.Storage.get('users', []);
+   255	      const clients = users.filter(u => u.role === 'CLIENT');
+   256	      const providers = users.filter(u => u.role === 'PROVIDER');
+   257	      const subStats = Subscription.getSubscriptionStats();
+   258	      const pendingPhotos = Auth.getPendingPhotos();
+   259	      
+   260	      document.getElementById('totalUsers').textContent = users.length;
+   261	      document.getElementById('totalClients').textContent = clients.length;
+   262	      document.getElementById('totalProviders').textContent = providers.length;
+   263	      document.getElementById('activeSubscriptions').textContent = subStats.active;
+   264	      document.getElementById('pendingPhotos').textContent = pendingPhotos.length;
+   265	    }
+   266	    
+   267	    // ========================================
+   268	    // VALIDATION DES PHOTOS
+   269	    // ========================================
+   270	    
+   271	    function loadPhotosValidation() {
+   272	      const pendingPhotos = Auth.getPendingPhotos();
+   273	      const list = document.getElementById('photosValidationList');
+   274	      
+   275	      if (pendingPhotos.length === 0) {
+   276	        list.innerHTML = '<p class="text-light text-center" style="padding: 2rem;">Aucune photo en attente de validation</p>';
+   277	        return;
+   278	      }
+   279	      
+   280	      list.innerHTML = pendingPhotos.map(item => {
+   281	        const { photo, profile, user } = item;
+   282	        const professionName = Utils.PROFESSIONS[profile.profession] || profile.profession;
+   283	        
+   284	        return `
+   285	          <div class="provider-card">
+   286	            <div style="display: flex; justify-content: space-between; align-items: start; gap: 2rem; flex-wrap: wrap;">
+   287	              <div style="flex: 1; min-width: 250px;">
+   288	                <h3 style="margin-bottom: 0.5rem;">
+   289	                  ${user ? user.firstName + ' ' + user.lastName : 'Prestataire'}
+   290	                  <span class="pending-badge">⏳ En attente</span>
+   291	                </h3>
+   292	                <p style="color: var(--text-light); margin: 0.25rem 0;">
+   293	                  <i class="fas ${Utils.PROFESSION_ICONS[profile.profession]}"></i> ${professionName}
+   294	                </p>
+   295	                <p style="color: var(--text-light); margin: 0.25rem 0;">
+   296	                  <i class="fas fa-phone"></i> ${Utils.formatPhoneNumber(user.phone)}
+   297	                </p>
+   298	                <small class="text-light">
+   299	                  Photo uploadée le ${Utils.formatDateTime(photo.uploadedAt)}
+   300	                </small>
+   301	              </div>
+   302	              
+   303	              <div style="flex: 1; min-width: 200px;">
+   304	                <div class="photo-grid" style="max-width: 150px;">
+   305	                  <div class="photo-card" onclick='openPhotoModal(${JSON.stringify(photo).replace(/'/g, "&apos;")}, "${profile.id}")'>
+   306	                    <img src="${photo.url}" alt="Photo de travail">
+   307	                  </div>
+   308	                </div>
+   309	              </div>
+   310	              
+   311	              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+   312	                <button onclick="approvePhoto('${profile.id}', '${photo.id}')" class="btn btn-success btn-sm">
+   313	                  <i class="fas fa-check"></i> Approuver
+   314	                </button>
+   315	                <button onclick="rejectPhoto('${profile.id}', '${photo.id}')" class="btn btn-error btn-sm">
+   316	                  <i class="fas fa-times"></i> Rejeter
+   317	                </button>
+   318	              </div>
+   319	            </div>
+   320	          </div>
+   321	        `;
+   322	      }).join('');
+   323	    }
+   324	    
+   325	    function openPhotoModal(photo, profileId) {
+   326	      currentPhotoData = { photo, profileId };
+   327	      document.getElementById('modalImage').src = photo.url;
+   328	      document.getElementById('photoModal').classList.add('active');
+   329	    }
+   330	    
+   331	    function closePhotoModal() {
+   332	      currentPhotoData = null;
+   333	      document.getElementById('photoModal').classList.remove('active');
+   334	    }
+   335	    
+   336	    function approveCurrentPhoto() {
+   337	      if (!currentPhotoData) return;
+   338	      approvePhoto(currentPhotoData.profileId, currentPhotoData.photo.id);
+   339	      closePhotoModal();
+   340	    }
+   341	    
+   342	    function rejectCurrentPhoto() {
+   343	      if (!currentPhotoData) return;
+   344	      rejectPhoto(currentPhotoData.profileId, currentPhotoData.photo.id);
+   345	      closePhotoModal();
+   346	    }
+   347	    
+   348	    function approvePhoto(profileId, photoId) {
+   349	      const result = Auth.updatePhotoStatus(profileId, photoId, 'APPROVED');
+   350	      
+   351	      if (result.success) {
+   352	        Utils.showToast('Photo approuvée', 'success');
+   353	        loadDashboard();
+   354	      } else {
+   355	        Utils.showToast(result.message, 'error');
+   356	      }
+   357	    }
+   358	    
+   359	    function rejectPhoto(profileId, photoId) {
+   360	      if (!confirm('Voulez-vous vraiment rejeter cette photo ?')) return;
+   361	      
+   362	      const result = Auth.updatePhotoStatus(profileId, photoId, 'REJECTED');
+   363	      
+   364	      if (result.success) {
+   365	        Utils.showToast('Photo rejetée', 'info');
+   366	        loadDashboard();
+   367	      } else {
+   368	        Utils.showToast(result.message, 'error');
+   369	      }
+   370	    }
+   371	    
+   372	    // ========================================
+   373	    // AUTRES ONGLETS (code existant)
+   374	    // ========================================
+   375	    
+   376	    function loadUsers() {
+   377	      const users = Utils.Storage.get('users', []);
+   378	      const table = document.getElementById('usersTable');
+   379	      
+   380	      const roleColors = { CLIENT: 'primary', PROVIDER: 'warning', ADMIN: 'error' };
+   381	      
+   382	      table.innerHTML = `
+   383	        <thead>
+   384	          <tr>
+   385	            <th>Nom</th>
+   386	            <th>Email</th>
+   387	            <th>Téléphone</th>
+   388	            <th>Rôle</th>
+   389	            <th>Date d'inscription</th>
+   390	          </tr>
+   391	        </thead>
+   392	        <tbody>
+   393	          ${users.map(user => `
+   394	            <tr>
+   395	              <td>${user.firstName} ${user.lastName}</td>
+   396	              <td>${user.email}</td>
+   397	              <td>${Utils.formatPhoneNumber(user.phone)}</td>
+   398	              <td><span class="badge badge-${roleColors[user.role]}">${user.role}</span></td>
+   399	              <td>${Utils.formatDate(user.createdAt)}</td>
+   400	            </tr>
+   401	          `).join('')}
+   402	        </tbody>
+   403	      `;
+   404	    }
+   405	    
+   406	    function loadProvidersVerification() {
+   407	      const providerProfiles = Utils.Storage.get('providerProfiles', []);
+   408	      const users = Utils.Storage.get('users', []);
+   409	      const list = document.getElementById('providersVerificationList');
+   410	      
+   411	      const unverified = providerProfiles.filter(p => !p.isVerified);
+   412	      
+   413	      if (unverified.length === 0) {
+   414	        list.innerHTML = '<p class="text-light text-center" style="padding: 2rem;">Tous les prestataires sont vérifiés</p>';
+   415	        return;
+   416	      }
+   417	      
+   418	      list.innerHTML = unverified.map(profile => {
+   419	        const user = users.find(u => u.id === profile.userId);
+   420	        if (!user) return '';
+   421	        
+   422	        const professionName = Utils.PROFESSIONS[profile.profession];
+   423	        
+   424	        return `
+   425	          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border);">
+   426	            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+   427	              <div>
+   428	                <strong>${user.firstName} ${user.lastName}</strong>
+   429	                <p style="color: var(--text-light); margin: 0.25rem 0;">
+   430	                  ${professionName} - ${Utils.formatPhoneNumber(user.phone)}
+   431	                </p>
+   432	                <small class="text-light">Inscrit le ${Utils.formatDate(user.createdAt)}</small>
+   433	              </div>
+   434	              <div style="display: flex; gap: 0.5rem;">
+   435	                <button onclick="verifyProvider('${profile.id}', true)" class="btn btn-success btn-sm">
+   436	                  <i class="fas fa-check"></i> Vérifier
+   437	                </button>
+   438	                <button onclick="verifyProvider('${profile.id}', false)" class="btn btn-outline btn-sm">
+   439	                  <i class="fas fa-times"></i> Refuser
+   440	                </button>
+   441	              </div>
+   442	            </div>
+   443	          </div>
+   444	        `;
+   445	      }).join('');
+   446	    }
+   447	    
+   448	    function loadSubscriptions() {
+   449	      const subscriptions = Utils.Storage.get('subscriptions', []);
+   450	      const users = Utils.Storage.get('users', []);
+   451	      const table = document.getElementById('subscriptionsTable');
+   452	      
+   453	      const statusColors = { ACTIVE: 'success', EXPIRED: 'warning', CANCELLED: 'error' };
+   454	      
+   455	      table.innerHTML = `
+   456	        <thead>
+   457	          <tr>
+   458	            <th>Client</th>
+   459	            <th>Montant</th>
+   460	            <th>Date début</th>
+   461	            <th>Date fin</th>
+   462	            <th>Statut</th>
+   463	          </tr>
+   464	        </thead>
+   465	        <tbody>
+   466	          ${subscriptions.map(sub => {
+   467	            const user = users.find(u => u.id === sub.userId);
+   468	            return `
+   469	              <tr>
+   470	                <td>${user ? user.firstName + ' ' + user.lastName : 'N/A'}</td>
+   471	                <td>${Utils.formatPrice(sub.amount)}</td>
+   472	                <td>${Utils.formatDate(sub.startDate)}</td>
+   473	                <td>${Utils.formatDate(sub.endDate)}</td>
+   474	                <td><span class="badge badge-${statusColors[sub.status]}">${sub.status}</span></td>
+   475	              </tr>
+   476	            `;
+   477	          }).join('')}
+   478	        </tbody>
+   479	      `;
+   480	    }
+   481	    
+   482	    function verifyProvider(profileId, approve) {
+   483	      const providerProfiles = Utils.Storage.get('providerProfiles', []);
+   484	      const index = providerProfiles.findIndex(p => p.id === profileId);
+   485	      
+   486	      if (index === -1) return;
+   487	      
+   488	      if (approve) {
+   489	        providerProfiles[index].isVerified = true;
+   490	        Utils.Storage.set('providerProfiles', providerProfiles);
+   491	        Utils.showToast('Prestataire vérifié avec succès', 'success');
+   492	      } else {
+   493	        Utils.showToast('Vérification refusée', 'info');
+   494	      }
+   495	      
+   496	      loadDashboard();
+   497	    }
+   498	    
+   499	    function switchTab(tabName) {
+   500	      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+   501	      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+   502	      
+   503	      event.target.classList.add('active');
+   504	      document.getElementById(tabName + '-content').classList.add('active');
+   505	    }
+   506	    
+   507	    function logout() {
+   508	      if (confirm('Voulez-vous vous déconnecter ?')) {
+   509	        Utils.Session.logout();
+   510	        Utils.showToast('Déconnexion réussie', 'success');
+   511	        setTimeout(() => window.location.href = 'index.html', 1000);
+   512	      }
+   513	    }
+   514	    
+   515	    // Fermer le modal en cliquant en dehors
+   516	    document.getElementById('photoModal').addEventListener('click', (e) => {
+   517	      if (e.target.id === 'photoModal') {
+   518	        closePhotoModal();
+   519	      }
+   520	    });
+   521	  </script>
+   522	</body>
+   523	</html>
+   524	
