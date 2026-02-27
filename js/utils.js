@@ -1,10 +1,10 @@
 // ==============================================
-// IVOISERVICE - Fonctions utilitaires
+// IVOISERVICE - Fonctions utilitaires (MODIFIÉ)
 // ==============================================
 
 // Calcul de distance avec formule Haversine
 function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Rayon de la Terre en km
+  const R = 6371;
   const dLat = toRadians(lat2 - lat1);
   const dLon = toRadians(lon2 - lon1);
   
@@ -16,14 +16,13 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const distance = R * c;
   
-  return Math.round(distance * 10) / 10; // Arrondi à 1 décimale
+  return Math.round(distance * 10) / 10;
 }
 
 function toRadians(degrees) {
   return degrees * (Math.PI / 180);
 }
 
-// Générer un UUID simple
 function generateUUID() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     const r = Math.random() * 16 | 0;
@@ -32,7 +31,6 @@ function generateUUID() {
   });
 }
 
-// Formater une date
 function formatDate(timestamp) {
   const date = new Date(timestamp);
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -51,28 +49,21 @@ function formatDateTime(timestamp) {
   return date.toLocaleDateString('fr-FR', options);
 }
 
-// Formater un prix en FCFA
 function formatPrice(amount) {
   return new Intl.NumberFormat('fr-FR').format(amount) + ' FCFA';
 }
 
-// Valider un email
 function isValidEmail(email) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(email);
 }
 
-// Valider un numéro de téléphone ivoirien
 function isValidIvorianPhone(phone) {
-  // Format: +225 XX XX XX XX XX ou 07/05/01 XX XX XX XX
   const re = /^(\+225)?[0-9]{10}$/;
   return re.test(phone.replace(/\s/g, ''));
 }
 
-// Hasher un mot de passe (simulation - NON sécurisé)
 function hashPassword(password) {
-  // ⚠️ ATTENTION: Ceci est une simulation simple
-  // En production, utilisez bcrypt côté serveur
   let hash = 0;
   for (let i = 0; i < password.length; i++) {
     const char = password.charCodeAt(i);
@@ -82,7 +73,6 @@ function hashPassword(password) {
   return 'hashed_' + Math.abs(hash).toString(36);
 }
 
-// LocalStorage helpers
 const Storage = {
   get(key, defaultValue = null) {
     try {
@@ -125,40 +115,46 @@ const Storage = {
   }
 };
 
-// Gestion des sessions utilisateur
+// ✅ MODIFIÉ - Session stricte (pas de mémorisation)
 const Session = {
   login(user) {
-    Storage.set('currentUser', user);
-    Storage.set('isLoggedIn', true);
-    Storage.set('loginTime', Date.now());
+    // ✅ NOUVEAU - Pas de persistance, session temporaire uniquement
+    sessionStorage.setItem('currentUser', JSON.stringify(user));
+    sessionStorage.setItem('isLoggedIn', 'true');
+    sessionStorage.setItem('loginTime', Date.now().toString());
   },
   
   logout() {
-    Storage.remove('currentUser');
-    Storage.remove('isLoggedIn');
-    Storage.remove('loginTime');
+    // ✅ MODIFIÉ - Nettoyer sessionStorage au lieu de localStorage
+    sessionStorage.clear();
   },
   
   isLoggedIn() {
-    return Storage.get('isLoggedIn', false);
+    // ✅ MODIFIÉ - Vérifier sessionStorage
+    return sessionStorage.getItem('isLoggedIn') === 'true';
   },
   
   getCurrentUser() {
-    return Storage.get('currentUser');
+    // ✅ MODIFIÉ - Lire depuis sessionStorage
+    try {
+      const user = sessionStorage.getItem('currentUser');
+      return user ? JSON.parse(user) : null;
+    } catch (error) {
+      return null;
+    }
   },
   
   updateUser(userData) {
     const currentUser = this.getCurrentUser();
     if (currentUser) {
       const updatedUser = { ...currentUser, ...userData };
-      Storage.set('currentUser', updatedUser);
+      sessionStorage.setItem('currentUser', JSON.stringify(updatedUser));
       return updatedUser;
     }
     return null;
   }
 };
 
-// Générer des étoiles de notation
 function generateStars(rating) {
   let starsHTML = '<div class="stars">';
   const fullStars = Math.floor(rating);
@@ -181,9 +177,7 @@ function generateStars(rating) {
   return starsHTML;
 }
 
-// Afficher un message toast
 function showToast(message, type = 'info') {
-  // Créer l'élément toast
   const toast = document.createElement('div');
   toast.className = `alert alert-${type}`;
   toast.style.cssText = `
@@ -209,7 +203,6 @@ function showToast(message, type = 'info') {
   
   document.body.appendChild(toast);
   
-  // Supprimer après 4 secondes
   setTimeout(() => {
     toast.style.animation = 'slideOutRight 0.3s ease';
     setTimeout(() => {
@@ -218,7 +211,6 @@ function showToast(message, type = 'info') {
   }, 4000);
 }
 
-// Ajouter les animations CSS pour les toasts
 if (!document.getElementById('toast-animations')) {
   const style = document.createElement('style');
   style.id = 'toast-animations';
@@ -248,7 +240,6 @@ if (!document.getElementById('toast-animations')) {
   document.head.appendChild(style);
 }
 
-// Confirmer une action
 function confirmAction(message, onConfirm) {
   const confirmed = confirm(message);
   if (confirmed && typeof onConfirm === 'function') {
@@ -257,7 +248,6 @@ function confirmAction(message, onConfirm) {
   return confirmed;
 }
 
-// Débounce pour les recherches
 function debounce(func, wait = 300) {
   let timeout;
   return function executedFunction(...args) {
@@ -270,7 +260,6 @@ function debounce(func, wait = 300) {
   };
 }
 
-// Vérifier le rôle de l'utilisateur
 function checkUserRole(requiredRole) {
   const user = Session.getCurrentUser();
   if (!user) return false;
@@ -282,7 +271,7 @@ function checkUserRole(requiredRole) {
   return user.role === requiredRole;
 }
 
-// Rediriger si non connecté
+// ✅ MODIFIÉ - Redirection stricte si non connecté
 function requireAuth() {
   if (!Session.isLoggedIn()) {
     showToast('Vous devez être connecté pour accéder à cette page', 'error');
@@ -294,21 +283,29 @@ function requireAuth() {
   return true;
 }
 
-// Rediriger si non autorisé
+// ✅ MODIFIÉ - Redirection stricte si mauvais rôle
 function requireRole(role) {
   if (!requireAuth()) return false;
   
   if (!checkUserRole(role)) {
-    showToast('Vous n\'avez pas les permissions nécessaires', 'error');
+    showToast('Accès refusé : Vous n\'avez pas les permissions nécessaires', 'error');
     setTimeout(() => {
-      window.location.href = 'index.html';
+      const user = Session.getCurrentUser();
+      if (user) {
+        // Rediriger vers le bon dashboard selon le rôle
+        if (user.role === 'CLIENT') window.location.href = 'client-dashboard.html';
+        else if (user.role === 'PROVIDER') window.location.href = 'provider-dashboard.html';
+        else if (user.role === 'ADMIN') window.location.href = 'admin-dashboard.html';
+        else window.location.href = 'index.html';
+      } else {
+        window.location.href = 'index.html';
+      }
     }, 1500);
     return false;
   }
   return true;
 }
 
-// Obtenir les coordonnées de l'utilisateur
 function getUserLocation() {
   return new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
@@ -330,9 +327,7 @@ function getUserLocation() {
   });
 }
 
-// Simuler des coordonnées pour Abidjan (pour démo)
 function getAbidjanCoordinates() {
-  // Coordonnées approximatives de différents quartiers d'Abidjan
   const areas = [
     { name: 'Plateau', lat: 5.3213, lon: -4.0114 },
     { name: 'Cocody', lat: 5.3480, lon: -3.9838 },
@@ -349,7 +344,6 @@ function getAbidjanCoordinates() {
   return areas[Math.floor(Math.random() * areas.length)];
 }
 
-// Générer un avatar avec initiales
 function generateAvatar(firstName, lastName) {
   const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
   const colors = ['#009E60', '#007A4A', '#F59E0B', '#EF4444', '#3B82F6', '#8B5CF6'];
@@ -372,22 +366,18 @@ function generateAvatar(firstName, lastName) {
   `;
 }
 
-// Formater un numéro de téléphone
 function formatPhoneNumber(phone) {
-  // Retirer tous les espaces
   const cleaned = phone.replace(/\s/g, '');
   
-  // Si commence par +225
   if (cleaned.startsWith('+225')) {
     const number = cleaned.substring(4);
     return `+225 ${number.substring(0, 2)} ${number.substring(2, 4)} ${number.substring(4, 6)} ${number.substring(6, 8)} ${number.substring(8, 10)}`;
   }
   
-  // Sinon, format standard
   return `${cleaned.substring(0, 2)} ${cleaned.substring(2, 4)} ${cleaned.substring(4, 6)} ${cleaned.substring(6, 8)} ${cleaned.substring(8, 10)}`;
 }
 
-// Professions disponibles
+// ✅ NOUVEAU - Métiers classiques
 const PROFESSIONS = {
   GARAGISTE: 'Garagiste',
   PLOMBIER: 'Plombier',
@@ -401,7 +391,19 @@ const PROFESSIONS = {
   MECANICIEN_MOTO: 'Mécanicien moto'
 };
 
-// Icônes des professions
+// ✅ NOUVEAU - 9 Métiers Freelance
+const FREELANCE_PROFESSIONS = {
+  MARKETING_DIGITAL: 'Marketing Digital',
+  COMMUNICATION: 'Communication',
+  DEV_WEB: 'Développeur Web',
+  DEV_APP: 'Développeur App Mobile',
+  DESIGNER_GRAPHIQUE: 'Designer Graphique',
+  REDACTEUR_WEB: 'Rédacteur Web',
+  COMMUNITY_MANAGER: 'Community Manager',
+  DATA_ANALYST: 'Data Analyst',
+  CONSULTANT_SEO: 'Consultant SEO'
+};
+
 const PROFESSION_ICONS = {
   GARAGISTE: 'fa-car',
   PLOMBIER: 'fa-wrench',
@@ -412,10 +414,42 @@ const PROFESSION_ICONS = {
   PEINTRE: 'fa-paint-roller',
   SERRURIER: 'fa-key',
   REPARATEUR_TELEPHONE: 'fa-mobile-alt',
-  MECANICIEN_MOTO: 'fa-motorcycle'
+  MECANICIEN_MOTO: 'fa-motorcycle',
+  // ✅ NOUVEAU - Icônes freelance
+  MARKETING_DIGITAL: 'fa-bullhorn',
+  COMMUNICATION: 'fa-comments',
+  DEV_WEB: 'fa-code',
+  DEV_APP: 'fa-mobile',
+  DESIGNER_GRAPHIQUE: 'fa-palette',
+  REDACTEUR_WEB: 'fa-pen-fancy',
+  COMMUNITY_MANAGER: 'fa-users',
+  DATA_ANALYST: 'fa-chart-line',
+  CONSULTANT_SEO: 'fa-search'
 };
 
-// Exporter pour utilisation globale
+// ✅ NOUVEAU - Créer une carte Google Maps
+function createMap(containerId, lat, lng, label = 'Position') {
+  const mapContainer = document.getElementById(containerId);
+  if (!mapContainer) return;
+  
+  // Utiliser iframe Google Maps (gratuit, pas de clé API nécessaire)
+  mapContainer.innerHTML = `
+    <iframe
+      width="100%"
+      height="400"
+      frameborder="0"
+      style="border:0; border-radius: 12px;"
+      src="https://www.google.com/maps?q=${lat},${lng}&output=embed&z=15"
+      allowfullscreen>
+    </iframe>
+  `;
+}
+
+// ✅ NOUVEAU - Créer un lien Google Maps
+function getMapLink(lat, lng) {
+  return `https://www.google.com/maps?q=${lat},${lng}`;
+}
+
 window.Utils = {
   calculateDistance,
   generateUUID,
@@ -439,5 +473,8 @@ window.Utils = {
   generateAvatar,
   formatPhoneNumber,
   PROFESSIONS,
-  PROFESSION_ICONS
+  FREELANCE_PROFESSIONS, // ✅ NOUVEAU
+  PROFESSION_ICONS,
+  createMap, // ✅ NOUVEAU
+  getMapLink // ✅ NOUVEAU
 };
