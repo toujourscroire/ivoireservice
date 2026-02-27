@@ -19,172 +19,87 @@
   <link rel="stylesheet" href="css/responsive.css">
   
   <style>
-    /* Toggle Switch */
-    .toggle-container {
+    .freelance-toggle {
       display: flex;
       align-items: center;
       gap: 1rem;
       padding: 1rem;
-      background: var(--background);
-      border-radius: var(--radius-md);
-      margin-bottom: 1.5rem;
+      background: #FFF3E0;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+      border: 2px solid #FF9800;
     }
     
-    .toggle-switch {
+    .freelance-toggle input[type="checkbox"] {
+      width: 50px;
+      height: 28px;
       position: relative;
-      width: 60px;
-      height: 30px;
+      appearance: none;
       background: #ccc;
-      border-radius: 30px;
+      border-radius: 50px;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: 0.3s;
     }
     
-    .toggle-switch.active {
-      background: var(--primary);
+    .freelance-toggle input[type="checkbox"]:checked {
+      background: #FF9800;
     }
     
-    .toggle-slider {
+    .freelance-toggle input[type="checkbox"]::before {
+      content: '';
       position: absolute;
-      top: 3px;
-      left: 3px;
       width: 24px;
       height: 24px;
-      background: white;
       border-radius: 50%;
-      transition: transform 0.3s;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      background: white;
+      top: 2px;
+      left: 2px;
+      transition: 0.3s;
     }
     
-    .toggle-switch.active .toggle-slider {
-      transform: translateX(30px);
+    .freelance-toggle input[type="checkbox"]:checked::before {
+      left: 24px;
     }
     
-    .toggle-label {
-      flex: 1;
-      cursor: pointer;
-    }
-    
-    .toggle-label strong {
-      display: block;
-      color: var(--text);
-      margin-bottom: 0.25rem;
-    }
-    
-    .toggle-label span {
-      display: block;
+    .freelance-badge {
+      background: #FF9800;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
       font-size: 0.875rem;
-      color: var(--text-light);
+      font-weight: 500;
     }
     
-    /* Upload CNI */
-    .upload-box {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius-md);
-      padding: 2rem;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      background: var(--background);
-    }
-    
-    .upload-box:hover {
-      border-color: var(--primary);
-      background: var(--primary-soft);
-    }
-    
-    .upload-box.has-file {
-      border-color: var(--primary);
-      background: var(--primary-soft);
-    }
-    
-    .upload-preview {
-      max-width: 300px;
-      max-height: 200px;
-      margin: 1rem auto;
-      border-radius: var(--radius-md);
-      display: none;
-    }
-    
-    .upload-preview.show {
-      display: block;
-    }
-    
-    /* Freelance Categories Grid */
-    .freelance-grid {
+    .profession-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 1rem;
       margin-top: 1rem;
     }
     
-    .freelance-category {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
+    .profession-card {
       padding: 1rem;
-      border: 2px solid var(--border);
-      border-radius: var(--radius-md);
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s;
+      text-align: center;
     }
     
-    .freelance-category:hover {
-      border-color: var(--primary);
-      background: var(--background);
-    }
-    
-    .freelance-category input[type="radio"] {
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
-    }
-    
-    .freelance-category.selected {
+    .profession-card:hover {
       border-color: var(--primary);
       background: var(--primary-soft);
     }
     
-    .category-icon {
-      width: 40px;
-      height: 40px;
+    .profession-card.selected {
+      border-color: var(--primary);
       background: var(--primary);
       color: white;
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
     }
     
-    .category-info {
-      flex: 1;
-    }
-    
-    .category-info strong {
-      display: block;
-      color: var(--text);
-      margin-bottom: 0.25rem;
-    }
-    
-    .category-info span {
-      display: block;
-      font-size: 0.875rem;
-      color: var(--text-light);
-    }
-    
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--primary);
-      font-weight: 600;
-      margin-bottom: 1rem;
-      transition: all 0.3s;
-    }
-    
-    .back-btn:hover {
-      gap: 0.75rem;
+    .profession-card i {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
     }
   </style>
 </head>
@@ -210,12 +125,6 @@
   <section class="services">
     <div class="container">
       <div style="max-width: 800px; margin: 0 auto;">
-        <!-- Bouton Retour -->
-        <a href="javascript:history.back()" class="back-btn">
-          <i class="fas fa-arrow-left"></i>
-          Retour
-        </a>
-        
         <div class="card">
           <div class="card-header text-center">
             <h1 class="card-title">
@@ -225,28 +134,26 @@
             <p class="text-light">Rejoignez Ivoiservice et développez votre activité</p>
           </div>
           
-          <!-- Alert pour les messages -->
+          <!-- Alert -->
           <div id="alertContainer"></div>
           
-          <!-- Formulaire d'inscription -->
+          <!-- Toggle Freelance -->
+          <div class="freelance-toggle">
+            <input type="checkbox" id="isFreelance" name="isFreelance">
+            <label for="isFreelance" style="cursor: pointer; margin: 0; flex: 1;">
+              <strong>🌟 Mode Freelance</strong>
+              <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: #666;">
+                Activez si vous proposez des services numériques (développement, design, marketing, etc.)
+              </p>
+            </label>
+            <span class="freelance-badge" id="freelanceBadge" style="display: none;">FREELANCE</span>
+          </div>
+          
+          <!-- Form -->
           <form id="registerForm">
-            <!-- Toggle Freelance -->
-            <div class="toggle-container" id="toggleContainer">
-              <div class="toggle-switch" id="freelanceToggle">
-                <div class="toggle-slider"></div>
-              </div>
-              <div class="toggle-label" onclick="document.getElementById('freelanceToggle').click()">
-                <strong>Mode Freelance / Mission courte durée</strong>
-                <span>Activez pour proposer des services freelance (marketing digital, développement, design...)</span>
-              </div>
-            </div>
-            
-            <input type="hidden" id="isFreelance" name="isFreelance" value="false">
-            
             <!-- Informations personnelles -->
-            <h3 style="margin-bottom: 1rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem;">
-              <i class="fas fa-user"></i>
-              Informations personnelles
+            <h3 style="margin-bottom: 1rem; color: var(--primary);">
+              <i class="fas fa-user"></i> Informations personnelles
             </h3>
             
             <div class="grid-responsive">
@@ -262,7 +169,6 @@
                   placeholder="Votre prénom"
                   required
                 >
-                <div class="form-error" id="firstNameError"></div>
               </div>
               
               <div class="form-group">
@@ -277,7 +183,6 @@
                   placeholder="Votre nom"
                   required
                 >
-                <div class="form-error" id="lastNameError"></div>
               </div>
             </div>
             
@@ -294,7 +199,6 @@
                   placeholder="votre@email.com"
                   required
                 >
-                <div class="form-error" id="emailError"></div>
               </div>
               
               <div class="form-group">
@@ -309,7 +213,6 @@
                   placeholder="+225 XX XX XX XX XX"
                   required
                 >
-                <div class="form-error" id="phoneError"></div>
               </div>
             </div>
             
@@ -323,266 +226,184 @@
                   id="password" 
                   name="password" 
                   class="form-input" 
-                  placeholder="••••••••"
+                  placeholder="Min. 6 caractères"
                   required
                 >
-                <div class="form-help">Minimum 6 caractères</div>
-                <div class="form-error" id="passwordError"></div>
               </div>
               
               <div class="form-group">
                 <label class="form-label" for="confirmPassword">
-                  <i class="fas fa-lock"></i> Confirmer *
+                  <i class="fas fa-lock"></i> Confirmer mot de passe *
                 </label>
                 <input 
                   type="password" 
                   id="confirmPassword" 
                   name="confirmPassword" 
                   class="form-input" 
-                  placeholder="••••••••"
+                  placeholder="Confirmez"
                   required
                 >
-                <div class="form-error" id="confirmPasswordError"></div>
               </div>
             </div>
             
-            <!-- Informations professionnelles -->
-            <h3 style="margin: 2rem 0 1rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem;">
-              <i class="fas fa-briefcase"></i>
-              Informations professionnelles
+            <!-- Profession -->
+            <h3 style="margin: 2rem 0 1rem 0; color: var(--primary);">
+              <i class="fas fa-briefcase"></i> <span id="professionTitle">Votre profession</span>
             </h3>
             
-            <!-- Profession Classique (visible par défaut) -->
-            <div id="classicProfession" class="form-group">
-              <label class="form-label" for="profession">
-                <i class="fas fa-tools"></i> Profession *
-              </label>
-              <select 
-                id="profession" 
-                name="profession" 
-                class="form-input"
-              >
-                <option value="">Sélectionnez votre métier</option>
-                <option value="GARAGISTE">Garagiste</option>
-                <option value="PLOMBIER">Plombier</option>
-                <option value="ELECTRICIEN">Électricien</option>
-                <option value="MENUISIER">Menuisier</option>
-                <option value="FRIGORISTE">Frigoriste</option>
-                <option value="MACON">Maçon</option>
-                <option value="PEINTRE">Peintre</option>
-                <option value="SERRURIER">Serrurier</option>
-                <option value="REPARATEUR_TELEPHONE">Réparateur téléphone</option>
-                <option value="MECANICIEN_MOTO">Mécanicien moto</option>
-              </select>
-              <div class="form-error" id="professionError"></div>
+            <div id="professionClassic" class="profession-grid">
+              <div class="profession-card" data-profession="PLOMBIER">
+                <i class="fas fa-wrench"></i>
+                <div>Plombier</div>
+              </div>
+              <div class="profession-card" data-profession="ELECTRICIEN">
+                <i class="fas fa-bolt"></i>
+                <div>Électricien</div>
+              </div>
+              <div class="profession-card" data-profession="MENUISIER">
+                <i class="fas fa-hammer"></i>
+                <div>Menuisier</div>
+              </div>
+              <div class="profession-card" data-profession="MACON">
+                <i class="fas fa-hard-hat"></i>
+                <div>Maçon</div>
+              </div>
+              <div class="profession-card" data-profession="PEINTRE">
+                <i class="fas fa-paint-roller"></i>
+                <div>Peintre</div>
+              </div>
+              <div class="profession-card" data-profession="GARAGISTE">
+                <i class="fas fa-car"></i>
+                <div>Garagiste</div>
+              </div>
+              <div class="profession-card" data-profession="FRIGORISTE">
+                <i class="fas fa-snowflake"></i>
+                <div>Frigoriste</div>
+              </div>
+              <div class="profession-card" data-profession="SERRURIER">
+                <i class="fas fa-key"></i>
+                <div>Serrurier</div>
+              </div>
+              <div class="profession-card" data-profession="REPARATEUR_TELEPHONE">
+                <i class="fas fa-mobile-alt"></i>
+                <div>Réparateur téléphone</div>
+              </div>
             </div>
             
-            <!-- Catégories Freelance (masqué par défaut) -->
-            <div id="freelanceProfession" class="form-group" style="display: none;">
-              <label class="form-label">
-                <i class="fas fa-laptop"></i> Choisissez votre spécialité Freelance *
-              </label>
-              <div class="freelance-grid">
-                <div class="freelance-category" data-value="MARKETING_DIGITAL">
-                  <input type="radio" name="freelanceProfession" value="MARKETING_DIGITAL">
-                  <div class="category-icon"><i class="fas fa-bullhorn"></i></div>
-                  <div class="category-info">
-                    <strong>Marketing Digital</strong>
-                    <span>Publicité en ligne, campagnes</span>
-                  </div>
-                </div>
-                
-                <div class="freelance-category" data-value="COMMUNICATION">
-                  <input type="radio" name="freelanceProfession" value="COMMUNICATION">
-                  <div class="category-icon"><i class="fas fa-comments"></i></div>
-                  <div class="category-info">
-                    <strong>Communication</strong>
-                    <span>Relations publiques, stratégie</span>
-                  </div>
-                </div>
-                
-                <div class="freelance-category" data-value="DEVELOPPEUR_WEB">
-                  <input type="radio" name="freelanceProfession" value="DEVELOPPEUR_WEB">
-                  <div class="category-icon"><i class="fas fa-code"></i></div>
-                  <div class="category-info">
-                    <strong>Développeur Web/App</strong>
-                    <span>Sites web, applications mobiles</span>
-                  </div>
-                </div>
-                
-                <div class="freelance-category" data-value="GRAPHISTE">
-                  <input type="radio" name="freelanceProfession" value="GRAPHISTE">
-                  <div class="category-icon"><i class="fas fa-palette"></i></div>
-                  <div class="category-info">
-                    <strong>Graphiste</strong>
-                    <span>Design, identité visuelle</span>
-                  </div>
-                </div>
-                
-                <div class="freelance-category" data-value="REDACTEUR_WEB">
-                  <input type="radio" name="freelanceProfession" value="REDACTEUR_WEB">
-                  <div class="category-icon"><i class="fas fa-pen"></i></div>
-                  <div class="category-info">
-                    <strong>Rédacteur Web</strong>
-                    <span>Contenu, articles, copywriting</span>
-                  </div>
-                </div>
-                
-                <div class="freelance-category" data-value="COMMUNITY_MANAGER">
-                  <input type="radio" name="freelanceProfession" value="COMMUNITY_MANAGER">
-                  <div class="category-icon"><i class="fas fa-users"></i></div>
-                  <div class="category-info">
-                    <strong>Community Manager</strong>
-                    <span>Réseaux sociaux, engagement</span>
-                  </div>
-                </div>
-                
-                <div class="freelance-category" data-value="DATA_ANALYST">
-                  <input type="radio" name="freelanceProfession" value="DATA_ANALYST">
-                  <div class="category-icon"><i class="fas fa-chart-line"></i></div>
-                  <div class="category-info">
-                    <strong>Analyste de Données</strong>
-                    <span>Analyse, reporting, insights</span>
-                  </div>
-                </div>
-                
-                <div class="freelance-category" data-value="CHEF_PROJET_DIGITAL">
-                  <input type="radio" name="freelanceProfession" value="CHEF_PROJET_DIGITAL">
-                  <div class="category-icon"><i class="fas fa-tasks"></i></div>
-                  <div class="category-info">
-                    <strong>Chef de Projet Digital</strong>
-                    <span>Gestion de projets numériques</span>
-                  </div>
-                </div>
-                
-                <div class="freelance-category" data-value="CONSULTANT_SEO">
-                  <input type="radio" name="freelanceProfession" value="CONSULTANT_SEO">
-                  <div class="category-icon"><i class="fas fa-search"></i></div>
-                  <div class="category-info">
-                    <strong>Consultant SEO</strong>
-                    <span>Référencement naturel</span>
-                  </div>
-                </div>
+            <div id="professionFreelance" class="profession-grid" style="display: none;">
+              <div class="profession-card" data-profession="DEVELOPPEUR_WEB">
+                <i class="fas fa-code"></i>
+                <div>Développeur Web</div>
               </div>
-              <div class="form-error" id="freelanceProfessionError"></div>
+              <div class="profession-card" data-profession="GRAPHISTE">
+                <i class="fas fa-palette"></i>
+                <div>Graphiste</div>
+              </div>
+              <div class="profession-card" data-profession="REDACTEUR">
+                <i class="fas fa-pen"></i>
+                <div>Rédacteur</div>
+              </div>
+              <div class="profession-card" data-profession="PHOTOGRAPHE">
+                <i class="fas fa-camera"></i>
+                <div>Photographe</div>
+              </div>
+              <div class="profession-card" data-profession="VIDEASTE">
+                <i class="fas fa-video"></i>
+                <div>Vidéaste</div>
+              </div>
+              <div class="profession-card" data-profession="TRADUCTEUR">
+                <i class="fas fa-language"></i>
+                <div>Traducteur</div>
+              </div>
+              <div class="profession-card" data-profession="COMMUNITY_MANAGER">
+                <i class="fas fa-share-alt"></i>
+                <div>Community Manager</div>
+              </div>
+              <div class="profession-card" data-profession="COMPTABLE">
+                <i class="fas fa-calculator"></i>
+                <div>Comptable</div>
+              </div>
+              <div class="profession-card" data-profession="MARKETING">
+                <i class="fas fa-chart-line"></i>
+                <div>Marketing</div>
+              </div>
             </div>
             
-            <div class="grid-responsive">
-              <div class="form-group">
-                <label class="form-label" for="basePrice">
-                  <i class="fas fa-money-bill-wave"></i> Prix de base (FCFA) *
-                </label>
-                <input 
-                  type="number" 
-                  id="basePrice" 
-                  name="basePrice" 
-                  class="form-input" 
-                  placeholder="ex: 15000"
-                  min="1000"
-                  step="1000"
-                  required
-                >
-                <div class="form-help" id="priceHelp">Prix moyen de vos prestations</div>
-                <div class="form-error" id="basePriceError"></div>
-              </div>
-              
-              <div class="form-group">
-                <label class="form-label" for="radius">
-                  <i class="fas fa-map-marker-alt"></i> <span id="radiusLabel">Rayon d'intervention (km)</span> *
-                </label>
-                <select 
-                  id="radius" 
-                  name="radius" 
-                  class="form-input" 
-                  required
-                >
-                  <option value="5">5 km</option>
-                  <option value="10" selected>10 km</option>
-                  <option value="15">15 km</option>
-                  <option value="20">20 km</option>
-                  <option value="50">50 km (Freelance)</option>
-                  <option value="100">100 km (Freelance)</option>
-                </select>
-                <div class="form-error" id="radiusError"></div>
-              </div>
-            </div>
+            <input type="hidden" id="profession" name="profession" required>
+            
+            <!-- Détails professionnels -->
+            <h3 style="margin: 2rem 0 1rem 0; color: var(--primary);">
+              <i class="fas fa-info-circle"></i> Détails professionnels
+            </h3>
             
             <div class="form-group">
               <label class="form-label" for="description">
-                <i class="fas fa-align-left"></i> <span id="descriptionLabel">Description de vos services</span>
+                <i class="fas fa-align-left"></i> Description de vos services *
               </label>
               <textarea 
                 id="description" 
                 name="description" 
                 class="form-input" 
                 rows="4"
-                placeholder="Décrivez votre expérience, vos spécialités, vos certifications..."
+                placeholder="Décrivez votre expérience, vos compétences et les services que vous proposez..."
+                required
               ></textarea>
-              <div class="form-help" id="descriptionHelp">Optionnel - Aide les clients à mieux vous connaître</div>
             </div>
             
-            <!-- Upload CNI obligatoire -->
-            <div class="form-group">
-              <label class="form-label">
-                <i class="fas fa-id-card"></i> Document d'identité (CNI ou Passeport) *
-              </label>
-              <div class="upload-box" id="uploadBox">
-                <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
-                <p style="margin: 0;"><strong>Cliquez pour télécharger</strong></p>
-                <p style="margin: 0.5rem 0 0; font-size: 0.875rem; color: var(--text-light);">
-                  Photo de votre CNI ou Passeport (JPG, PNG - Max 2MB)
-                </p>
+            <div class="grid-responsive">
+              <div class="form-group">
+                <label class="form-label" for="basePrice">
+                  <i class="fas fa-coins"></i> Tarif de base (FCFA) *
+                </label>
                 <input 
-                  type="file" 
-                  id="idDocument" 
-                  name="idDocument" 
-                  accept="image/jpeg,image/png,image/jpg"
-                  style="display: none;"
+                  type="number" 
+                  id="basePrice" 
+                  name="basePrice" 
+                  class="form-input" 
+                  placeholder="Ex: 15000"
+                  min="1000"
                   required
                 >
-                <img id="uploadPreview" class="upload-preview" alt="Aperçu du document">
               </div>
-              <div class="form-error" id="idDocumentError"></div>
+              
+              <div class="form-group">
+                <label class="form-label" for="serviceRadius">
+                  <i class="fas fa-map-marker-alt"></i> Rayon d'intervention (km) *
+                </label>
+                <input 
+                  type="number" 
+                  id="serviceRadius" 
+                  name="serviceRadius" 
+                  class="form-input" 
+                  placeholder="Ex: 10"
+                  min="1"
+                  max="50"
+                  required
+                >
+              </div>
             </div>
             
-            <div class="alert alert-info">
-              <i class="fas fa-shield-alt"></i>
-              <div>
-                <strong>Vérification d'identité obligatoire</strong>
-                <p style="margin-top: 0.5rem; margin-bottom: 0;">
-                  Votre document d'identité sera vérifié par notre équipe d'administration dans les 24-48h. 
-                  Cela garantit la confiance et la sécurité de tous les utilisateurs de la plateforme.
-                </p>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <label style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.875rem;">
-                <input type="checkbox" name="terms" required style="width: auto; margin-top: 0.25rem;">
-                <span>
-                  J'accepte les <a href="privacy.html" style="color: var(--primary);">conditions d'utilisation</a> 
-                  et la <a href="privacy.html" style="color: var(--primary);">politique de confidentialité</a>
+            <!-- Terms -->
+            <div class="form-group" style="margin-top: 2rem;">
+              <label style="display: flex; align-items: start; gap: 0.5rem;">
+                <input type="checkbox" name="acceptTerms" required style="width: auto; margin-top: 0.25rem;">
+                <span style="font-size: 0.875rem;">
+                  J'accepte les <a href="privacy.html" style="color: var(--primary);">conditions générales d'utilisation</a> et la politique de confidentialité
                 </span>
               </label>
             </div>
             
-            <button type="submit" class="btn btn-primary btn-full btn-lg">
-              <i class="fas fa-user-tie"></i> Créer mon compte prestataire
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary btn-full btn-lg" style="margin-top: 1.5rem;">
+              <i class="fas fa-user-plus"></i> Créer mon compte prestataire
             </button>
           </form>
           
+          <!-- Login link -->
           <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center;">
             <p class="text-light">
-              Déjà un compte ? 
-              <a href="login.html" style="color: var(--primary); font-weight: 600;">
-                Se connecter
-              </a>
-            </p>
-            <p class="text-light mt-sm">
-              Vous êtes client ? 
-              <a href="register-client.html" style="color: var(--primary); font-weight: 600;">
-                Inscription client
-              </a>
+              Vous avez déjà un compte ?
+              <a href="login.html" style="color: var(--primary); font-weight: 500;">Se connecter</a>
             </p>
           </div>
         </div>
@@ -605,87 +426,49 @@
   <script>
     const registerForm = document.getElementById('registerForm');
     const alertContainer = document.getElementById('alertContainer');
-    const freelanceToggle = document.getElementById('freelanceToggle');
-    const isFreelanceInput = document.getElementById('isFreelance');
-    const classicProfession = document.getElementById('classicProfession');
-    const freelanceProfession = document.getElementById('freelanceProfession');
-    const uploadBox = document.getElementById('uploadBox');
-    const uploadInput = document.getElementById('idDocument');
-    const uploadPreview = document.getElementById('uploadPreview');
-    
-    // Rediriger si déjà connecté
-    if (Utils.Session.isLoggedIn()) {
-      window.location.href = 'provider-dashboard.html';
-    }
+    const isFreelanceCheckbox = document.getElementById('isFreelance');
+    const freelanceBadge = document.getElementById('freelanceBadge');
+    const professionTitle = document.getElementById('professionTitle');
+    const professionClassic = document.getElementById('professionClassic');
+    const professionFreelance = document.getElementById('professionFreelance');
+    let selectedProfession = null;
     
     // Toggle Freelance Mode
-    freelanceToggle.addEventListener('click', function() {
-      this.classList.toggle('active');
-      const isFreelance = this.classList.contains('active');
-      isFreelanceInput.value = isFreelance;
+    isFreelanceCheckbox.addEventListener('change', function() {
+      const isFreelance = this.checked;
       
-      if (isFreelance) {
-        classicProfession.style.display = 'none';
-        freelanceProfession.style.display = 'block';
-        document.getElementById('profession').removeAttribute('required');
-        document.getElementById('priceHelp').textContent = 'Prix par mission/projet';
-        document.getElementById('radiusLabel').textContent = 'Zone de travail (km)';
-        document.getElementById('descriptionLabel').textContent = 'Compétences et expériences';
-        document.getElementById('descriptionHelp').textContent = 'Décrivez vos compétences, projets réalisés, certifications...';
-      } else {
-        classicProfession.style.display = 'block';
-        freelanceProfession.style.display = 'none';
-        document.getElementById('profession').setAttribute('required', 'required');
-        document.getElementById('priceHelp').textContent = 'Prix moyen de vos prestations';
-        document.getElementById('radiusLabel').textContent = 'Rayon d\'intervention (km)';
-        document.getElementById('descriptionLabel').textContent = 'Description de vos services';
-        document.getElementById('descriptionHelp').textContent = 'Optionnel - Aide les clients à mieux vous connaître';
-      }
-    });
-    
-    // Gestion des catégories freelance
-    document.querySelectorAll('.freelance-category').forEach(category => {
-      category.addEventListener('click', function() {
-        document.querySelectorAll('.freelance-category').forEach(c => c.classList.remove('selected'));
-        this.classList.add('selected');
-        this.querySelector('input[type="radio"]').checked = true;
+      // Update badge
+      freelanceBadge.style.display = isFreelance ? 'inline-block' : 'none';
+      
+      // Update title
+      professionTitle.textContent = isFreelance ? 'Votre spécialité freelance' : 'Votre profession';
+      
+      // Switch profession grids
+      professionClassic.style.display = isFreelance ? 'none' : 'grid';
+      professionFreelance.style.display = isFreelance ? 'grid' : 'none';
+      
+      // Reset selection
+      selectedProfession = null;
+      document.getElementById('profession').value = '';
+      document.querySelectorAll('.profession-card').forEach(card => {
+        card.classList.remove('selected');
       });
     });
     
-    // Upload CNI
-    uploadBox.addEventListener('click', () => uploadInput.click());
-    
-    uploadInput.addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      
-      if (file) {
-        // Vérifier la taille (max 2MB)
-        if (file.size > 2 * 1024 * 1024) {
-          Utils.showToast('Fichier trop volumineux (max 2MB)', 'error');
-          this.value = '';
-          return;
-        }
+    // Profession selection
+    document.querySelectorAll('.profession-card').forEach(card => {
+      card.addEventListener('click', function() {
+        // Remove previous selection
+        document.querySelectorAll('.profession-card').forEach(c => c.classList.remove('selected'));
         
-        // Vérifier le type
-        if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
-          Utils.showToast('Format non supporté. Utilisez JPG ou PNG', 'error');
-          this.value = '';
-          return;
-        }
-        
-        // Afficher l'aperçu
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          uploadPreview.src = e.target.result;
-          uploadPreview.classList.add('show');
-          uploadBox.classList.add('has-file');
-          uploadBox.querySelector('p').innerHTML = '<strong style="color: var(--primary);">✓ Document chargé</strong>';
-        };
-        reader.readAsDataURL(file);
-      }
+        // Select this card
+        this.classList.add('selected');
+        selectedProfession = this.dataset.profession;
+        document.getElementById('profession').value = selectedProfession;
+      });
     });
     
-    // Afficher un message d'erreur
+    // Show error
     function showError(message) {
       alertContainer.innerHTML = `
         <div class="alert alert-error">
@@ -696,182 +479,88 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     
-    // Gestion de la soumission du formulaire
+    // Form submission
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
-      // Réinitialiser les erreurs
       alertContainer.innerHTML = '';
-      document.querySelectorAll('.form-error').forEach(el => el.classList.remove('show'));
       
-      // Récupérer les données du formulaire
+      // Get form data
       const formData = new FormData(registerForm);
-      const isFreelance = isFreelanceInput.value === 'true';
-      
-      let profession;
-      if (isFreelance) {
-        profession = formData.get('freelanceProfession');
-        if (!profession) {
-          document.getElementById('freelanceProfessionError').textContent = 'Sélectionnez une spécialité freelance';
-          document.getElementById('freelanceProfessionError').classList.add('show');
-          return;
-        }
-      } else {
-        profession = formData.get('profession');
-        if (!profession) {
-          document.getElementById('professionError').textContent = 'Sélectionnez votre profession';
-          document.getElementById('professionError').classList.add('show');
-          return;
-        }
-      }
-      
-      // Vérifier l'upload CNI
-      const idFile = uploadInput.files[0];
-      if (!idFile) {
-        document.getElementById('idDocumentError').textContent = 'Le document d\'identité est obligatoire';
-        document.getElementById('idDocumentError').classList.add('show');
-        Utils.showToast('Veuillez télécharger votre CNI ou Passeport', 'error');
-        return;
-      }
-      
       const data = {
         firstName: formData.get('firstName').trim(),
         lastName: formData.get('lastName').trim(),
-        email: formData.get('email').trim(),
-        phone: formData.get('phone').trim().replace(/\s/g, ''),
+        email: formData.get('email').trim().toLowerCase(),
+        phone: formData.get('phone').trim(),
         password: formData.get('password'),
         confirmPassword: formData.get('confirmPassword'),
-        profession: profession,
-        isFreelance: isFreelance,
-        basePrice: parseInt(formData.get('basePrice')),
-        radius: parseInt(formData.get('radius')),
+        profession: selectedProfession,
         description: formData.get('description').trim(),
-        idDocument: uploadPreview.src // Base64 de l'image
+        basePrice: parseInt(formData.get('basePrice')),
+        serviceRadius: parseInt(formData.get('serviceRadius')),
+        isFreelance: isFreelanceCheckbox.checked
       };
       
       // Validation
-      let hasError = false;
-      
       if (!data.firstName || data.firstName.length < 2) {
-        document.getElementById('firstNameError').textContent = 'Prénom requis (min 2 caractères)';
-        document.getElementById('firstNameError').classList.add('show');
-        hasError = true;
+        showError('Le prénom doit contenir au moins 2 caractères');
+        return;
       }
       
       if (!data.lastName || data.lastName.length < 2) {
-        document.getElementById('lastNameError').textContent = 'Nom requis (min 2 caractères)';
-        document.getElementById('lastNameError').classList.add('show');
-        hasError = true;
+        showError('Le nom doit contenir au moins 2 caractères');
+        return;
       }
       
       if (!Utils.isValidEmail(data.email)) {
-        document.getElementById('emailError').textContent = 'Email invalide';
-        document.getElementById('emailError').classList.add('show');
-        hasError = true;
+        showError('Format d\'email invalide');
+        return;
       }
       
       if (!Utils.isValidIvorianPhone(data.phone)) {
-        document.getElementById('phoneError').textContent = 'Numéro de téléphone invalide';
-        document.getElementById('phoneError').classList.add('show');
-        hasError = true;
+        showError('Numéro de téléphone invalide (format: +225XXXXXXXXXX)');
+        return;
       }
       
       if (data.password.length < 6) {
-        document.getElementById('passwordError').textContent = 'Minimum 6 caractères';
-        document.getElementById('passwordError').classList.add('show');
-        hasError = true;
+        showError('Le mot de passe doit contenir au moins 6 caractères');
+        return;
       }
       
       if (data.password !== data.confirmPassword) {
-        document.getElementById('confirmPasswordError').textContent = 'Les mots de passe ne correspondent pas';
-        document.getElementById('confirmPasswordError').classList.add('show');
-        hasError = true;
+        showError('Les mots de passe ne correspondent pas');
+        return;
+      }
+      
+      if (!selectedProfession) {
+        showError('Veuillez sélectionner une profession');
+        return;
+      }
+      
+      if (!data.description || data.description.length < 20) {
+        showError('La description doit contenir au moins 20 caractères');
+        return;
       }
       
       if (!data.basePrice || data.basePrice < 1000) {
-        document.getElementById('basePriceError').textContent = 'Prix minimum : 1000 FCFA';
-        document.getElementById('basePriceError').classList.add('show');
-        hasError = true;
+        showError('Le tarif de base doit être d\'au moins 1000 FCFA');
+        return;
       }
       
-      if (hasError) return;
-      
-      // Désactiver le bouton pendant le traitement
-      const submitBtn = registerForm.querySelector('button[type="submit"]');
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Création du compte...';
-      
-      // Demander la localisation
-      try {
-        const location = await Utils.getUserLocation();
-        data.latitude = location.latitude;
-        data.longitude = location.longitude;
-      } catch (error) {
-        // Utiliser une localisation par défaut à Abidjan
-        const defaultLocation = Utils.getAbidjanCoordinates();
-        data.latitude = defaultLocation.lat;
-        data.longitude = defaultLocation.lon;
-        console.log('Utilisation de la localisation par défaut:', defaultLocation.name);
+      if (!data.serviceRadius || data.serviceRadius < 1) {
+        showError('Le rayon d\'intervention doit être d\'au moins 1 km');
+        return;
       }
       
-      // Créer le compte
+      // Register
       const result = Auth.registerProvider(data);
       
       if (result.success) {
-        Utils.showToast('Compte créé avec succès !', 'success');
-        
-        alertContainer.innerHTML = `
-          <div class="alert alert-success">
-            <i class="fas fa-check-circle"></i>
-            <span>Votre compte prestataire a été créé ! Votre document d'identité sera vérifié sous 24-48h. Redirection...</span>
-          </div>
-        `;
-        
+        Utils.showToast('Inscription réussie ! Redirection...', 'success');
         setTimeout(() => {
-          window.location.href = 'provider-dashboard.html';
+          window.location.href = 'login.html';
         }, 2000);
       } else {
         showError(result.message);
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-user-tie"></i> Créer mon compte prestataire';
-      }
-    });
-    
-    // Validation en temps réel
-    document.getElementById('email').addEventListener('blur', function() {
-      const email = this.value.trim();
-      const errorElement = document.getElementById('emailError');
-      
-      if (email && !Utils.isValidEmail(email)) {
-        errorElement.textContent = 'Format d\'email invalide';
-        errorElement.classList.add('show');
-      } else {
-        errorElement.classList.remove('show');
-      }
-    });
-    
-    document.getElementById('phone').addEventListener('blur', function() {
-      const phone = this.value.trim().replace(/\s/g, '');
-      const errorElement = document.getElementById('phoneError');
-      
-      if (phone && !Utils.isValidIvorianPhone(phone)) {
-        errorElement.textContent = 'Format invalide (+225XXXXXXXXXX)';
-        errorElement.classList.add('show');
-      } else {
-        errorElement.classList.remove('show');
-      }
-    });
-    
-    document.getElementById('confirmPassword').addEventListener('input', function() {
-      const password = document.getElementById('password').value;
-      const confirmPassword = this.value;
-      const errorElement = document.getElementById('confirmPasswordError');
-      
-      if (confirmPassword && password !== confirmPassword) {
-        errorElement.textContent = 'Les mots de passe ne correspondent pas';
-        errorElement.classList.add('show');
-      } else {
-        errorElement.classList.remove('show');
       }
     });
   </script>
