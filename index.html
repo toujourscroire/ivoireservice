@@ -562,7 +562,50 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="js/utils.js"></script>
+  <script>
+// UTILS EMBARQUÉ
+const Utils = {
+  Storage: {
+    get: (key, defaultValue = null) => {
+      try {
+        const item = localStorage.getItem(key);
+        return item ? JSON.parse(item) : defaultValue;
+      } catch (e) {
+        return defaultValue;
+      }
+    },
+    set: (key, value) => {
+      try {
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (e) {
+        console.error('Storage error:', e);
+      }
+    }
+  },
+  
+  Session: {
+    login: (user) => {
+      Utils.Storage.set('currentUser', user);
+      Utils.Storage.set('isLoggedIn', true);
+    },
+    logout: () => {
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('isLoggedIn');
+    },
+    isLoggedIn: () => Utils.Storage.get('isLoggedIn', false) === true,
+    getCurrentUser: () => Utils.Storage.get('currentUser', null)
+  },
+  
+  showToast: (message, type = 'info') => {
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position: fixed; top: 2rem; right: 2rem; background: ' + (type === 'success' ? '#4CAF50' : '#f44336') + '; color: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 99999;';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+};
+</script>
+
   <script>
     // ==========================================
     // SYSTÈME DE CONNEXION POPUP
