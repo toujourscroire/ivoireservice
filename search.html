@@ -1,576 +1,576 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recherche de prestataires - Ivoiservice</title>
-  
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
-  
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-  
-  <!-- Styles -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive.css">
-  
-  <style>
-    .tab-buttons {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      border-bottom: 2px solid #e0e0e0;
-    }
-    
-    .tab-btn {
-      padding: 1rem 2rem;
-      background: none;
-      border: none;
-      font-size: 1rem;
-      font-weight: 500;
-      color: #666;
-      cursor: pointer;
-      position: relative;
-      transition: color 0.3s;
-    }
-    
-    .tab-btn:hover {
-      color: var(--primary);
-    }
-    
-    .tab-btn.active {
-      color: var(--primary);
-    }
-    
-    .tab-btn.active::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--primary);
-    }
-    
-    .map-toggle {
-      margin-bottom: 2rem;
-      text-align: right;
-    }
-    
-    .map-toggle button {
-      padding: 0.75rem 1.5rem;
-      background: white;
-      border: 1px solid var(--primary);
-      color: var(--primary);
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.3s;
-    }
-    
-    .map-toggle button:hover {
-      background: var(--primary);
-      color: white;
-    }
-    
-    .map-container {
-      height: 400px;
-      background: #f5f5f5;
-      border-radius: 12px;
-      margin-bottom: 2rem;
-      overflow: hidden;
-      display: none;
-    }
-    
-    .map-container.show {
-      display: block;
-    }
-    
-    .map-container iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    
-    .distance-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.25rem 0.75rem;
-      background: #E3F2FD;
-      color: #1976D2;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-top: 0.5rem;
-    }
-    
-    .freelance-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      padding: 0.25rem 0.5rem;
-      background: #FF9800;
-      color: white;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      margin-left: 0.5rem;
-    }
-  </style>
-</head>
-<body>
-  <!-- Header -->
-  <header class="header">
-    <div class="container">
-      <nav class="navbar">
-        <a href="index.html" class="logo">
-          <i class="fas fa-handshake"></i>
-          <span>Ivoiservice</span>
-        </a>
-        
-        <ul class="nav-links" id="navLinks">
-          <li><a href="index.html">Accueil</a></li>
-          <li><a href="search.html">Rechercher</a></li>
-          <li id="authLinks">
-            <a href="login.html" class="btn btn-outline btn-sm">Connexion</a>
-          </li>
-        </ul>
-        
-        <button class="nav-toggle" id="navToggle" style="display: none;">
-          <i class="fas fa-bars"></i>
-        </button>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Overlay pour mobile -->
-  <div class="nav-overlay" id="navOverlay"></div>
-
-  <!-- Search Section -->
-  <section class="services">
-    <div class="container">
-      <h1 class="section-title">
-        <i class="fas fa-search text-primary"></i>
-        Trouver un prestataire
-      </h1>
-      <p class="section-subtitle">
-        Utilisez les filtres pour trouver le professionnel qu'il vous faut
-      </p>
-      
-      <!-- Onglets -->
-      <div class="tab-buttons">
-        <button class="tab-btn active" id="tab-classic" onclick="switchTab('classic')">
-          <i class="fas fa-briefcase"></i> Services classiques
-        </button>
-        <button class="tab-btn" id="tab-freelance" onclick="switchTab('freelance')">
-          <i class="fas fa-user"></i> Freelances
-        </button>
-      </div>
-      
-      <!-- Filters -->
-      <div class="card mb-lg">
-        <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-          <i class="fas fa-filter text-primary"></i>
-          Filtres de recherche
-        </h3>
-        
-        <div class="grid-responsive">
-          <div class="form-group">
-            <label class="form-label" for="professionFilter">
-              <i class="fas fa-briefcase"></i> <span id="professionLabel">Profession</span>
-            </label>
-            <select id="professionFilter" class="form-input">
-              <!-- Options remplies dynamiquement -->
-            </select>
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label" for="distanceFilter">
-              <i class="fas fa-map-marker-alt"></i> Distance maximale (km)
-            </label>
-            <input type="number" id="distanceFilter" class="form-input" value="10" min="1" max="50" placeholder="Ex: 10">
-          </div>
-          
-          <div class="form-group">
-            <label class="form-label" for="minRatingFilter">
-              <i class="fas fa-star"></i> Note minimale
-            </label>
-            <select id="minRatingFilter" class="form-input">
-              <option value="">Toutes les notes</option>
-              <option value="4.5">⭐ 4,5+</option>
-              <option value="4.0">⭐ 4,0+</option>
-              <option value="3.5">⭐ 3,5+</option>
-              <option value="3.0">⭐ 3,0+</option>
-            </select>
-          </div>
-        </div>
-        
-        <button onclick="applyFilters()" class="btn btn-primary btn-full mt-md">
-          <i class="fas fa-search"></i> Rechercher
-        </button>
-      </div>
-      
-      <!-- Toggle carte -->
-      <div class="map-toggle">
-        <button onclick="toggleMap()">
-          <i class="fas fa-map"></i> <span id="mapBtnText">Voir la carte</span>
-        </button>
-      </div>
-      
-      <!-- Carte -->
-      <div class="map-container" id="mapContainer">
-        <iframe 
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127242.3636!2d-4.0083!3d5.3599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfc1ec9f47c17797%3A0x8cb53bca0e52c031!2sAbidjan%2C%20C%C3%B4te%20d'Ivoire!5e0!3m2!1sfr!2sfr!4v1640000000000!5m2!1sfr!2sfr" 
-          loading="lazy">
-        </iframe>
-      </div>
-      
-      <!-- Results count -->
-      <div id="resultsCount" class="mb-md" style="display: none;">
-        <p style="color: var(--text-light);">
-          <i class="fas fa-info-circle"></i>
-          <span id="countText"></span>
-        </p>
-      </div>
-      
-      <!-- Loading -->
-      <div id="loading" class="hidden">
-        <div class="spinner"></div>
-      </div>
-      
-      <!-- Results -->
-      <div id="results" class="services-grid"></div>
-      
-      <!-- No results -->
-      <div id="noResults" class="hidden">
-        <div class="card text-center">
-          <i class="fas fa-search" style="font-size: 4rem; color: var(--text-lighter); margin-bottom: 1rem;"></i>
-          <h3 style="color: var(--text); margin-bottom: 0.5rem;">Aucun prestataire trouvé</h3>
-          <p class="text-light">
-            Essayez d'élargir vos critères de recherche ou de changer de métier.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-bottom">
-        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Scripts -->
-  <script src="js/utils.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/search.js"></script>
-  <script>
-    // Variables globales
-    let currentTab = 'classic';
-    let userLocation = null;
-    let allProviders = [];
-    
-    const resultsContainer = document.getElementById('results');
-    const loadingElement = document.getElementById('loading');
-    const noResultsElement = document.getElementById('noResults');
-    const resultsCountElement = document.getElementById('resultsCount');
-    const countTextElement = document.getElementById('countText');
-    
-    // Professions par type
-    const CLASSIC_PROFESSIONS = {
-      'ALL': 'Toutes les professions',
-      'PLOMBIER': '🔧 Plombier',
-      'ELECTRICIEN': '⚡ Électricien',
-      'MENUISIER': '🪚 Menuisier',
-      'MACON': '🧱 Maçon',
-      'PEINTRE': '🎨 Peintre',
-      'GARAGISTE': '🚗 Garagiste',
-      'FRIGORISTE': '❄️ Frigoriste',
-      'SERRURIER': '🔑 Serrurier',
-      'REPARATEUR_TELEPHONE': '📱 Réparateur téléphone',
-      'MECANICIEN_MOTO': '🏍️ Mécanicien moto'
-    };
-    
-    const FREELANCE_PROFESSIONS = {
-      'ALL': 'Toutes les spécialités',
-      'DEVELOPPEUR_WEB': '💻 Développeur Web',
-      'GRAPHISTE': '🎨 Graphiste',
-      'REDACTEUR': '✍️ Rédacteur',
-      'PHOTOGRAPHE': '📷 Photographe',
-      'VIDEASTE': '🎬 Vidéaste',
-      'TRADUCTEUR': '🌍 Traducteur',
-      'COMMUNITY_MANAGER': '📱 Community Manager',
-      'COMPTABLE': '💼 Comptable',
-      'MARKETING': '📊 Marketing'
-    };
-    
-    // Gestion menu mobile
-    const navToggle = document.getElementById('navToggle');
-    const navLinks = document.getElementById('navLinks');
-    const navOverlay = document.getElementById('navOverlay');
-    
-    if (window.innerWidth <= 768) {
-      navToggle.style.display = 'block';
-    }
-    
-    window.addEventListener('resize', () => {
-      if (window.innerWidth <= 768) {
-        navToggle.style.display = 'block';
-      } else {
-        navToggle.style.display = 'none';
-        navLinks.classList.remove('active');
-        navOverlay.classList.remove('active');
-      }
-    });
-    
-    navToggle.addEventListener('click', () => {
-      navLinks.classList.toggle('active');
-      navOverlay.classList.toggle('active');
-    });
-    
-    navOverlay.addEventListener('click', () => {
-      navLinks.classList.remove('active');
-      navOverlay.classList.remove('active');
-    });
-    
-    // Gestion auth links
-    function updateAuthLinks() {
-      const authLinksContainer = document.getElementById('authLinks');
-      
-      if (Utils.Session.isLoggedIn()) {
-        const user = Utils.Session.getCurrentUser();
-        let dashboardUrl = 'client-dashboard.html';
-        
-        if (user.role === 'PROVIDER') {
-          dashboardUrl = 'provider-dashboard.html';
-        } else if (user.role === 'ADMIN') {
-          dashboardUrl = 'admin-dashboard.html';
-        }
-        
-        authLinksContainer.innerHTML = `
-          <a href="${dashboardUrl}" class="btn btn-outline btn-sm">
-            <i class="fas fa-user"></i> Mon espace
-          </a>
-          <button onclick="handleLogout()" class="btn btn-secondary btn-sm">
-            <i class="fas fa-sign-out-alt"></i> Déconnexion
-          </button>
-        `;
-      }
-    }
-    
-    // Changer d'onglet
-    function switchTab(tab) {
-      currentTab = tab;
-      
-      // Mettre à jour l'UI des onglets
-      document.getElementById('tab-classic').classList.toggle('active', tab === 'classic');
-      document.getElementById('tab-freelance').classList.toggle('active', tab === 'freelance');
-      
-      // Mettre à jour le dropdown des professions
-      const professionSelect = document.getElementById('professionFilter');
-      const professionLabel = document.getElementById('professionLabel');
-      const professions = tab === 'freelance' ? FREELANCE_PROFESSIONS : CLASSIC_PROFESSIONS;
-      
-      professionLabel.textContent = tab === 'freelance' ? 'Spécialité' : 'Profession';
-      professionSelect.innerHTML = '';
-      
-      for (const [value, label] of Object.entries(professions)) {
-        const option = document.createElement('option');
-        option.value = value;
-        option.textContent = label;
-        professionSelect.appendChild(option);
-      }
-      
-      // Relancer la recherche
-      applyFilters();
-    }
-    
-    // Toggle carte
-    function toggleMap() {
-      const mapContainer = document.getElementById('mapContainer');
-      const btnText = document.getElementById('mapBtnText');
-      
-      mapContainer.classList.toggle('show');
-      
-      if (mapContainer.classList.contains('show')) {
-        btnText.textContent = 'Masquer la carte';
-      } else {
-        btnText.textContent = 'Voir la carte';
-      }
-    }
-    
-    // Appliquer les filtres
-    function applyFilters() {
-      const profession = document.getElementById('professionFilter').value;
-      const maxDistance = parseFloat(document.getElementById('distanceFilter').value) || 50;
-      const minRating = parseFloat(document.getElementById('minRatingFilter').value) || 0;
-      
-      console.log('🔍 Recherche:', { profession, maxDistance, minRating, currentTab });
-      
-      // Afficher le loading
-      loadingElement.classList.remove('hidden');
-      resultsContainer.innerHTML = '';
-      noResultsElement.classList.add('hidden');
-      resultsCountElement.style.display = 'none';
-      
-      // Simuler un délai de recherche
-      setTimeout(() => {
-        // Filtrer les prestataires
-        let filtered = allProviders.filter(provider => {
-          // Vérifier le type (classic ou freelance)
-          const isFreelance = provider.isFreelance === true;
-          if (currentTab === 'freelance' && !isFreelance) return false;
-          if (currentTab === 'classic' && isFreelance) return false;
-          
-          // Vérifier la profession
-          if (profession && profession !== 'ALL' && provider.profession !== profession) return false;
-          
-          // Vérifier la distance
-          if (provider.distance > maxDistance) return false;
-          
-          // Vérifier la note minimale
-          if (provider.rating < minRating) return false;
-          
-          return true;
-        });
-        
-        // Trier par distance
-        filtered.sort((a, b) => a.distance - b.distance);
-        
-        console.log('✅ Résultats:', filtered.length);
-        
-        displayResults(filtered);
-        loadingElement.classList.add('hidden');
-      }, 500);
-    }
-    
-    // Afficher les résultats
-    function displayResults(providers) {
-      resultsContainer.innerHTML = '';
-      
-      if (providers.length === 0) {
-        noResultsElement.classList.remove('hidden');
-        resultsCountElement.style.display = 'none';
-        return;
-      }
-      
-      // Afficher le nombre de résultats
-      resultsCountElement.style.display = 'block';
-      const typeText = currentTab === 'freelance' ? 'freelance' : 'prestataire';
-      countTextElement.textContent = `${providers.length} ${typeText}${providers.length > 1 ? 's' : ''} trouvé${providers.length > 1 ? 's' : ''}`;
-      
-      providers.forEach(provider => {
-        const card = createProviderCard(provider);
-        resultsContainer.appendChild(card);
-      });
-    }
-    
-    // Créer une carte prestataire
-    function createProviderCard(provider) {
-      const card = document.createElement('div');
-      card.className = 'provider-card';
-      card.onclick = () => window.location.href = `provider-profile.html?id=${provider.userId}`;
-      
-      const professionIcon = Utils.PROFESSION_ICONS[provider.profession] || 'fa-briefcase';
-      const professionName = Utils.PROFESSIONS[provider.profession] || provider.profession;
-      
-      const distance = provider.distance.toFixed(1);
-      const distanceColor = distance < 2 ? '#4CAF50' : distance < 5 ? '#FF9800' : '#1976D2';
-      
-      const freelanceBadge = provider.isFreelance 
-        ? '<span class="freelance-badge"><i class="fas fa-star"></i> Freelance</span>' 
-        : '';
-      
-      card.innerHTML = `
-        <div class="provider-avatar">
-          <i class="fas ${professionIcon}"></i>
-        </div>
-        <div class="provider-info">
-          <h3 class="provider-name">
-            ${provider.firstName} ${provider.lastName}
-            ${provider.verified ? '<i class="fas fa-check-circle" style="color: var(--success); font-size: 1rem;" title="Identité vérifiée"></i>' : ''}
-            ${freelanceBadge}
-          </h3>
-          <p class="provider-profession">
-            <i class="fas ${professionIcon}"></i>
-            ${professionName}
-          </p>
-          <div class="distance-badge" style="background: ${distanceColor}22; color: ${distanceColor};">
-            <i class="fas fa-location-arrow"></i>
-            À ${distance} km de vous
-          </div>
-          <div class="provider-rating">
-            ${Utils.generateStars(provider.rating || 0)}
-            <span style="color: var(--text); margin-left: 0.25rem;">
-              ${provider.rating ? provider.rating.toFixed(1) : '0.0'}/5 (${provider.reviewCount || 0} avis)
-            </span>
-          </div>
-          <div class="provider-meta">
-            <span>
-              <i class="fas fa-map-marker-alt"></i>
-              Rayon: ${provider.serviceRadius} km
-            </span>
-            <span style="font-weight: 600; color: var(--primary);">
-              ${Utils.formatPrice(provider.basePrice)}
-            </span>
-          </div>
-        </div>
-      `;
-      
-      return card;
-    }
-    
-    // Déconnexion
-    function handleLogout() {
-      if (confirm('Voulez-vous vraiment vous déconnecter ?')) {
-        Utils.Session.logout();
-        Utils.showToast('Vous êtes déconnecté', 'success');
-        setTimeout(() => {
-          window.location.href = 'index.html';
-        }, 1000);
-      }
-    }
-    
-    // Initialisation
-    document.addEventListener('DOMContentLoaded', async () => {
-      updateAuthLinks();
-      
-      // Obtenir la localisation de l'utilisateur
-      try {
-        userLocation = await Utils.getUserLocation();
-        console.log('📍 Position utilisateur:', userLocation);
-      } catch (error) {
-        console.warn('⚠️ Géolocalisation échouée, utilisation de coordonnées par défaut');
-        userLocation = Utils.getAbidjanCoordinates();
-      }
-      
-      // Charger tous les prestataires
-      allProviders = Search.getAllProviders();
-      
-      // Calculer les distances
-      allProviders = allProviders.map(provider => {
-        const distance = Utils.calculateDistance(
-          userLocation.latitude,
-          userLocation.longitude,
-          provider.coordinates.latitude,
-          provider.coordinates.longitude
-        );
-        return { ...provider, distance };
-      });
-      
-      console.log('👥 Prestataires chargés:', allProviders.length);
-      
-      // Initialiser le dropdown
-      switchTab('classic');
-    });
-  </script>
-</body>
-</html>
+ 1	<!DOCTYPE html>
+     2	<html lang="fr">
+     3	<head>
+     4	  <meta charset="UTF-8">
+     5	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6	  <title>Recherche de prestataires - Ivoiservice</title>
+     7	  
+     8	  <!-- Favicon -->
+     9	  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
+    10	  
+    11	  <!-- Fonts -->
+    12	  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    13	  
+    14	  <!-- Font Awesome -->
+    15	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    16	  
+    17	  <!-- Styles -->
+    18	  <link rel="stylesheet" href="css/style.css">
+    19	  <link rel="stylesheet" href="css/responsive.css">
+    20	  
+    21	  <style>
+    22	    .tab-buttons {
+    23	      display: flex;
+    24	      gap: 1rem;
+    25	      margin-bottom: 2rem;
+    26	      border-bottom: 2px solid #e0e0e0;
+    27	    }
+    28	    
+    29	    .tab-btn {
+    30	      padding: 1rem 2rem;
+    31	      background: none;
+    32	      border: none;
+    33	      font-size: 1rem;
+    34	      font-weight: 500;
+    35	      color: #666;
+    36	      cursor: pointer;
+    37	      position: relative;
+    38	      transition: color 0.3s;
+    39	    }
+    40	    
+    41	    .tab-btn:hover {
+    42	      color: var(--primary);
+    43	    }
+    44	    
+    45	    .tab-btn.active {
+    46	      color: var(--primary);
+    47	    }
+    48	    
+    49	    .tab-btn.active::after {
+    50	      content: '';
+    51	      position: absolute;
+    52	      bottom: -2px;
+    53	      left: 0;
+    54	      right: 0;
+    55	      height: 2px;
+    56	      background: var(--primary);
+    57	    }
+    58	    
+    59	    .map-toggle {
+    60	      margin-bottom: 2rem;
+    61	      text-align: right;
+    62	    }
+    63	    
+    64	    .map-toggle button {
+    65	      padding: 0.75rem 1.5rem;
+    66	      background: white;
+    67	      border: 1px solid var(--primary);
+    68	      color: var(--primary);
+    69	      border-radius: 8px;
+    70	      cursor: pointer;
+    71	      font-weight: 500;
+    72	      transition: all 0.3s;
+    73	    }
+    74	    
+    75	    .map-toggle button:hover {
+    76	      background: var(--primary);
+    77	      color: white;
+    78	    }
+    79	    
+    80	    .map-container {
+    81	      height: 400px;
+    82	      background: #f5f5f5;
+    83	      border-radius: 12px;
+    84	      margin-bottom: 2rem;
+    85	      overflow: hidden;
+    86	      display: none;
+    87	    }
+    88	    
+    89	    .map-container.show {
+    90	      display: block;
+    91	    }
+    92	    
+    93	    .map-container iframe {
+    94	      width: 100%;
+    95	      height: 100%;
+    96	      border: none;
+    97	    }
+    98	    
+    99	    .distance-badge {
+   100	      display: inline-flex;
+   101	      align-items: center;
+   102	      gap: 0.5rem;
+   103	      padding: 0.25rem 0.75rem;
+   104	      background: #E3F2FD;
+   105	      color: #1976D2;
+   106	      border-radius: 8px;
+   107	      font-size: 0.85rem;
+   108	      font-weight: 500;
+   109	      margin-top: 0.5rem;
+   110	    }
+   111	    
+   112	    .freelance-badge {
+   113	      display: inline-flex;
+   114	      align-items: center;
+   115	      gap: 0.25rem;
+   116	      padding: 0.25rem 0.5rem;
+   117	      background: #FF9800;
+   118	      color: white;
+   119	      border-radius: 4px;
+   120	      font-size: 0.75rem;
+   121	      font-weight: 500;
+   122	      margin-left: 0.5rem;
+   123	    }
+   124	  </style>
+   125	</head>
+   126	<body>
+   127	  <!-- Header -->
+   128	  <header class="header">
+   129	    <div class="container">
+   130	      <nav class="navbar">
+   131	        <a href="index.html" class="logo">
+   132	          <i class="fas fa-handshake"></i>
+   133	          <span>Ivoiservice</span>
+   134	        </a>
+   135	        
+   136	        <ul class="nav-links" id="navLinks">
+   137	          <li><a href="index.html">Accueil</a></li>
+   138	          <li><a href="search.html">Rechercher</a></li>
+   139	          <li id="authLinks">
+   140	            <a href="login.html" class="btn btn-outline btn-sm">Connexion</a>
+   141	          </li>
+   142	        </ul>
+   143	        
+   144	        <button class="nav-toggle" id="navToggle" style="display: none;">
+   145	          <i class="fas fa-bars"></i>
+   146	        </button>
+   147	      </nav>
+   148	    </div>
+   149	  </header>
+   150	
+   151	  <!-- Overlay pour mobile -->
+   152	  <div class="nav-overlay" id="navOverlay"></div>
+   153	
+   154	  <!-- Search Section -->
+   155	  <section class="services">
+   156	    <div class="container">
+   157	      <h1 class="section-title">
+   158	        <i class="fas fa-search text-primary"></i>
+   159	        Trouver un prestataire
+   160	      </h1>
+   161	      <p class="section-subtitle">
+   162	        Utilisez les filtres pour trouver le professionnel qu'il vous faut
+   163	      </p>
+   164	      
+   165	      <!-- Onglets -->
+   166	      <div class="tab-buttons">
+   167	        <button class="tab-btn active" id="tab-classic" onclick="switchTab('classic')">
+   168	          <i class="fas fa-briefcase"></i> Services classiques
+   169	        </button>
+   170	        <button class="tab-btn" id="tab-freelance" onclick="switchTab('freelance')">
+   171	          <i class="fas fa-user"></i> Freelances
+   172	        </button>
+   173	      </div>
+   174	      
+   175	      <!-- Filters -->
+   176	      <div class="card mb-lg">
+   177	        <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+   178	          <i class="fas fa-filter text-primary"></i>
+   179	          Filtres de recherche
+   180	        </h3>
+   181	        
+   182	        <div class="grid-responsive">
+   183	          <div class="form-group">
+   184	            <label class="form-label" for="professionFilter">
+   185	              <i class="fas fa-briefcase"></i> <span id="professionLabel">Profession</span>
+   186	            </label>
+   187	            <select id="professionFilter" class="form-input">
+   188	              <!-- Options remplies dynamiquement -->
+   189	            </select>
+   190	          </div>
+   191	          
+   192	          <div class="form-group">
+   193	            <label class="form-label" for="distanceFilter">
+   194	              <i class="fas fa-map-marker-alt"></i> Distance maximale (km)
+   195	            </label>
+   196	            <input type="number" id="distanceFilter" class="form-input" value="10" min="1" max="50" placeholder="Ex: 10">
+   197	          </div>
+   198	          
+   199	          <div class="form-group">
+   200	            <label class="form-label" for="minRatingFilter">
+   201	              <i class="fas fa-star"></i> Note minimale
+   202	            </label>
+   203	            <select id="minRatingFilter" class="form-input">
+   204	              <option value="">Toutes les notes</option>
+   205	              <option value="4.5">⭐ 4,5+</option>
+   206	              <option value="4.0">⭐ 4,0+</option>
+   207	              <option value="3.5">⭐ 3,5+</option>
+   208	              <option value="3.0">⭐ 3,0+</option>
+   209	            </select>
+   210	          </div>
+   211	        </div>
+   212	        
+   213	        <button onclick="applyFilters()" class="btn btn-primary btn-full mt-md">
+   214	          <i class="fas fa-search"></i> Rechercher
+   215	        </button>
+   216	      </div>
+   217	      
+   218	      <!-- Toggle carte -->
+   219	      <div class="map-toggle">
+   220	        <button onclick="toggleMap()">
+   221	          <i class="fas fa-map"></i> <span id="mapBtnText">Voir la carte</span>
+   222	        </button>
+   223	      </div>
+   224	      
+   225	      <!-- Carte -->
+   226	      <div class="map-container" id="mapContainer">
+   227	        <iframe 
+   228	          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127242.3636!2d-4.0083!3d5.3599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfc1ec9f47c17797%3A0x8cb53bca0e52c031!2sAbidjan%2C%20C%C3%B4te%20d'Ivoire!5e0!3m2!1sfr!2sfr!4v1640000000000!5m2!1sfr!2sfr" 
+   229	          loading="lazy">
+   230	        </iframe>
+   231	      </div>
+   232	      
+   233	      <!-- Results count -->
+   234	      <div id="resultsCount" class="mb-md" style="display: none;">
+   235	        <p style="color: var(--text-light);">
+   236	          <i class="fas fa-info-circle"></i>
+   237	          <span id="countText"></span>
+   238	        </p>
+   239	      </div>
+   240	      
+   241	      <!-- Loading -->
+   242	      <div id="loading" class="hidden">
+   243	        <div class="spinner"></div>
+   244	      </div>
+   245	      
+   246	      <!-- Results -->
+   247	      <div id="results" class="services-grid"></div>
+   248	      
+   249	      <!-- No results -->
+   250	      <div id="noResults" class="hidden">
+   251	        <div class="card text-center">
+   252	          <i class="fas fa-search" style="font-size: 4rem; color: var(--text-lighter); margin-bottom: 1rem;"></i>
+   253	          <h3 style="color: var(--text); margin-bottom: 0.5rem;">Aucun prestataire trouvé</h3>
+   254	          <p class="text-light">
+   255	            Essayez d'élargir vos critères de recherche ou de changer de métier.
+   256	          </p>
+   257	        </div>
+   258	      </div>
+   259	    </div>
+   260	  </section>
+   261	
+   262	  <!-- Footer -->
+   263	  <footer class="footer">
+   264	    <div class="container">
+   265	      <div class="footer-bottom">
+   266	        <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
+   267	      </div>
+   268	    </div>
+   269	  </footer>
+   270	
+   271	  <!-- Scripts -->
+   272	  <script src="js/utils.js"></script>
+   273	  <script src="js/auth.js"></script>
+   274	  <script src="js/search.js"></script>
+   275	  <script>
+   276	    // Variables globales
+   277	    let currentTab = 'classic';
+   278	    let userLocation = null;
+   279	    let allProviders = [];
+   280	    
+   281	    const resultsContainer = document.getElementById('results');
+   282	    const loadingElement = document.getElementById('loading');
+   283	    const noResultsElement = document.getElementById('noResults');
+   284	    const resultsCountElement = document.getElementById('resultsCount');
+   285	    const countTextElement = document.getElementById('countText');
+   286	    
+   287	    // Professions par type
+   288	    const CLASSIC_PROFESSIONS = {
+   289	      'ALL': 'Toutes les professions',
+   290	      'PLOMBIER': '🔧 Plombier',
+   291	      'ELECTRICIEN': '⚡ Électricien',
+   292	      'MENUISIER': '🪚 Menuisier',
+   293	      'MACON': '🧱 Maçon',
+   294	      'PEINTRE': '🎨 Peintre',
+   295	      'GARAGISTE': '🚗 Garagiste',
+   296	      'FRIGORISTE': '❄️ Frigoriste',
+   297	      'SERRURIER': '🔑 Serrurier',
+   298	      'REPARATEUR_TELEPHONE': '📱 Réparateur téléphone',
+   299	      'MECANICIEN_MOTO': '🏍️ Mécanicien moto'
+   300	    };
+   301	    
+   302	    const FREELANCE_PROFESSIONS = {
+   303	      'ALL': 'Toutes les spécialités',
+   304	      'DEVELOPPEUR_WEB': '💻 Développeur Web',
+   305	      'GRAPHISTE': '🎨 Graphiste',
+   306	      'REDACTEUR': '✍️ Rédacteur',
+   307	      'PHOTOGRAPHE': '📷 Photographe',
+   308	      'VIDEASTE': '🎬 Vidéaste',
+   309	      'TRADUCTEUR': '🌍 Traducteur',
+   310	      'COMMUNITY_MANAGER': '📱 Community Manager',
+   311	      'COMPTABLE': '💼 Comptable',
+   312	      'MARKETING': '📊 Marketing'
+   313	    };
+   314	    
+   315	    // Gestion menu mobile
+   316	    const navToggle = document.getElementById('navToggle');
+   317	    const navLinks = document.getElementById('navLinks');
+   318	    const navOverlay = document.getElementById('navOverlay');
+   319	    
+   320	    if (window.innerWidth <= 768) {
+   321	      navToggle.style.display = 'block';
+   322	    }
+   323	    
+   324	    window.addEventListener('resize', () => {
+   325	      if (window.innerWidth <= 768) {
+   326	        navToggle.style.display = 'block';
+   327	      } else {
+   328	        navToggle.style.display = 'none';
+   329	        navLinks.classList.remove('active');
+   330	        navOverlay.classList.remove('active');
+   331	      }
+   332	    });
+   333	    
+   334	    navToggle.addEventListener('click', () => {
+   335	      navLinks.classList.toggle('active');
+   336	      navOverlay.classList.toggle('active');
+   337	    });
+   338	    
+   339	    navOverlay.addEventListener('click', () => {
+   340	      navLinks.classList.remove('active');
+   341	      navOverlay.classList.remove('active');
+   342	    });
+   343	    
+   344	    // Gestion auth links
+   345	    function updateAuthLinks() {
+   346	      const authLinksContainer = document.getElementById('authLinks');
+   347	      
+   348	      if (Utils.Session.isLoggedIn()) {
+   349	        const user = Utils.Session.getCurrentUser();
+   350	        let dashboardUrl = 'client-dashboard.html';
+   351	        
+   352	        if (user.role === 'PROVIDER') {
+   353	          dashboardUrl = 'provider-dashboard.html';
+   354	        } else if (user.role === 'ADMIN') {
+   355	          dashboardUrl = 'admin-dashboard.html';
+   356	        }
+   357	        
+   358	        authLinksContainer.innerHTML = `
+   359	          <a href="${dashboardUrl}" class="btn btn-outline btn-sm">
+   360	            <i class="fas fa-user"></i> Mon espace
+   361	          </a>
+   362	          <button onclick="handleLogout()" class="btn btn-secondary btn-sm">
+   363	            <i class="fas fa-sign-out-alt"></i> Déconnexion
+   364	          </button>
+   365	        `;
+   366	      }
+   367	    }
+   368	    
+   369	    // Changer d'onglet
+   370	    function switchTab(tab) {
+   371	      currentTab = tab;
+   372	      
+   373	      // Mettre à jour l'UI des onglets
+   374	      document.getElementById('tab-classic').classList.toggle('active', tab === 'classic');
+   375	      document.getElementById('tab-freelance').classList.toggle('active', tab === 'freelance');
+   376	      
+   377	      // Mettre à jour le dropdown des professions
+   378	      const professionSelect = document.getElementById('professionFilter');
+   379	      const professionLabel = document.getElementById('professionLabel');
+   380	      const professions = tab === 'freelance' ? FREELANCE_PROFESSIONS : CLASSIC_PROFESSIONS;
+   381	      
+   382	      professionLabel.textContent = tab === 'freelance' ? 'Spécialité' : 'Profession';
+   383	      professionSelect.innerHTML = '';
+   384	      
+   385	      for (const [value, label] of Object.entries(professions)) {
+   386	        const option = document.createElement('option');
+   387	        option.value = value;
+   388	        option.textContent = label;
+   389	        professionSelect.appendChild(option);
+   390	      }
+   391	      
+   392	      // Relancer la recherche
+   393	      applyFilters();
+   394	    }
+   395	    
+   396	    // Toggle carte
+   397	    function toggleMap() {
+   398	      const mapContainer = document.getElementById('mapContainer');
+   399	      const btnText = document.getElementById('mapBtnText');
+   400	      
+   401	      mapContainer.classList.toggle('show');
+   402	      
+   403	      if (mapContainer.classList.contains('show')) {
+   404	        btnText.textContent = 'Masquer la carte';
+   405	      } else {
+   406	        btnText.textContent = 'Voir la carte';
+   407	      }
+   408	    }
+   409	    
+   410	    // Appliquer les filtres
+   411	    function applyFilters() {
+   412	      const profession = document.getElementById('professionFilter').value;
+   413	      const maxDistance = parseFloat(document.getElementById('distanceFilter').value) || 50;
+   414	      const minRating = parseFloat(document.getElementById('minRatingFilter').value) || 0;
+   415	      
+   416	      console.log('🔍 Recherche:', { profession, maxDistance, minRating, currentTab });
+   417	      
+   418	      // Afficher le loading
+   419	      loadingElement.classList.remove('hidden');
+   420	      resultsContainer.innerHTML = '';
+   421	      noResultsElement.classList.add('hidden');
+   422	      resultsCountElement.style.display = 'none';
+   423	      
+   424	      // Simuler un délai de recherche
+   425	      setTimeout(() => {
+   426	        // Filtrer les prestataires
+   427	        let filtered = allProviders.filter(provider => {
+   428	          // Vérifier le type (classic ou freelance)
+   429	          const isFreelance = provider.isFreelance === true;
+   430	          if (currentTab === 'freelance' && !isFreelance) return false;
+   431	          if (currentTab === 'classic' && isFreelance) return false;
+   432	          
+   433	          // Vérifier la profession
+   434	          if (profession && profession !== 'ALL' && provider.profession !== profession) return false;
+   435	          
+   436	          // Vérifier la distance
+   437	          if (provider.distance > maxDistance) return false;
+   438	          
+   439	          // Vérifier la note minimale
+   440	          if (provider.rating < minRating) return false;
+   441	          
+   442	          return true;
+   443	        });
+   444	        
+   445	        // Trier par distance
+   446	        filtered.sort((a, b) => a.distance - b.distance);
+   447	        
+   448	        console.log('✅ Résultats:', filtered.length);
+   449	        
+   450	        displayResults(filtered);
+   451	        loadingElement.classList.add('hidden');
+   452	      }, 500);
+   453	    }
+   454	    
+   455	    // Afficher les résultats
+   456	    function displayResults(providers) {
+   457	      resultsContainer.innerHTML = '';
+   458	      
+   459	      if (providers.length === 0) {
+   460	        noResultsElement.classList.remove('hidden');
+   461	        resultsCountElement.style.display = 'none';
+   462	        return;
+   463	      }
+   464	      
+   465	      // Afficher le nombre de résultats
+   466	      resultsCountElement.style.display = 'block';
+   467	      const typeText = currentTab === 'freelance' ? 'freelance' : 'prestataire';
+   468	      countTextElement.textContent = `${providers.length} ${typeText}${providers.length > 1 ? 's' : ''} trouvé${providers.length > 1 ? 's' : ''}`;
+   469	      
+   470	      providers.forEach(provider => {
+   471	        const card = createProviderCard(provider);
+   472	        resultsContainer.appendChild(card);
+   473	      });
+   474	    }
+   475	    
+   476	    // Créer une carte prestataire
+   477	    function createProviderCard(provider) {
+   478	      const card = document.createElement('div');
+   479	      card.className = 'provider-card';
+   480	      card.onclick = () => window.location.href = `provider-profile.html?id=${provider.userId}`;
+   481	      
+   482	      const professionIcon = Utils.PROFESSION_ICONS[provider.profession] || 'fa-briefcase';
+   483	      const professionName = Utils.PROFESSIONS[provider.profession] || provider.profession;
+   484	      
+   485	      const distance = provider.distance.toFixed(1);
+   486	      const distanceColor = distance < 2 ? '#4CAF50' : distance < 5 ? '#FF9800' : '#1976D2';
+   487	      
+   488	      const freelanceBadge = provider.isFreelance 
+   489	        ? '<span class="freelance-badge"><i class="fas fa-star"></i> Freelance</span>' 
+   490	        : '';
+   491	      
+   492	      card.innerHTML = `
+   493	        <div class="provider-avatar">
+   494	          <i class="fas ${professionIcon}"></i>
+   495	        </div>
+   496	        <div class="provider-info">
+   497	          <h3 class="provider-name">
+   498	            ${provider.firstName} ${provider.lastName}
+   499	            ${provider.verified ? '<i class="fas fa-check-circle" style="color: var(--success); font-size: 1rem;" title="Identité vérifiée"></i>' : ''}
+   500	            ${freelanceBadge}
+   501	          </h3>
+   502	          <p class="provider-profession">
+   503	            <i class="fas ${professionIcon}"></i>
+   504	            ${professionName}
+   505	          </p>
+   506	          <div class="distance-badge" style="background: ${distanceColor}22; color: ${distanceColor};">
+   507	            <i class="fas fa-location-arrow"></i>
+   508	            À ${distance} km de vous
+   509	          </div>
+   510	          <div class="provider-rating">
+   511	            ${Utils.generateStars(provider.rating || 0)}
+   512	            <span style="color: var(--text); margin-left: 0.25rem;">
+   513	              ${provider.rating ? provider.rating.toFixed(1) : '0.0'}/5 (${provider.reviewCount || 0} avis)
+   514	            </span>
+   515	          </div>
+   516	          <div class="provider-meta">
+   517	            <span>
+   518	              <i class="fas fa-map-marker-alt"></i>
+   519	              Rayon: ${provider.serviceRadius} km
+   520	            </span>
+   521	            <span style="font-weight: 600; color: var(--primary);">
+   522	              ${Utils.formatPrice(provider.basePrice)}
+   523	            </span>
+   524	          </div>
+   525	        </div>
+   526	      `;
+   527	      
+   528	      return card;
+   529	    }
+   530	    
+   531	    // Déconnexion
+   532	    function handleLogout() {
+   533	      if (confirm('Voulez-vous vraiment vous déconnecter ?')) {
+   534	        Utils.Session.logout();
+   535	        Utils.showToast('Vous êtes déconnecté', 'success');
+   536	        setTimeout(() => {
+   537	          window.location.href = 'index.html';
+   538	        }, 1000);
+   539	      }
+   540	    }
+   541	    
+   542	    // Initialisation
+   543	    document.addEventListener('DOMContentLoaded', async () => {
+   544	      updateAuthLinks();
+   545	      
+   546	      // Obtenir la localisation de l'utilisateur
+   547	      try {
+   548	        userLocation = await Utils.getUserLocation();
+   549	        console.log('📍 Position utilisateur:', userLocation);
+   550	      } catch (error) {
+   551	        console.warn('⚠️ Géolocalisation échouée, utilisation de coordonnées par défaut');
+   552	        userLocation = Utils.getAbidjanCoordinates();
+   553	      }
+   554	      
+   555	      // Charger tous les prestataires
+   556	      allProviders = Search.getAllProviders();
+   557	      
+   558	      // Calculer les distances
+   559	      allProviders = allProviders.map(provider => {
+   560	        const distance = Utils.calculateDistance(
+   561	          userLocation.latitude,
+   562	          userLocation.longitude,
+   563	          provider.coordinates.latitude,
+   564	          provider.coordinates.longitude
+   565	        );
+   566	        return { ...provider, distance };
+   567	      });
+   568	      
+   569	      console.log('👥 Prestataires chargés:', allProviders.length);
+   570	      
+   571	      // Initialiser le dropdown
+   572	      switchTab('classic');
+   573	    });
+   574	  </script>
+   575	</body>
+   576	</html>
