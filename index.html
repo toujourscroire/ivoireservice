@@ -571,13 +571,13 @@
     // Ouvrir le popup de connexion
     function openLoginPopup() {
       document.getElementById('loginOverlay').classList.add('active');
-      document.body.style.overflow = 'hidden'; // Empêcher le scroll
+      document.body.style.overflow = 'hidden';
     }
     
     // Fermer le popup de connexion
     function closeLoginPopup() {
       document.getElementById('loginOverlay').classList.remove('active');
-      document.body.style.overflow = ''; // Réactiver le scroll
+      document.body.style.overflow = '';
     }
     
     // Fermer en cliquant sur l'overlay
@@ -690,7 +690,6 @@
     
     // Fonction de connexion
     function performLogin(email, password) {
-      // Vérifier admin
       if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
         const adminUser = {
           id: generateUUID(),
@@ -705,7 +704,6 @@
         return { success: true, user: adminUser };
       }
 
-      // Vérifier utilisateurs normaux
       const users = Utils.Storage.get('users', []);
       const hashedPassword = hashPassword(password);
       const user = users.find(u => u.email === email && u.password === hashedPassword);
