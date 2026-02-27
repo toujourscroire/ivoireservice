@@ -1,420 +1,496 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion - Ivoiservice</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive.css">
-  <style>
-    :root {
-      --primary: #4CAF50;
-      --primary-dark: #388E3C;
-      --primary-soft: #E8F5E9;
-      --text: #212121;
-      --text-light: #666;
-      --border: #e0e0e0;
-      --radius-md: 8px;
-    }
-    body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f5f5f5;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem;
-    }
-    .auth-section {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem 0;
-    }
-    .auth-card {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
-      padding: 2.5rem;
-      max-width: 450px;
-      width: 100%;
-    }
-    .auth-card h1 {
-      font-size: 1.75rem;
-      margin-bottom: 0.5rem;
-      color: var(--text);
-    }
-    .form-group {
-      margin-bottom: 1.25rem;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-      color: var(--text);
-    }
-    .input-icon {
-      position: relative;
-    }
-    .input-icon i {
-      position: absolute;
-      left: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-light);
-    }
-    .input-icon input {
-      width: 100%;
-      padding: 0.875rem 1rem 0.875rem 2.75rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      font-size: 1rem;
-      transition: all 0.3s;
-      box-sizing: border-box;
-    }
-    .input-icon input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--primary-soft);
-    }
-    .btn {
-      width: 100%;
-      padding: 1rem;
-      border: none;
-      border-radius: var(--radius-md);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-    .btn-primary:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(76,175,80,0.3);
-    }
-    .alert {
-      padding: 1rem;
-      border-radius: var(--radius-md);
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .alert-error {
-      background: #FFEBEE;
-      color: #C62828;
-      border: 1px solid #EF5350;
-    }
-    .alert-success {
-      background: #E8F5E9;
-      color: #2E7D32;
-      border: 1px solid #66BB6A;
-    }
-  </style>
-</head>
-<body>
-  <section class="auth-section">
-    <div class="container">
-      <div class="auth-card">
-        <h1>🇨🇮 Connexion</h1>
-        <p style="color: var(--text-light); margin-bottom: 2rem;">
-          Connectez-vous à votre compte Ivoiservice
-        </p>
-        
-        <div id="alertContainer"></div>
-        
-        <form id="loginForm">
-          <div class="form-group">
-            <label for="email">Adresse email</label>
-            <div class="input-icon">
-              <i class="fas fa-envelope"></i>
-              <input type="email" id="email" name="email" required placeholder="votre.email@exemple.ci">
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="password">Mot de passe</label>
-            <div class="input-icon">
-              <i class="fas fa-lock"></i>
-              <input type="password" id="password" name="password" required placeholder="Votre mot de passe">
-            </div>
-          </div>
-          
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-sign-in-alt"></i> Se connecter
-          </button>
-        </form>
-        
-        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--primary-soft); border-radius: var(--radius-md);">
-          <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-dark);">
-            <i class="fas fa-info-circle"></i> Comptes de test
-          </p>
-          <div style="font-size: 0.875rem;">
-            <p><strong>Client:</strong> client@demo.com / demo123</p>
-            <p><strong>Prestataire:</strong> prestataire@demo.com / demo123</p>
-            <p><strong>Admin:</strong> admin@ivoiservice.ci / admin123</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <script>
-    // ==========================================
-    // UTILS COMPLETS (embarqués)
-    // ==========================================
-    
-    const Utils = {
-      Storage: {
-        get: (key, defaultValue = null) => {
-          try {
-            const item = localStorage.getItem(key);
-            return item ? JSON.parse(item) : defaultValue;
-          } catch (e) {
-            console.error('Storage.get error:', e);
-            return defaultValue;
-          }
-        },
-        set: (key, value) => {
-          try {
-            localStorage.setItem(key, JSON.stringify(value));
-          } catch (e) {
-            console.error('Storage.set error:', e);
-          }
-        }
-      },
-      
-      Session: {
-        login: (user) => {
-          Utils.Storage.set('currentUser', user);
-          Utils.Storage.set('isLoggedIn', true);
-        },
-        logout: () => {
-          localStorage.removeItem('currentUser');
-          localStorage.removeItem('isLoggedIn');
-        },
-        isLoggedIn: () => {
-          return Utils.Storage.get('isLoggedIn', false) === true;
-        },
-        getCurrentUser: () => {
-          return Utils.Storage.get('currentUser', null);
-        }
-      },
-      
-      hashPassword: (password) => {
-        let hash = 0;
-        for (let i = 0; i < password.length; i++) {
-          const char = password.charCodeAt(i);
-          hash = ((hash << 5) - hash) + char;
-          hash = hash & hash;
-        }
-        const hashStr = Math.abs(hash).toString(36).substring(0, 6);
-        return 'hashed_' + hashStr;
-      },
-      
-      isValidEmail: (email) => {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      },
-      
-      generateUUID: () => {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-          const r = Math.random() * 16 | 0;
-          const v = c === 'x' ? r : (r & 0x3 | 0x8);
-          return v.toString(16);
-        });
-      },
-      
-      showToast: (message, type = 'info') => {
-        const toast = document.createElement('div');
-        toast.className = `alert alert-${type}`;
-        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><span>${message}</span>`;
-        document.body.appendChild(toast);
-        toast.style.position = 'fixed';
-        toast.style.top = '2rem';
-        toast.style.right = '2rem';
-        toast.style.zIndex = '9999';
-        toast.style.minWidth = '300px';
-        setTimeout(() => toast.remove(), 4000);
-      }
-    };
-    
-    // ==========================================
-    // AUTH COMPLET (embarqué)
-    // ==========================================
-    
-    const Auth = {
-      initDemoUsers: () => {
-        const users = Utils.Storage.get('users', []);
-        if (users.length === 0) {
-          const demoUsers = [
-            {
-              id: 'user-client-demo',
-              email: 'client@demo.com',
-              password: Utils.hashPassword('demo123'),
-              firstName: 'Kouassi',
-              lastName: 'Konan',
-              phone: '+2250701020304',
-              role: 'CLIENT',
-              latitude: 5.3213,
-              longitude: -4.0114,
-              createdAt: Date.now()
-            },
-            {
-              id: 'user-provider-demo',
-              email: 'prestataire@demo.com',
-              password: Utils.hashPassword('demo123'),
-              firstName: 'Adjoua',
-              lastName: 'Yao',
-              phone: '+2250705060708',
-              role: 'PROVIDER',
-              latitude: 5.3480,
-              longitude: -3.9838,
-              createdAt: Date.now()
-            },
-            {
-              id: 'user-admin-demo',
-              email: 'admin@ivoiservice.ci',
-              password: Utils.hashPassword('admin123'),
-              firstName: 'Admin',
-              lastName: 'Ivoiservice',
-              phone: '+2250709101112',
-              role: 'ADMIN',
-              latitude: 5.3213,
-              longitude: -4.0114,
-              createdAt: Date.now()
-            }
-          ];
-          
-          Utils.Storage.set('users', demoUsers);
-          
-          // Provider profile
-          const providerProfile = {
-            id: 'profile-provider-demo',
-            userId: 'user-provider-demo',
-            profession: 'PLOMBIER',
-            basePrice: 15000,
-            radius: 10,
-            description: 'Plombier professionnel. Intervention rapide.',
-            photos: [],
-            rating: 4.5,
-            reviewCount: 12,
-            isVerified: true,
-            isFreelance: false,
-            createdAt: Date.now()
-          };
-          Utils.Storage.set('providerProfiles', [providerProfile]);
-          
-          // Subscription
-          const subscription = {
-            id: 'sub-client-demo',
-            userId: 'user-client-demo',
-            amount: 5000,
-            duration: 30,
-            startDate: Date.now(),
-            endDate: Date.now() + (30 * 24 * 60 * 60 * 1000),
-            status: 'ACTIVE',
-            createdAt: Date.now()
-          };
-          Utils.Storage.set('subscriptions', [subscription]);
-          
-          console.log('✅ Demo users created');
-        }
-      },
-      
-      login: (email, password) => {
-        const users = Utils.Storage.get('users', []);
-        const hashedPassword = Utils.hashPassword(password);
-        
-        const user = users.find(u => u.email === email && u.password === hashedPassword);
-        
-        if (user) {
-          const userSession = { ...user };
-          delete userSession.password;
-          Utils.Session.login(userSession);
-          return { success: true, user: userSession };
-        }
-        
-        return { success: false, message: 'Email ou mot de passe incorrect' };
-      }
-    };
-    
-    // ==========================================
-    // INITIALISATION
-    // ==========================================
-    
-    // Créer les utilisateurs de démo au chargement
-    Auth.initDemoUsers();
-    
-    // Gestion du formulaire
-    const loginForm = document.getElementById('loginForm');
-    const alertContainer = document.getElementById('alertContainer');
-    
-    // Redirection si déjà connecté
-    if (Utils.Session.isLoggedIn()) {
-      const user = Utils.Session.getCurrentUser();
-      let url = 'client-dashboard.html';
-      if (user.role === 'PROVIDER') url = 'provider-dashboard.html';
-      if (user.role === 'ADMIN') url = 'admin-dashboard.html';
-      window.location.href = url;
-    }
-    
-    function showError(msg) {
-      alertContainer.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i><span>${msg}</span></div>`;
-    }
-    
-    function showSuccess(msg) {
-      alertContainer.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i><span>${msg}</span></div>`;
-    }
-    
-    loginForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      alertContainer.innerHTML = '';
-      
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      
-      if (!email || !Utils.isValidEmail(email)) {
-        showError('Adresse email invalide');
-        return;
-      }
-      
-      if (!password || password.length < 6) {
-        showError('Mot de passe requis (minimum 6 caractères)');
-        return;
-      }
-      
-      const result = Auth.login(email, password);
-      
-      if (result.success) {
-        showSuccess('✅ Connexion réussie ! Redirection...');
-        Utils.showToast('Connexion réussie !', 'success');
-        
-        setTimeout(() => {
-          let url = 'client-dashboard.html';
-          if (result.user.role === 'PROVIDER') url = 'provider-dashboard.html';
-          if (result.user.role === 'ADMIN') url = 'admin-dashboard.html';
-          window.location.href = url;
-        }, 1000);
-      } else {
-        showError(result.message || 'Erreur de connexion');
-      }
-    });
-    
-    console.log('✅ Login page ready');
-    console.log('📦 Demo accounts available:');
-    console.log('   Client: client@demo.com / demo123');
-    console.log('   Provider: prestataire@demo.com / demo123');
-    console.log('   Admin: admin@ivoiservice.ci / admin123');
-  </script>
-</body>
-</html>
+     1	<!DOCTYPE html>
+     2	<html lang="fr">
+     3	<head>
+     4	  <meta charset="UTF-8">
+     5	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6	  <title>Connexion - Ivoiservice</title>
+     7	  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
+     8	  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+     9	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    10	  <link rel="stylesheet" href="css/style.css">
+    11	  <link rel="stylesheet" href="css/responsive.css">
+    12	  <style>
+    13	    :root {
+    14	      --primary: #4CAF50;
+    15	      --primary-dark: #388E3C;
+    16	      --primary-soft: #E8F5E9;
+    17	      --text: #212121;
+    18	      --text-light: #666;
+    19	      --border: #e0e0e0;
+    20	      --radius-md: 8px;
+    21	    }
+    22	    body {
+    23	      font-family: 'Inter', sans-serif;
+    24	      margin: 0;
+    25	      padding: 0;
+    26	      background: #f5f5f5;
+    27	    }
+    28	    .container {
+    29	      max-width: 1200px;
+    30	      margin: 0 auto;
+    31	      padding: 0 1rem;
+    32	    }
+    33	    .auth-section {
+    34	      min-height: 100vh;
+    35	      display: flex;
+    36	      align-items: center;
+    37	      justify-content: center;
+    38	      padding: 2rem 0;
+    39	    }
+    40	    .auth-card {
+    41	      background: white;
+    42	      border-radius: 16px;
+    43	      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    44	      padding: 2.5rem;
+    45	      max-width: 450px;
+    46	      width: 100%;
+    47	    }
+    48	    .auth-card h1 {
+    49	      font-size: 1.75rem;
+    50	      margin-bottom: 0.5rem;
+    51	      color: var(--text);
+    52	    }
+    53	    .form-group {
+    54	      margin-bottom: 1.25rem;
+    55	    }
+    56	    .form-group label {
+    57	      display: block;
+    58	      margin-bottom: 0.5rem;
+    59	      font-weight: 500;
+    60	      color: var(--text);
+    61	    }
+    62	    .input-icon {
+    63	      position: relative;
+    64	    }
+    65	    .input-icon i {
+    66	      position: absolute;
+    67	      left: 1rem;
+    68	      top: 50%;
+    69	      transform: translateY(-50%);
+    70	      color: var(--text-light);
+    71	    }
+    72	    .input-icon input {
+    73	      width: 100%;
+    74	      padding: 0.875rem 1rem 0.875rem 2.75rem;
+    75	      border: 1px solid var(--border);
+    76	      border-radius: var(--radius-md);
+    77	      font-size: 1rem;
+    78	      transition: all 0.3s;
+    79	      box-sizing: border-box;
+    80	    }
+    81	    .input-icon input:focus {
+    82	      outline: none;
+    83	      border-color: var(--primary);
+    84	      box-shadow: 0 0 0 3px var(--primary-soft);
+    85	    }
+    86	    .btn {
+    87	      width: 100%;
+    88	      padding: 1rem;
+    89	      border: none;
+    90	      border-radius: var(--radius-md);
+    91	      font-size: 1rem;
+    92	      font-weight: 600;
+    93	      cursor: pointer;
+    94	      transition: all 0.3s;
+    95	    }
+    96	    .btn-primary {
+    97	      background: var(--primary);
+    98	      color: white;
+    99	    }
+   100	    .btn-primary:hover {
+   101	      background: var(--primary-dark);
+   102	      transform: translateY(-2px);
+   103	      box-shadow: 0 4px 12px rgba(76,175,80,0.3);
+   104	    }
+   105	    .btn-secondary {
+   106	      background: #f44336;
+   107	      color: white;
+   108	      margin-bottom: 1rem;
+   109	    }
+   110	    .btn-secondary:hover {
+   111	      background: #d32f2f;
+   112	    }
+   113	    .alert {
+   114	      padding: 1rem;
+   115	      border-radius: var(--radius-md);
+   116	      margin-bottom: 1rem;
+   117	      display: flex;
+   118	      align-items: center;
+   119	      gap: 0.75rem;
+   120	    }
+   121	    .alert-error {
+   122	      background: #FFEBEE;
+   123	      color: #C62828;
+   124	      border: 1px solid #EF5350;
+   125	    }
+   126	    .alert-success {
+   127	      background: #E8F5E9;
+   128	      color: #2E7D32;
+   129	      border: 1px solid #66BB6A;
+   130	    }
+   131	    .alert-warning {
+   132	      background: #FFF3E0;
+   133	      color: #EF6C00;
+   134	      border: 1px solid #FFB74D;
+   135	    }
+   136	    .logout-info {
+   137	      background: #FFF3E0;
+   138	      padding: 1rem;
+   139	      border-radius: var(--radius-md);
+   140	      margin-bottom: 1.5rem;
+   141	      border-left: 4px solid #FF9800;
+   142	    }
+   143	  </style>
+   144	</head>
+   145	<body>
+   146	  <section class="auth-section">
+   147	    <div class="container">
+   148	      <div class="auth-card">
+   149	        <h1>🇨🇮 Connexion</h1>
+   150	        <p style="color: var(--text-light); margin-bottom: 2rem;">
+   151	          Connectez-vous à votre compte Ivoiservice
+   152	        </p>
+   153	        
+   154	        <!-- Section de déconnexion si déjà connecté -->
+   155	        <div id="loggedInSection" style="display: none;">
+   156	          <div class="logout-info">
+   157	            <p style="font-weight: 600; margin-bottom: 0.5rem;">
+   158	              <i class="fas fa-user-check"></i> Vous êtes déjà connecté
+   159	            </p>
+   160	            <p id="currentUserInfo" style="font-size: 0.9rem; margin-bottom: 1rem;"></p>
+   161	            <button onclick="forceLogout()" class="btn btn-secondary">
+   162	              <i class="fas fa-sign-out-alt"></i> Se déconnecter
+   163	            </button>
+   164	          </div>
+   165	        </div>
+   166	        
+   167	        <div id="loginSection">
+   168	          <div id="alertContainer"></div>
+   169	          
+   170	          <form id="loginForm">
+   171	            <div class="form-group">
+   172	              <label for="email">Adresse email</label>
+   173	              <div class="input-icon">
+   174	                <i class="fas fa-envelope"></i>
+   175	                <input type="email" id="email" name="email" required placeholder="votre.email@exemple.ci">
+   176	              </div>
+   177	            </div>
+   178	            
+   179	            <div class="form-group">
+   180	              <label for="password">Mot de passe</label>
+   181	              <div class="input-icon">
+   182	                <i class="fas fa-lock"></i>
+   183	                <input type="password" id="password" name="password" required placeholder="Votre mot de passe">
+   184	              </div>
+   185	            </div>
+   186	            
+   187	            <button type="submit" class="btn btn-primary">
+   188	              <i class="fas fa-sign-in-alt"></i> Se connecter
+   189	            </button>
+   190	          </form>
+   191	          
+   192	          <div style="margin-top: 1.5rem; padding: 1rem; background: var(--primary-soft); border-radius: var(--radius-md);">
+   193	            <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-dark);">
+   194	              <i class="fas fa-info-circle"></i> Comptes de test
+   195	            </p>
+   196	            <div style="font-size: 0.875rem;">
+   197	              <p><strong>Client:</strong> client@demo.com / demo123</p>
+   198	              <p><strong>Prestataire:</strong> prestataire@demo.com / demo123</p>
+   199	              <p style="color: var(--text-light); font-size: 0.8rem; margin-top: 0.5rem;">
+   200	                <i class="fas fa-shield-alt"></i> Le compte admin n'est pas public
+   201	              </p>
+   202	            </div>
+   203	          </div>
+   204	        </div>
+   205	      </div>
+   206	    </div>
+   207	  </section>
+   208	
+   209	  <script>
+   210	    // ==========================================
+   211	    // UTILS COMPLETS (embarqués)
+   212	    // ==========================================
+   213	    
+   214	    const Utils = {
+   215	      Storage: {
+   216	        get: (key, defaultValue = null) => {
+   217	          try {
+   218	            const item = localStorage.getItem(key);
+   219	            return item ? JSON.parse(item) : defaultValue;
+   220	          } catch (e) {
+   221	            console.error('Storage.get error:', e);
+   222	            return defaultValue;
+   223	          }
+   224	        },
+   225	        set: (key, value) => {
+   226	          try {
+   227	            localStorage.setItem(key, JSON.stringify(value));
+   228	          } catch (e) {
+   229	            console.error('Storage.set error:', e);
+   230	          }
+   231	        }
+   232	      },
+   233	      
+   234	      Session: {
+   235	        login: (user) => {
+   236	          Utils.Storage.set('currentUser', user);
+   237	          Utils.Storage.set('isLoggedIn', true);
+   238	          Utils.Storage.set('loginTime', Date.now());
+   239	        },
+   240	        logout: () => {
+   241	          localStorage.removeItem('currentUser');
+   242	          localStorage.removeItem('isLoggedIn');
+   243	          localStorage.removeItem('loginTime');
+   244	        },
+   245	        isLoggedIn: () => {
+   246	          return Utils.Storage.get('isLoggedIn', false) === true;
+   247	        },
+   248	        getCurrentUser: () => {
+   249	          return Utils.Storage.get('currentUser', null);
+   250	        }
+   251	      },
+   252	      
+   253	      hashPassword: (password) => {
+   254	        let hash = 0;
+   255	        for (let i = 0; i < password.length; i++) {
+   256	          const char = password.charCodeAt(i);
+   257	          hash = ((hash << 5) - hash) + char;
+   258	          hash = hash & hash;
+   259	        }
+   260	        const hashStr = Math.abs(hash).toString(36).substring(0, 6);
+   261	        return 'hashed_' + hashStr;
+   262	      },
+   263	      
+   264	      isValidEmail: (email) => {
+   265	        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+   266	      },
+   267	      
+   268	      generateUUID: () => {
+   269	        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+   270	          const r = Math.random() * 16 | 0;
+   271	          const v = c === 'x' ? r : (r & 0x3 | 0x8);
+   272	          return v.toString(16);
+   273	        });
+   274	      },
+   275	      
+   276	      showToast: (message, type = 'info') => {
+   277	        const toast = document.createElement('div');
+   278	        toast.className = `alert alert-${type}`;
+   279	        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><span>${message}</span>`;
+   280	        document.body.appendChild(toast);
+   281	        toast.style.position = 'fixed';
+   282	        toast.style.top = '2rem';
+   283	        toast.style.right = '2rem';
+   284	        toast.style.zIndex = '9999';
+   285	        toast.style.minWidth = '300px';
+   286	        setTimeout(() => toast.remove(), 4000);
+   287	      }
+   288	    };
+   289	    
+   290	    // ==========================================
+   291	    // AUTH AVEC ADMIN SÉCURISÉ
+   292	    // ==========================================
+   293	    
+   294	    const Auth = {
+   295	      // ⚠️ CHANGEZ CES IDENTIFIANTS ADMIN SECRETS
+   296	      ADMIN_EMAIL: 'michelkouakou12@gmail.com,  // ← CHANGEZ ICI
+   297	      ADMIN_PASSWORD: 'ordinateur15092025', // ← CHANGEZ ICI
+   298	      
+   299	      initDemoUsers: () => {
+   300	        const users = Utils.Storage.get('users', []);
+   301	        
+   302	        // Ne créer que les utilisateurs CLIENT et PROVIDER (pas d'admin public)
+   303	        if (users.length === 0) {
+   304	          const demoUsers = [
+   305	            {
+   306	              id: 'user-client-demo',
+   307	              email: 'client@demo.com',
+   308	              password: Utils.hashPassword('demo123'),
+   309	              firstName: 'Kouassi',
+   310	              lastName: 'Konan',
+   311	              phone: '+2250701020304',
+   312	              role: 'CLIENT',
+   313	              latitude: 5.3213,
+   314	              longitude: -4.0114,
+   315	              createdAt: Date.now()
+   316	            },
+   317	            {
+   318	              id: 'user-provider-demo',
+   319	              email: 'prestataire@demo.com',
+   320	              password: Utils.hashPassword('demo123'),
+   321	              firstName: 'Adjoua',
+   322	              lastName: 'Yao',
+   323	              phone: '+2250705060708',
+   324	              role: 'PROVIDER',
+   325	              latitude: 5.3480,
+   326	              longitude: -3.9838,
+   327	              createdAt: Date.now()
+   328	            }
+   329	            // ❌ PAS de compte admin ici - il est géré séparément
+   330	          ];
+   331	          
+   332	          Utils.Storage.set('users', demoUsers);
+   333	          
+   334	          // Provider profile
+   335	          const providerProfile = {
+   336	            id: 'profile-provider-demo',
+   337	            userId: 'user-provider-demo',
+   338	            profession: 'PLOMBIER',
+   339	            basePrice: 15000,
+   340	            radius: 10,
+   341	            description: 'Plombier professionnel. Intervention rapide.',
+   342	            photos: [],
+   343	            rating: 4.5,
+   344	            reviewCount: 12,
+   345	            isVerified: true,
+   346	            isFreelance: false,
+   347	            createdAt: Date.now()
+   348	          };
+   349	          Utils.Storage.set('providerProfiles', [providerProfile]);
+   350	          
+   351	          // Subscription
+   352	          const subscription = {
+   353	            id: 'sub-client-demo',
+   354	            userId: 'user-client-demo',
+   355	            amount: 5000,
+   356	            duration: 30,
+   357	            startDate: Date.now(),
+   358	            endDate: Date.now() + (30 * 24 * 60 * 60 * 1000),
+   359	            status: 'ACTIVE',
+   360	            createdAt: Date.now()
+   361	          };
+   362	          Utils.Storage.set('subscriptions', [subscription]);
+   363	          
+   364	          console.log('✅ Demo users created (no public admin)');
+   365	        }
+   366	      },
+   367	      
+   368	      login: (email, password) => {
+   369	        // Vérifier d'abord si c'est l'admin
+   370	        if (email === Auth.ADMIN_EMAIL && password === Auth.ADMIN_PASSWORD) {
+   371	          const adminUser = {
+   372	            id: 'user-admin-master',
+   373	            email: Auth.ADMIN_EMAIL,
+   374	            firstName: 'Admin',
+   375	            lastName: 'Master',
+   376	            phone: '+2250700000000',
+   377	            role: 'ADMIN',
+   378	            latitude: 5.3213,
+   379	            longitude: -4.0114,
+   380	            createdAt: Date.now()
+   381	          };
+   382	          
+   383	          Utils.Session.login(adminUser);
+   384	          return { success: true, user: adminUser };
+   385	        }
+   386	        
+   387	        // Sinon vérifier dans les utilisateurs normaux
+   388	        const users = Utils.Storage.get('users', []);
+   389	        const hashedPassword = Utils.hashPassword(password);
+   390	        
+   391	        const user = users.find(u => u.email === email && u.password === hashedPassword);
+   392	        
+   393	        if (user) {
+   394	          const userSession = { ...user };
+   395	          delete userSession.password;
+   396	          Utils.Session.login(userSession);
+   397	          return { success: true, user: userSession };
+   398	        }
+   399	        
+   400	        return { success: false, message: 'Email ou mot de passe incorrect' };
+   401	      }
+   402	    };
+   403	    
+   404	    // ==========================================
+   405	    // GESTION DE LA PAGE
+   406	    // ==========================================
+   407	    
+   408	    // Créer les utilisateurs de démo au chargement
+   409	    Auth.initDemoUsers();
+   410	    
+   411	    const loginForm = document.getElementById('loginForm');
+   412	    const alertContainer = document.getElementById('alertContainer');
+   413	    const loggedInSection = document.getElementById('loggedInSection');
+   414	    const loginSection = document.getElementById('loginSection');
+   415	    const currentUserInfo = document.getElementById('currentUserInfo');
+   416	    
+   417	    // Vérifier si déjà connecté
+   418	    function checkLoginStatus() {
+   419	      if (Utils.Session.isLoggedIn()) {
+   420	        const user = Utils.Session.getCurrentUser();
+   421	        
+   422	        // Afficher les infos de l'utilisateur connecté
+   423	        loggedInSection.style.display = 'block';
+   424	        loginSection.style.display = 'none';
+   425	        
+   426	        currentUserInfo.innerHTML = `
+   427	          <strong>${user.firstName} ${user.lastName}</strong><br>
+   428	          <span style="color: var(--text-light);">${user.email} - ${user.role}</span>
+   429	        `;
+   430	      } else {
+   431	        loggedInSection.style.display = 'none';
+   432	        loginSection.style.display = 'block';
+   433	      }
+   434	    }
+   435	    
+   436	    // Fonction de déconnexion forcée
+   437	    function forceLogout() {
+   438	      Utils.Session.logout();
+   439	      Utils.showToast('Déconnexion réussie', 'success');
+   440	      checkLoginStatus();
+   441	    }
+   442	    
+   443	    function showError(msg) {
+   444	      alertContainer.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i><span>${msg}</span></div>`;
+   445	    }
+   446	    
+   447	    function showSuccess(msg) {
+   448	      alertContainer.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i><span>${msg}</span></div>`;
+   449	    }
+   450	    
+   451	    loginForm.addEventListener('submit', function(e) {
+   452	      e.preventDefault();
+   453	      alertContainer.innerHTML = '';
+   454	      
+   455	      const email = document.getElementById('email').value.trim();
+   456	      const password = document.getElementById('password').value;
+   457	      
+   458	      if (!email || !Utils.isValidEmail(email)) {
+   459	        showError('Adresse email invalide');
+   460	        return;
+   461	      }
+   462	      
+   463	      if (!password || password.length < 6) {
+   464	        showError('Mot de passe requis (minimum 6 caractères)');
+   465	        return;
+   466	      }
+   467	      
+   468	      const result = Auth.login(email, password);
+   469	      
+   470	      if (result.success) {
+   471	        showSuccess('✅ Connexion réussie ! Redirection...');
+   472	        Utils.showToast('Connexion réussie !', 'success');
+   473	        
+   474	        setTimeout(() => {
+   475	          let url = 'client-dashboard.html';
+   476	          if (result.user.role === 'PROVIDER') url = 'provider-dashboard.html';
+   477	          if (result.user.role === 'ADMIN') url = 'admin-dashboard.html';
+   478	          window.location.href = url;
+   479	        }, 1000);
+   480	      } else {
+   481	        showError(result.message || 'Erreur de connexion');
+   482	      }
+   483	    });
+   484	    
+   485	    // Vérifier le statut au chargement
+   486	    checkLoginStatus();
+   487	    
+   488	    console.log('✅ Login page ready (secure mode)');
+   489	    console.log('📦 Public demo accounts:');
+   490	    console.log('   Client: client@demo.com / demo123');
+   491	    console.log('   Provider: prestataire@demo.com / demo123');
+   492	    console.log('🔒 Admin account is private');
+   493	  </script>
+   494	</body>
+   495	</html>
+   496	
