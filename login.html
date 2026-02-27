@@ -6,99 +6,360 @@
   <title>Connexion - Ivoiservice</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇨🇮</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    :root {
+      --primary: #4CAF50;
+      --primary-dark: #388E3C;
+      --primary-soft: #E8F5E9;
+      --text: #212121;
+      --text-light: #666;
+      --border: #e0e0e0;
+      --radius-md: 8px;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    .auth-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 0;
+    }
+    .auth-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      padding: 2.5rem;
+      max-width: 450px;
+      width: 100%;
+    }
+    .auth-card h1 {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .input-icon {
+      position: relative;
+    }
+    .input-icon i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+    }
+    .input-icon input {
+      width: 100%;
+      padding: 0.875rem 1rem 0.875rem 2.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      transition: all 0.3s;
+      box-sizing: border-box;
+    }
+    .input-icon input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+    .btn {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(76,175,80,0.3);
+    }
+    .alert {
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .alert-error {
+      background: #FFEBEE;
+      color: #C62828;
+      border: 1px solid #EF5350;
+    }
+    .alert-success {
+      background: #E8F5E9;
+      color: #2E7D32;
+      border: 1px solid #66BB6A;
+    }
+  </style>
 </head>
 <body>
-  <header class="header">
+  <section class="auth-section">
     <div class="container">
-      <nav class="navbar">
-        <a href="index.html" class="logo">
-          <i class="fas fa-handshake"></i>
-          <span>Ivoiservice</span>
-        </a>
-        <ul class="nav-links">
-          <li><a href="index.html">Accueil</a></li>
-          <li><a href="search.html">Rechercher</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
-  <section class="services">
-    <div class="container">
-      <div style="max-width: 500px; margin: 0 auto;">
-        <div class="card">
-          <div class="card-header text-center">
-            <h1 class="card-title">
-              <i class="fas fa-sign-in-alt text-primary"></i>
-              Connexion
-            </h1>
-            <p class="text-light">Connectez-vous à votre compte</p>
-          </div>
-          
-          <div id="alertContainer"></div>
-          
-          <form id="loginForm">
-            <div class="form-group">
-              <label class="form-label" for="email">
-                <i class="fas fa-envelope"></i> Email
-              </label>
-              <input type="email" id="email" name="email" class="form-input" placeholder="votre@email.com" required>
-            </div>
-            
-            <div class="form-group">
-              <label class="form-label" for="password">
-                <i class="fas fa-lock"></i> Mot de passe
-              </label>
-              <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" required>
-            </div>
-            
-            <button type="submit" class="btn btn-primary btn-full btn-lg">
-              <i class="fas fa-sign-in-alt"></i> Se connecter
-            </button>
-          </form>
-          
-          <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); text-align: center;">
-            <p class="text-light">Pas encore de compte ?</p>
-            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-              <a href="register-client.html" class="btn btn-outline" style="flex: 1;">
-                <i class="fas fa-user"></i> Client
-              </a>
-              <a href="register-provider.html" class="btn btn-outline" style="flex: 1;">
-                <i class="fas fa-user-tie"></i> Prestataire
-              </a>
+      <div class="auth-card">
+        <h1>🇨🇮 Connexion</h1>
+        <p style="color: var(--text-light); margin-bottom: 2rem;">
+          Connectez-vous à votre compte Ivoiservice
+        </p>
+        
+        <div id="alertContainer"></div>
+        
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Adresse email</label>
+            <div class="input-icon">
+              <i class="fas fa-envelope"></i>
+              <input type="email" id="email" name="email" required placeholder="votre.email@exemple.ci">
             </div>
           </div>
           
-          <div style="margin-top: 1.5rem; padding: 1rem; background: #E8F5E9; border-radius: 8px;">
-            <p style="font-weight: 600; margin-bottom: 0.5rem; color: #2E7D32;">
-              <i class="fas fa-info-circle"></i> Comptes de test
-            </p>
-            <div style="font-size: 0.875rem;">
-              <p><strong>Client:</strong> client@demo.com / demo123</p>
-              <p><strong>Prestataire:</strong> prestataire@demo.com / demo123</p>
-              <p><strong>Admin:</strong> admin@ivoiservice.ci / admin123</p>
+          <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <div class="input-icon">
+              <i class="fas fa-lock"></i>
+              <input type="password" id="password" name="password" required placeholder="Votre mot de passe">
             </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-sign-in-alt"></i> Se connecter
+          </button>
+        </form>
+        
+        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--primary-soft); border-radius: var(--radius-md);">
+          <p style="font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-dark);">
+            <i class="fas fa-info-circle"></i> Comptes de test
+          </p>
+          <div style="font-size: 0.875rem;">
+            <p><strong>Client:</strong> client@demo.com / demo123</p>
+            <p><strong>Prestataire:</strong> prestataire@demo.com / demo123</p>
+            <p><strong>Admin:</strong> admin@ivoiservice.ci / admin123</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="container">
-      <p>&copy; 2026 Ivoiservice. Tous droits réservés. 🇨🇮</p>
-    </div>
-  </footer>
-
-  <script src="js/utils.js"></script>
-  <script src="js/auth.js"></script>
   <script>
+    // ==========================================
+    // UTILS COMPLETS (embarqués)
+    // ==========================================
+    
+    const Utils = {
+      Storage: {
+        get: (key, defaultValue = null) => {
+          try {
+            const item = localStorage.getItem(key);
+            return item ? JSON.parse(item) : defaultValue;
+          } catch (e) {
+            console.error('Storage.get error:', e);
+            return defaultValue;
+          }
+        },
+        set: (key, value) => {
+          try {
+            localStorage.setItem(key, JSON.stringify(value));
+          } catch (e) {
+            console.error('Storage.set error:', e);
+          }
+        }
+      },
+      
+      Session: {
+        login: (user) => {
+          Utils.Storage.set('currentUser', user);
+          Utils.Storage.set('isLoggedIn', true);
+        },
+        logout: () => {
+          localStorage.removeItem('currentUser');
+          localStorage.removeItem('isLoggedIn');
+        },
+        isLoggedIn: () => {
+          return Utils.Storage.get('isLoggedIn', false) === true;
+        },
+        getCurrentUser: () => {
+          return Utils.Storage.get('currentUser', null);
+        }
+      },
+      
+      hashPassword: (password) => {
+        let hash = 0;
+        for (let i = 0; i < password.length; i++) {
+          const char = password.charCodeAt(i);
+          hash = ((hash << 5) - hash) + char;
+          hash = hash & hash;
+        }
+        const hashStr = Math.abs(hash).toString(36).substring(0, 6);
+        return 'hashed_' + hashStr;
+      },
+      
+      isValidEmail: (email) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      },
+      
+      generateUUID: () => {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0;
+          const v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      },
+      
+      showToast: (message, type = 'info') => {
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type}`;
+        toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><span>${message}</span>`;
+        document.body.appendChild(toast);
+        toast.style.position = 'fixed';
+        toast.style.top = '2rem';
+        toast.style.right = '2rem';
+        toast.style.zIndex = '9999';
+        toast.style.minWidth = '300px';
+        setTimeout(() => toast.remove(), 4000);
+      }
+    };
+    
+    // ==========================================
+    // AUTH COMPLET (embarqué)
+    // ==========================================
+    
+    const Auth = {
+      initDemoUsers: () => {
+        const users = Utils.Storage.get('users', []);
+        if (users.length === 0) {
+          const demoUsers = [
+            {
+              id: 'user-client-demo',
+              email: 'client@demo.com',
+              password: Utils.hashPassword('demo123'),
+              firstName: 'Kouassi',
+              lastName: 'Konan',
+              phone: '+2250701020304',
+              role: 'CLIENT',
+              latitude: 5.3213,
+              longitude: -4.0114,
+              createdAt: Date.now()
+            },
+            {
+              id: 'user-provider-demo',
+              email: 'prestataire@demo.com',
+              password: Utils.hashPassword('demo123'),
+              firstName: 'Adjoua',
+              lastName: 'Yao',
+              phone: '+2250705060708',
+              role: 'PROVIDER',
+              latitude: 5.3480,
+              longitude: -3.9838,
+              createdAt: Date.now()
+            },
+            {
+              id: 'user-admin-demo',
+              email: 'admin@ivoiservice.ci',
+              password: Utils.hashPassword('admin123'),
+              firstName: 'Admin',
+              lastName: 'Ivoiservice',
+              phone: '+2250709101112',
+              role: 'ADMIN',
+              latitude: 5.3213,
+              longitude: -4.0114,
+              createdAt: Date.now()
+            }
+          ];
+          
+          Utils.Storage.set('users', demoUsers);
+          
+          // Provider profile
+          const providerProfile = {
+            id: 'profile-provider-demo',
+            userId: 'user-provider-demo',
+            profession: 'PLOMBIER',
+            basePrice: 15000,
+            radius: 10,
+            description: 'Plombier professionnel. Intervention rapide.',
+            photos: [],
+            rating: 4.5,
+            reviewCount: 12,
+            isVerified: true,
+            isFreelance: false,
+            createdAt: Date.now()
+          };
+          Utils.Storage.set('providerProfiles', [providerProfile]);
+          
+          // Subscription
+          const subscription = {
+            id: 'sub-client-demo',
+            userId: 'user-client-demo',
+            amount: 5000,
+            duration: 30,
+            startDate: Date.now(),
+            endDate: Date.now() + (30 * 24 * 60 * 60 * 1000),
+            status: 'ACTIVE',
+            createdAt: Date.now()
+          };
+          Utils.Storage.set('subscriptions', [subscription]);
+          
+          console.log('✅ Demo users created');
+        }
+      },
+      
+      login: (email, password) => {
+        const users = Utils.Storage.get('users', []);
+        const hashedPassword = Utils.hashPassword(password);
+        
+        const user = users.find(u => u.email === email && u.password === hashedPassword);
+        
+        if (user) {
+          const userSession = { ...user };
+          delete userSession.password;
+          Utils.Session.login(userSession);
+          return { success: true, user: userSession };
+        }
+        
+        return { success: false, message: 'Email ou mot de passe incorrect' };
+      }
+    };
+    
+    // ==========================================
+    // INITIALISATION
+    // ==========================================
+    
+    // Créer les utilisateurs de démo au chargement
+    Auth.initDemoUsers();
+    
+    // Gestion du formulaire
     const loginForm = document.getElementById('loginForm');
     const alertContainer = document.getElementById('alertContainer');
     
+    // Redirection si déjà connecté
     if (Utils.Session.isLoggedIn()) {
       const user = Utils.Session.getCurrentUser();
       let url = 'client-dashboard.html';
@@ -108,7 +369,11 @@
     }
     
     function showError(msg) {
-      alertContainer.innerHTML = '<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i><span>' + msg + '</span></div>';
+      alertContainer.innerHTML = `<div class="alert alert-error"><i class="fas fa-exclamation-circle"></i><span>${msg}</span></div>`;
+    }
+    
+    function showSuccess(msg) {
+      alertContainer.innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i><span>${msg}</span></div>`;
     }
     
     loginForm.addEventListener('submit', function(e) {
@@ -119,29 +384,37 @@
       const password = document.getElementById('password').value;
       
       if (!email || !Utils.isValidEmail(email)) {
-        showError('Email invalide');
+        showError('Adresse email invalide');
         return;
       }
       
       if (!password || password.length < 6) {
-        showError('Mot de passe requis (min 6 caractères)');
+        showError('Mot de passe requis (minimum 6 caractères)');
         return;
       }
       
       const result = Auth.login(email, password);
       
       if (result.success) {
+        showSuccess('✅ Connexion réussie ! Redirection...');
         Utils.showToast('Connexion réussie !', 'success');
-        setTimeout(function() {
+        
+        setTimeout(() => {
           let url = 'client-dashboard.html';
           if (result.user.role === 'PROVIDER') url = 'provider-dashboard.html';
           if (result.user.role === 'ADMIN') url = 'admin-dashboard.html';
           window.location.href = url;
         }, 1000);
       } else {
-        showError(result.message);
+        showError(result.message || 'Erreur de connexion');
       }
     });
+    
+    console.log('✅ Login page ready');
+    console.log('📦 Demo accounts available:');
+    console.log('   Client: client@demo.com / demo123');
+    console.log('   Provider: prestataire@demo.com / demo123');
+    console.log('   Admin: admin@ivoiservice.ci / admin123');
   </script>
 </body>
 </html>
