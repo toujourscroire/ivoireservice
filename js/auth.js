@@ -1,5 +1,6 @@
 // ==============================================
 // IVOISERVICE - Gestion de l'authentification
+// Version modifiée avec CNI + Freelance
 // ==============================================
 
 // Initialiser les utilisateurs de démonstration
@@ -34,6 +35,18 @@ function initDemoUsers() {
       },
       {
         id: Utils.generateUUID(),
+        email: 'freelance@demo.com',
+        password: Utils.hashPassword('demo123'),
+        firstName: 'Aya',
+        lastName: 'Kouamé',
+        phone: '+2250706070809',
+        role: 'PROVIDER',
+        latitude: 5.3600,
+        longitude: -4.0000,
+        createdAt: Date.now()
+      },
+      {
+        id: Utils.generateUUID(),
         email: 'admin@ivoiservice.ci',
         password: Utils.hashPassword('admin123'),
         firstName: 'Admin',
@@ -48,21 +61,60 @@ function initDemoUsers() {
     
     Utils.Storage.set('users', demoUsers);
     
-    // Créer le profil prestataire pour le compte démo
+    // Créer le profil prestataire classique pour le compte démo
     const providerProfiles = Utils.Storage.get('providerProfiles', []);
     providerProfiles.push({
       id: Utils.generateUUID(),
       userId: demoUsers[1].id,
       profession: 'PLOMBIER',
+      isFreelance: false,
       basePrice: 15000,
       radius: 10,
       description: 'Plombier professionnel avec 10 ans d\'expérience. Intervention rapide et travail soigné.',
       photos: [],
+      portfolio: [],
       rating: 4.5,
       reviewCount: 12,
       isVerified: true,
+      idDocumentUrl: null,
+      idDocumentStatus: 'APPROVED',
       createdAt: Date.now()
     });
+    
+    // Créer un profil freelance pour le compte démo
+    providerProfiles.push({
+      id: Utils.generateUUID(),
+      userId: demoUsers[2].id,
+      profession: 'MARKETING_DIGITAL',
+      isFreelance: true,
+      basePrice: 25000,
+      radius: 50,
+      description: 'Expert en marketing digital avec 5 ans d\'expérience. Spécialisé en campagnes Facebook Ads et Google Ads.',
+      photos: [],
+      portfolio: [
+        {
+          id: Utils.generateUUID(),
+          title: 'Campagne Facebook Ads pour boutique e-commerce',
+          description: 'Augmentation de 300% des ventes en 3 mois',
+          imageUrl: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23009E60" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="20"%3EProjet 1%3C/text%3E%3C/svg%3E',
+          createdAt: Date.now()
+        },
+        {
+          id: Utils.generateUUID(),
+          title: 'Stratégie SEO pour restaurant',
+          description: 'Première page Google en 2 mois pour 10 mots-clés',
+          imageUrl: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23007A4A" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="20"%3EProjet 2%3C/text%3E%3C/svg%3E',
+          createdAt: Date.now()
+        }
+      ],
+      rating: 4.8,
+      reviewCount: 8,
+      isVerified: true,
+      idDocumentUrl: null,
+      idDocumentStatus: 'APPROVED',
+      createdAt: Date.now()
+    });
+    
     Utils.Storage.set('providerProfiles', providerProfiles);
     
     // Créer un abonnement actif pour le client démo
@@ -71,16 +123,17 @@ function initDemoUsers() {
       id: Utils.generateUUID(),
       userId: demoUsers[0].id,
       status: 'ACTIVE',
-      startDate: Date.now(),
-      endDate: Date.now() + (30 * 24 * 60 * 60 * 1000), // +30 jours
+      startDate: Date.now() - (10 * 24 * 60 * 60 * 1000), // Commencé il y a 10 jours
+      endDate: Date.now() + (20 * 24 * 60 * 60 * 1000), // Expire dans 20 jours
       amount: 5000,
-      createdAt: Date.now()
+      paymentMethod: 'ORANGE_MONEY',
+      createdAt: Date.now() - (10 * 24 * 60 * 60 * 1000)
     });
     Utils.Storage.set('subscriptions', subscriptions);
   }
 }
 
-// Connexion
+// Connexion (utilise sessionStorage uniquement)
 function login(email, password) {
   const users = Utils.Storage.get('users', []);
   const hashedPassword = Utils.hashPassword(password);
@@ -138,7 +191,7 @@ function registerClient(data) {
   return { success: true, user: userSession };
 }
 
-// Inscription prestataire
+// Inscription prestataire (avec support Freelance + CNI)
 function registerProvider(data) {
   const users = Utils.Storage.get('users', []);
   
@@ -150,6 +203,11 @@ function registerProvider(data) {
   // Vérifier si le téléphone existe déjà
   if (users.some(u => u.phone === data.phone)) {
     return { success: false, message: 'Ce numéro de téléphone est déjà utilisé' };
+  }
+  
+  // Vérifier que le document CNI est fourni
+  if (!data.idDocument) {
+    return { success: false, message: 'Le document d\'identité (CNI ou Passeport) est obligatoire' };
   }
   
   // Créer le nouvel utilisateur
@@ -175,18 +233,22 @@ function registerProvider(data) {
     id: Utils.generateUUID(),
     userId: newUser.id,
     profession: data.profession,
+    isFreelance: data.isFreelance || false,
     basePrice: data.basePrice,
     radius: data.radius,
     description: data.description || '',
     photos: [],
+    portfolio: data.isFreelance ? [] : undefined,
     rating: 0,
     reviewCount: 0,
     isVerified: false,
+    idDocumentUrl: data.idDocument, // Base64 de l'image CNI
+    idDocumentStatus: 'PENDING', // PENDING, APPROVED, REJECTED
     createdAt: Date.now()
   };
   
   providerProfiles.push(newProfile);
-  Utils.Storage.set('providerProfiles', newProfile);
+  Utils.Storage.set('providerProfiles', providerProfiles);
   
   // Créer une session
   const userSession = { ...newUser };
@@ -205,7 +267,19 @@ function getProviderProfile(userId) {
 // Récupérer l'abonnement d'un utilisateur
 function getUserSubscription(userId) {
   const subscriptions = Utils.Storage.get('subscriptions', []);
-  return subscriptions.find(s => s.userId === userId);
+  return subscriptions.find(s => s.userId === userId && s.status === 'ACTIVE');
+}
+
+// Récupérer l'historique des abonnements
+function getUserSubscriptionHistory(userId) {
+  const subscriptions = Utils.Storage.get('subscriptions', []);
+  return subscriptions.filter(s => s.userId === userId).sort((a, b) => b.createdAt - a.createdAt);
+}
+
+// Compter le nombre d'abonnements
+function getUserSubscriptionCount(userId) {
+  const subscriptions = Utils.Storage.get('subscriptions', []);
+  return subscriptions.filter(s => s.userId === userId).length;
 }
 
 // Vérifier si un client a un abonnement actif
@@ -230,6 +304,24 @@ function hasActiveSubscription(userId) {
   }
   
   return false;
+}
+
+// Calculer les jours restants d'abonnement
+function getRemainingDays(userId) {
+  const subscription = getUserSubscription(userId);
+  
+  if (!subscription || subscription.status !== 'ACTIVE') {
+    return 0;
+  }
+  
+  const now = Date.now();
+  const remainingMs = subscription.endDate - now;
+  
+  if (remainingMs <= 0) {
+    return 0;
+  }
+  
+  return Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
 }
 
 // Mettre à jour le profil utilisateur
@@ -272,7 +364,7 @@ function updateProviderProfile(userId, updates) {
     return { success: false, message: 'Profil prestataire non trouvé' };
   }
   
-  const allowedFields = ['profession', 'basePrice', 'radius', 'description', 'photos'];
+  const allowedFields = ['profession', 'basePrice', 'radius', 'description', 'photos', 'portfolio', 'idDocumentUrl'];
   const filteredUpdates = {};
   
   allowedFields.forEach(field => {
@@ -285,6 +377,48 @@ function updateProviderProfile(userId, updates) {
   Utils.Storage.set('providerProfiles', providerProfiles);
   
   return { success: true, profile: providerProfiles[profileIndex] };
+}
+
+// Ajouter un projet au portfolio (Freelance uniquement)
+function addPortfolioItem(userId, portfolioItem) {
+  const profile = getProviderProfile(userId);
+  
+  if (!profile) {
+    return { success: false, message: 'Profil non trouvé' };
+  }
+  
+  if (!profile.isFreelance) {
+    return { success: false, message: 'Cette fonctionnalité est réservée aux freelances' };
+  }
+  
+  if (!profile.portfolio) {
+    profile.portfolio = [];
+  }
+  
+  const newItem = {
+    id: Utils.generateUUID(),
+    title: portfolioItem.title,
+    description: portfolioItem.description,
+    imageUrl: portfolioItem.imageUrl, // Base64
+    createdAt: Date.now()
+  };
+  
+  profile.portfolio.push(newItem);
+  
+  return updateProviderProfile(userId, { portfolio: profile.portfolio });
+}
+
+// Supprimer un projet du portfolio
+function removePortfolioItem(userId, itemId) {
+  const profile = getProviderProfile(userId);
+  
+  if (!profile || !profile.portfolio) {
+    return { success: false, message: 'Portfolio non trouvé' };
+  }
+  
+  profile.portfolio = profile.portfolio.filter(item => item.id !== itemId);
+  
+  return updateProviderProfile(userId, { portfolio: profile.portfolio });
 }
 
 // Changer le mot de passe
@@ -308,6 +442,39 @@ function changePassword(userId, currentPassword, newPassword) {
   return { success: true, message: 'Mot de passe modifié avec succès' };
 }
 
+// Fonctions ADMIN : Valider/Rejeter CNI
+function verifyIdDocument(profileId, status) {
+  const providerProfiles = Utils.Storage.get('providerProfiles', []);
+  const profileIndex = providerProfiles.findIndex(p => p.id === profileId);
+  
+  if (profileIndex === -1) {
+    return { success: false, message: 'Profil non trouvé' };
+  }
+  
+  if (!['APPROVED', 'REJECTED'].includes(status)) {
+    return { success: false, message: 'Statut invalide' };
+  }
+  
+  providerProfiles[profileIndex].idDocumentStatus = status;
+  
+  // Si approuvé, activer la vérification
+  if (status === 'APPROVED') {
+    providerProfiles[profileIndex].isVerified = true;
+  } else {
+    providerProfiles[profileIndex].isVerified = false;
+  }
+  
+  Utils.Storage.set('providerProfiles', providerProfiles);
+  
+  return { success: true, profile: providerProfiles[profileIndex] };
+}
+
+// Récupérer tous les prestataires en attente de vérification
+function getPendingVerifications() {
+  const providerProfiles = Utils.Storage.get('providerProfiles', []);
+  return providerProfiles.filter(p => p.idDocumentStatus === 'PENDING');
+}
+
 // Initialiser les utilisateurs de démonstration au chargement
 document.addEventListener('DOMContentLoaded', () => {
   initDemoUsers();
@@ -320,9 +487,16 @@ window.Auth = {
   registerProvider,
   getProviderProfile,
   getUserSubscription,
+  getUserSubscriptionHistory,
+  getUserSubscriptionCount,
   hasActiveSubscription,
+  getRemainingDays,
   updateUserProfile,
   updateProviderProfile,
+  addPortfolioItem,
+  removePortfolioItem,
   changePassword,
+  verifyIdDocument,
+  getPendingVerifications,
   initDemoUsers
 };
