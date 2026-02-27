@@ -9,6 +9,81 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+  
+  <style>
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 1rem;
+      transition: all 0.3s;
+    }
+    
+    .back-btn:hover {
+      gap: 0.75rem;
+    }
+    
+    .verification-card {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s;
+    }
+    
+    .verification-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .id-document {
+      max-width: 300px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: transform 0.3s;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .id-document:hover {
+      transform: scale(1.05);
+    }
+    
+    .freelance-tag {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+    }
+    
+    .status-badge {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-approved {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .status-rejected {
+      background: #f8d7da;
+      color: #721c24;
+    }
+  </style>
 </head>
 <body>
   <header class="header">
@@ -19,7 +94,7 @@
           <span>Ivoiservice</span>
         </a>
         <ul class="nav-links">
-          <li><button onclick="logout()" class="btn btn-outline btn-sm">Déconnexion</button></li>
+          <li><button onclick="logout()" class="btn btn-outline btn-sm"><i class="fas fa-sign-out-alt"></i> Déconnexion</button></li>
         </ul>
       </nav>
     </div>
@@ -27,37 +102,68 @@
 
   <section class="services">
     <div class="container">
+      <!-- Bouton Retour -->
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Retour à l'accueil
+      </a>
+      
       <h1 class="section-title">
         <i class="fas fa-shield-alt text-primary"></i>
         Dashboard Administrateur
       </h1>
       
+      <!-- Stats -->
       <div class="stats-grid mb-lg">
         <div class="stat-card">
+          <div class="stat-icon" style="background: var(--primary);"><i class="fas fa-users"></i></div>
           <div class="stat-value" id="totalUsers">0</div>
           <div class="stat-label">Utilisateurs</div>
         </div>
         <div class="stat-card">
+          <div class="stat-icon" style="background: #3498db;"><i class="fas fa-user"></i></div>
           <div class="stat-value" id="totalClients">0</div>
           <div class="stat-label">Clients</div>
         </div>
         <div class="stat-card">
+          <div class="stat-icon" style="background: #f39c12;"><i class="fas fa-user-tie"></i></div>
           <div class="stat-value" id="totalProviders">0</div>
           <div class="stat-label">Prestataires</div>
         </div>
         <div class="stat-card">
+          <div class="stat-icon" style="background: #27ae60;"><i class="fas fa-crown"></i></div>
           <div class="stat-value" id="activeSubscriptions">0</div>
           <div class="stat-label">Abonnements actifs</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #e74c3c;"><i class="fas fa-clock"></i></div>
+          <div class="stat-value" id="pendingVerifications">0</div>
+          <div class="stat-label">CNI en attente</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background: #9b59b6;"><i class="fas fa-money-bill-wave"></i></div>
+          <div class="stat-value" id="totalRevenue">0</div>
+          <div class="stat-label">Revenus (FCFA)</div>
+        </div>
       </div>
       
+      <!-- Tabs -->
       <div class="tabs mb-md">
-        <button class="tab active" onclick="switchTab('users')">Utilisateurs</button>
-        <button class="tab" onclick="switchTab('providers')">Prestataires à vérifier</button>
-        <button class="tab" onclick="switchTab('subscriptions')">Abonnements</button>
+        <button class="tab active" onclick="switchTab('verification')"><i class="fas fa-id-card"></i> Validation CNI</button>
+        <button class="tab" onclick="switchTab('users')"><i class="fas fa-users"></i> Utilisateurs</button>
+        <button class="tab" onclick="switchTab('subscriptions')"><i class="fas fa-receipt"></i> Abonnements</button>
       </div>
       
-      <div class="tab-content active" id="users-content">
+      <!-- Tab: Validation CNI -->
+      <div class="tab-content active" id="verification-content">
+        <div class="card">
+          <h2><i class="fas fa-id-card text-primary"></i> Documents d'identité à valider</h2>
+          <div id="verificationList"></div>
+        </div>
+      </div>
+      
+      <!-- Tab: Users -->
+      <div class="tab-content" id="users-content">
         <div class="card">
           <h2><i class="fas fa-users text-primary"></i> Tous les utilisateurs</h2>
           <div class="table-container">
@@ -66,13 +172,7 @@
         </div>
       </div>
       
-      <div class="tab-content" id="providers-content">
-        <div class="card">
-          <h2><i class="fas fa-user-check text-primary"></i> Prestataires en attente de vérification</h2>
-          <div id="providersVerificationList"></div>
-        </div>
-      </div>
-      
+      <!-- Tab: Subscriptions -->
       <div class="tab-content" id="subscriptions-content">
         <div class="card">
           <h2><i class="fas fa-receipt text-primary"></i> Abonnements</h2>
@@ -92,6 +192,14 @@
     </div>
   </footer>
 
+  <!-- Modal Image CNI -->
+  <div class="modal" id="idModal">
+    <div class="modal-content" style="max-width: 900px;">
+      <button class="modal-close" onclick="closeIdModal()"><i class="fas fa-times"></i></button>
+      <div id="idModalContent"></div>
+    </div>
+  </div>
+
   <script src="js/utils.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/search.js"></script>
@@ -105,8 +213,8 @@
     
     function loadDashboard() {
       loadStats();
+      loadVerificationList();
       loadUsers();
-      loadProvidersVerification();
       loadSubscriptions();
     }
     
@@ -115,11 +223,149 @@
       const clients = users.filter(u => u.role === 'CLIENT');
       const providers = users.filter(u => u.role === 'PROVIDER');
       const subStats = Subscription.getSubscriptionStats();
+      const pending = Auth.getPendingVerifications();
       
       document.getElementById('totalUsers').textContent = users.length;
       document.getElementById('totalClients').textContent = clients.length;
       document.getElementById('totalProviders').textContent = providers.length;
       document.getElementById('activeSubscriptions').textContent = subStats.active;
+      document.getElementById('pendingVerifications').textContent = pending.length;
+      document.getElementById('totalRevenue').textContent = Utils.formatPrice(subStats.revenue).replace(' FCFA', '');
+    }
+    
+    function loadVerificationList() {
+      const pendingProfiles = Auth.getPendingVerifications();
+      const users = Utils.Storage.get('users', []);
+      const list = document.getElementById('verificationList');
+      
+      if (pendingProfiles.length === 0) {
+        list.innerHTML = `
+          <p class="text-light text-center" style="padding: 2rem;">
+            <i class="fas fa-check-circle" style="font-size: 3rem; display: block; margin-bottom: 1rem; color: var(--success);"></i>
+            Tous les documents sont validés !
+          </p>
+        `;
+        return;
+      }
+      
+      list.innerHTML = pendingProfiles.map(profile => {
+        const user = users.find(u => u.id === profile.userId);
+        if (!user) return '';
+        
+        const professionName = Utils.PROFESSIONS[profile.profession] || Utils.FREELANCE_PROFESSIONS[profile.profession] || profile.profession;
+        
+        const statusConfig = {
+          PENDING: { class: 'status-pending', icon: 'clock', text: 'En attente' },
+          APPROVED: { class: 'status-approved', icon: 'check-circle', text: 'Approuvé' },
+          REJECTED: { class: 'status-rejected', icon: 'times-circle', text: 'Rejeté' }
+        };
+        const status = statusConfig[profile.idDocumentStatus] || statusConfig.PENDING;
+        
+        return `
+          <div class="verification-card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 300px;">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 1.25rem;">
+                  ${user.firstName} ${user.lastName}
+                  ${profile.isFreelance ? '<span class="freelance-tag">FREELANCE</span>' : ''}
+                </h3>
+                <p style="color: var(--text-light); margin: 0.25rem 0;">
+                  <i class="fas fa-briefcase"></i> ${professionName}
+                </p>
+                <p style="color: var(--text-light); margin: 0.25rem 0;">
+                  <i class="fas fa-envelope"></i> ${user.email}
+                </p>
+                <p style="color: var(--text-light); margin: 0.25rem 0;">
+                  <i class="fas fa-phone"></i> ${Utils.formatPhoneNumber(user.phone)}
+                </p>
+                <p style="color: var(--text-light); margin: 0.5rem 0 0;">
+                  <i class="fas fa-calendar"></i> Inscrit le ${Utils.formatDate(user.createdAt)}
+                </p>
+                
+                <div style="margin-top: 1rem;">
+                  <span class="status-badge ${status.class}">
+                    <i class="fas fa-${status.icon}"></i> ${status.text}
+                  </span>
+                </div>
+              </div>
+              
+              <div style="text-align: center;">
+                <p style="margin: 0 0 0.5rem; font-weight: 600; color: var(--text);">Document d'identité</p>
+                ${profile.idDocumentUrl ? `
+                  <img 
+                    src="${profile.idDocumentUrl}" 
+                    alt="CNI ${user.firstName}" 
+                    class="id-document"
+                    onclick="openIdModal('${profile.id}')"
+                  >
+                  <p style="margin: 1rem 0 0; font-size: 0.875rem; color: var(--text-light);">
+                    <i class="fas fa-search-plus"></i> Cliquer pour agrandir
+                  </p>
+                ` : '<p class="text-light">Aucun document</p>'}
+              </div>
+            </div>
+            
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; gap: 1rem; justify-content: flex-end;">
+              <button onclick="verifyDocument('${profile.id}', 'APPROVED')" class="btn btn-success">
+                <i class="fas fa-check"></i> Approuver
+              </button>
+              <button onclick="verifyDocument('${profile.id}', 'REJECTED')" class="btn btn-outline">
+                <i class="fas fa-times"></i> Rejeter
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    function openIdModal(profileId) {
+      const providerProfiles = Utils.Storage.get('providerProfiles', []);
+      const profile = providerProfiles.find(p => p.id === profileId);
+      const users = Utils.Storage.get('users', []);
+      const user = users.find(u => u.id === profile.userId);
+      
+      if (!profile || !user) return;
+      
+      document.getElementById('idModalContent').innerHTML = `
+        <h2 style="margin-bottom: 1rem;">
+          <i class="fas fa-id-card text-primary"></i> 
+          Document d'identité - ${user.firstName} ${user.lastName}
+        </h2>
+        <img 
+          src="${profile.idDocumentUrl}" 
+          alt="CNI" 
+          style="width: 100%; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);"
+        >
+        <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center;">
+          <button onclick="verifyDocument('${profile.id}', 'APPROVED'); closeIdModal();" class="btn btn-success btn-lg">
+            <i class="fas fa-check"></i> Approuver
+          </button>
+          <button onclick="verifyDocument('${profile.id}', 'REJECTED'); closeIdModal();" class="btn btn-outline btn-lg">
+            <i class="fas fa-times"></i> Rejeter
+          </button>
+        </div>
+      `;
+      
+      document.getElementById('idModal').classList.add('show');
+    }
+    
+    function closeIdModal() {
+      document.getElementById('idModal').classList.remove('show');
+    }
+    
+    function verifyDocument(profileId, status) {
+      const result = Auth.verifyIdDocument(profileId, status);
+      
+      if (result.success) {
+        if (status === 'APPROVED') {
+          Utils.showToast('Document approuvé avec succès', 'success');
+        } else {
+          Utils.showToast('Document rejeté', 'info');
+        }
+        loadDashboard();
+      } else {
+        Utils.showToast(result.message, 'error');
+      }
     }
     
     function loadUsers() {
@@ -141,7 +387,7 @@
         <tbody>
           ${users.map(user => `
             <tr>
-              <td>${user.firstName} ${user.lastName}</td>
+              <td><strong>${user.firstName} ${user.lastName}</strong></td>
               <td>${user.email}</td>
               <td>${Utils.formatPhoneNumber(user.phone)}</td>
               <td><span class="badge badge-${roleColors[user.role]}">${user.role}</span></td>
@@ -152,97 +398,47 @@
       `;
     }
     
-    function loadProvidersVerification() {
-      const providerProfiles = Utils.Storage.get('providerProfiles', []);
-      const users = Utils.Storage.get('users', []);
-      const list = document.getElementById('providersVerificationList');
-      
-      const unverified = providerProfiles.filter(p => !p.isVerified);
-      
-      if (unverified.length === 0) {
-        list.innerHTML = '<p class="text-light text-center" style="padding: 2rem;">Tous les prestataires sont vérifiés</p>';
-        return;
-      }
-      
-      list.innerHTML = unverified.map(profile => {
-        const user = users.find(u => u.id === profile.userId);
-        if (!user) return '';
-        
-        const professionName = Utils.PROFESSIONS[profile.profession];
-        
-        return `
-          <div style="padding: 1.5rem; border-bottom: 1px solid var(--border);">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-              <div>
-                <strong>${user.firstName} ${user.lastName}</strong>
-                <p style="color: var(--text-light); margin: 0.25rem 0;">
-                  ${professionName} - ${Utils.formatPhoneNumber(user.phone)}
-                </p>
-                <small class="text-light">Inscrit le ${Utils.formatDate(user.createdAt)}</small>
-              </div>
-              <div style="display: flex; gap: 0.5rem;">
-                <button onclick="verifyProvider('${profile.id}', true)" class="btn btn-success btn-sm">
-                  <i class="fas fa-check"></i> Vérifier
-                </button>
-                <button onclick="verifyProvider('${profile.id}', false)" class="btn btn-outline btn-sm">
-                  <i class="fas fa-times"></i> Refuser
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-    
     function loadSubscriptions() {
       const subscriptions = Utils.Storage.get('subscriptions', []);
       const users = Utils.Storage.get('users', []);
       const table = document.getElementById('subscriptionsTable');
       
       const statusColors = { ACTIVE: 'success', EXPIRED: 'warning', CANCELLED: 'error' };
+      const statusIcons = { ACTIVE: 'check-circle', EXPIRED: 'clock', CANCELLED: 'ban' };
+      
+      const sortedSubs = subscriptions.sort((a, b) => b.createdAt - a.createdAt);
       
       table.innerHTML = `
         <thead>
           <tr>
             <th>Client</th>
             <th>Montant</th>
+            <th>Paiement</th>
             <th>Date début</th>
             <th>Date fin</th>
             <th>Statut</th>
           </tr>
         </thead>
         <tbody>
-          ${subscriptions.map(sub => {
+          ${sortedSubs.map(sub => {
             const user = users.find(u => u.id === sub.userId);
             return `
               <tr>
-                <td>${user ? user.firstName + ' ' + user.lastName : 'N/A'}</td>
-                <td>${Utils.formatPrice(sub.amount)}</td>
+                <td><strong>${user ? user.firstName + ' ' + user.lastName : 'N/A'}</strong></td>
+                <td><strong>${Utils.formatPrice(sub.amount)}</strong></td>
+                <td>${sub.paymentMethod || 'N/A'}</td>
                 <td>${Utils.formatDate(sub.startDate)}</td>
                 <td>${Utils.formatDate(sub.endDate)}</td>
-                <td><span class="badge badge-${statusColors[sub.status]}">${sub.status}</span></td>
+                <td>
+                  <span class="badge badge-${statusColors[sub.status]}">
+                    <i class="fas fa-${statusIcons[sub.status]}"></i> ${sub.status}
+                  </span>
+                </td>
               </tr>
             `;
           }).join('')}
         </tbody>
       `;
-    }
-    
-    function verifyProvider(profileId, approve) {
-      const providerProfiles = Utils.Storage.get('providerProfiles', []);
-      const index = providerProfiles.findIndex(p => p.id === profileId);
-      
-      if (index === -1) return;
-      
-      if (approve) {
-        providerProfiles[index].isVerified = true;
-        Utils.Storage.set('providerProfiles', providerProfiles);
-        Utils.showToast('Prestataire vérifié avec succès', 'success');
-      } else {
-        Utils.showToast('Vérification refusée', 'info');
-      }
-      
-      loadDashboard();
     }
     
     function switchTab(tabName) {
