@@ -20,6 +20,7 @@
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
+  
   <style>
     /* Popup de connexion */
     .login-overlay {
@@ -78,7 +79,7 @@
     }
     .login-header h2 {
       font-size: 1.75rem;
-      color: var(--primary);
+      color: #4CAF50;
       margin-bottom: 0.5rem;
     }
     .login-header p {
@@ -135,7 +136,7 @@
     }
     .login-input-wrapper input:focus {
       outline: none;
-      border-color: var(--primary);
+      border-color: #4CAF50;
       box-shadow: 0 0 0 3px rgba(76,175,80,0.1);
     }
     .login-btn {
@@ -151,11 +152,11 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      background: var(--primary);
+      background: #4CAF50;
       color: white;
     }
     .login-btn:hover {
-      background: var(--primary-dark);
+      background: #087f23;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(76,175,80,0.3);
     }
@@ -172,7 +173,7 @@
     }
     .login-demo h3 {
       font-size: 0.9rem;
-      color: var(--primary-dark);
+      color: #087f23;
       margin-bottom: 0.5rem;
     }
     .login-demo p {
@@ -380,7 +381,7 @@
   </section>
 
   <!-- How It Works Section -->
-  <section class="how-it-works">
+  <section class="how-it-works" id="about">
     <div class="container">
       <h2 class="section-title">Comment ça marche ?</h2>
       <p class="section-subtitle">
@@ -515,7 +516,7 @@
   <!-- Scripts -->
   <script>
     // ============================================
-    // UTILITIES EMBARQUÉES (pas de dépendance externe)
+    // UTILITIES EMBARQUÉES
     // ============================================
     const Utils = {
       Storage: {
@@ -554,7 +555,7 @@
       }
     };
 
-    // Hash simple pour mot de passe (version simplifiée)
+    // Hash simple
     function simpleHash(str) {
       let hash = 0;
       for (let i = 0; i < str.length; i++) {
@@ -574,15 +575,11 @@
       });
     }
 
-    // ============================================
-    // CONFIGURATION ADMIN
-    // ============================================
+    // Admin credentials
     const ADMIN_EMAIL = 'admin@ivoiservice.ci';
     const ADMIN_PASSWORD = 'admin2024';
 
-    // ============================================
-    // INITIALISATION DES COMPTES DEMO
-    // ============================================
+    // Init demo users
     function initDemoUsers() {
       const existingUsers = Utils.Storage.get('users', []);
       if (existingUsers.length === 0) {
@@ -615,7 +612,6 @@
         
         Utils.Storage.set('users', demoUsers);
         
-        // Profil prestataire
         const providerProfile = {
           id: generateUUID(),
           userId: demoUsers[1].id,
@@ -631,7 +627,6 @@
         };
         Utils.Storage.set('providerProfile_' + demoUsers[1].id, providerProfile);
         
-        // Abonnement client
         const subscription = {
           id: generateUUID(),
           userId: demoUsers[0].id,
@@ -644,15 +639,11 @@
         };
         Utils.Storage.set('subscription_' + demoUsers[0].id, subscription);
         
-        console.log('✅ Comptes de démonstration créés');
-        console.log('Client:', demoUsers[0]);
-        console.log('Prestataire:', demoUsers[1]);
+        console.log('✅ Comptes demo créés');
       }
     }
 
-    // ============================================
-    // GESTION DE LA POPUP DE CONNEXION
-    // ============================================
+    // Popup functions
     function openLoginPopup() {
       document.getElementById('loginOverlay').classList.add('active');
       document.getElementById('loginEmail').value = '';
@@ -670,7 +661,6 @@
       const errorMessage = document.getElementById('loginErrorMessage');
       errorMessage.textContent = message;
       errorAlert.classList.add('show');
-      
       document.getElementById('loginAlertSuccess').classList.remove('show');
     }
 
@@ -679,7 +669,6 @@
       const successMessage = document.getElementById('loginSuccessMessage');
       successMessage.textContent = message;
       successAlert.classList.add('show');
-      
       document.getElementById('loginAlertError').classList.remove('show');
     }
 
@@ -688,11 +677,8 @@
       document.getElementById('loginAlertSuccess').classList.remove('show');
     }
 
-    // ============================================
-    // FONCTION DE CONNEXION
-    // ============================================
+    // Login function
     function performLogin(email, password) {
-      // Vérifier admin d'abord
       if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
         const adminUser = {
           id: 'admin-001',
@@ -713,13 +699,11 @@
         return;
       }
       
-      // Vérifier utilisateurs normaux
       const users = Utils.Storage.get('users', []);
       const hashedPassword = simpleHash(password);
       const user = users.find(u => u.email === email && u.password === hashedPassword);
       
       if (user) {
-        // Créer session sans mot de passe
         const sessionUser = {...user};
         delete sessionUser.password;
         
@@ -740,14 +724,10 @@
       }
     }
 
-    // ============================================
-    // GESTION DU FORMULAIRE DE CONNEXION
-    // ============================================
+    // DOMContentLoaded
     document.addEventListener('DOMContentLoaded', () => {
-      // Initialiser les comptes demo
       initDemoUsers();
       
-      // Gérer la soumission du formulaire
       const loginForm = document.getElementById('loginPopupForm');
       const loginBtn = document.getElementById('loginBtn');
       
@@ -762,11 +742,9 @@
           return;
         }
         
-        // Désactiver le bouton pendant la connexion
         loginBtn.disabled = true;
         loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
         
-        // Simuler un délai réseau
         setTimeout(() => {
           performLogin(email, password);
           loginBtn.disabled = false;
@@ -774,20 +752,16 @@
         }, 500);
       });
       
-      // Fermer la popup en cliquant sur l'overlay
       document.getElementById('loginOverlay').addEventListener('click', (e) => {
         if (e.target.id === 'loginOverlay') {
           closeLoginPopup();
         }
       });
       
-      // Mettre à jour les liens d'authentification
       updateAuthLinks();
     });
 
-    // ============================================
-    // GESTION DU MENU MOBILE
-    // ============================================
+    // Mobile menu
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.getElementById('navLinks');
     const navOverlay = document.getElementById('navOverlay');
@@ -816,9 +790,7 @@
       navOverlay.classList.remove('active');
     });
     
-    // ============================================
-    // GESTION DE L'AFFICHAGE DES LIENS D'AUTHENTIFICATION
-    // ============================================
+    // Update auth links
     function updateAuthLinks() {
       const authLinksContainer = document.getElementById('authLinks');
       
@@ -850,9 +822,7 @@
       }
     }
     
-    // ============================================
-    // SMOOTH SCROLL
-    // ============================================
+    // Smooth scroll
     document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
