@@ -1,11 +1,11 @@
-/* ==============================================
+/* ============================================
    IVOISERVICE - Responsive Styles
-   ============================================== */
+   ============================================ */
 
-/* Tablets et écrans moyens (max 1024px) */
+/* Tablettes et écrans moyens (max 1024px) */
 @media (max-width: 1024px) {
   .hero h1 {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
   
   .hero p {
@@ -17,77 +17,78 @@
   }
   
   .services-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-md);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
   }
   
-  .footer-content {
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .footer-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Tablettes portrait (max 768px) */
+/* Tablettes moyennes (max 768px) */
 @media (max-width: 768px) {
   /* Navigation mobile */
+  .nav-toggle {
+    display: block;
+  }
+  
   .nav-links {
     position: fixed;
     top: 0;
     right: -100%;
+    width: 280px;
     height: 100vh;
-    width: 80%;
-    max-width: 300px;
-    background-color: var(--card);
+    background: white;
     flex-direction: column;
-    padding: var(--spacing-xl) var(--spacing-lg);
-    box-shadow: var(--shadow-xl);
+    align-items: flex-start;
+    padding: 5rem 2rem 2rem;
+    gap: 1.5rem;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
     transition: right 0.3s ease;
-    z-index: 1001;
-    justify-content: flex-start;
-    gap: var(--spacing-md);
+    z-index: 999;
+    overflow-y: auto;
   }
   
   .nav-links.active {
     right: 0;
   }
   
-  .nav-toggle {
-    display: block;
-    font-size: 1.5rem;
-    color: var(--text);
-    cursor: pointer;
-  }
-  
-  .nav-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
+  .nav-links li {
     width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
   }
   
-  .nav-overlay.active {
-    display: block;
+  .nav-links a,
+  .nav-links button {
+    width: 100%;
+    justify-content: flex-start;
   }
   
   /* Hero */
   .hero {
-    padding: var(--spacing-lg) 0;
+    padding: 3rem 0;
   }
   
   .hero h1 {
-    font-size: 2rem;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
   }
   
   .hero p {
     font-size: 1rem;
+    margin-bottom: 1.5rem;
   }
   
   .hero-buttons {
     flex-direction: column;
-    align-items: stretch;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
   }
   
   .hero-buttons .btn {
@@ -96,7 +97,12 @@
   
   /* Services */
   .services {
-    padding: var(--spacing-lg) 0;
+    padding: 3rem 0;
+  }
+  
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   
   .section-title {
@@ -105,79 +111,91 @@
   
   .section-subtitle {
     font-size: 1rem;
-  }
-  
-  .services-grid {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-md);
+    margin-bottom: 2rem;
   }
   
   /* Stats */
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .stats {
+    padding: 3rem 0;
   }
   
-  /* Cards */
-  .card {
-    padding: var(--spacing-md);
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  
+  .stat-number {
+    font-size: 2.5rem;
+  }
+  
+  .stat-label {
+    font-size: 1rem;
+  }
+  
+  /* CTA */
+  .cta {
+    padding: 3rem 0;
+  }
+  
+  .cta h2 {
+    font-size: 1.75rem;
+  }
+  
+  .cta p {
+    font-size: 1rem;
   }
   
   /* Footer */
   .footer {
-    padding: var(--spacing-lg) 0 var(--spacing-md);
+    padding: 2rem 0 1rem;
   }
   
-  .footer-content {
+  .footer-grid {
     grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
+    gap: 2rem;
   }
   
-  /* Tables */
-  .table-container {
-    overflow-x: auto;
+  /* How it works */
+  .how-it-works {
+    padding: 3rem 0;
   }
   
-  table {
-    font-size: 0.875rem;
+  .step-icon {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
   }
   
-  th, td {
-    padding: var(--spacing-sm);
-  }
-  
-  /* Modal */
-  .modal-content {
-    width: 95%;
-    padding: var(--spacing-md);
+  .step h3 {
+    font-size: 1.25rem;
   }
 }
 
-/* Smartphones (max 480px) */
+/* Petits mobiles (max 480px) */
 @media (max-width: 480px) {
-  body {
-    font-size: 14px;
-  }
-  
+  /* Container */
   .container {
-    padding: 0 var(--spacing-sm);
-  }
-  
-  /* Logo */
-  .logo {
-    font-size: 1.25rem;
-  }
-  
-  .logo i {
-    font-size: 1.5rem;
+    padding: 0 1rem;
   }
   
   /* Hero */
   .hero h1 {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
   
   .hero p {
     font-size: 0.95rem;
+  }
+  
+  /* Buttons */
+  .btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+  }
+  
+  .btn-lg {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
   }
   
   /* Section titles */
@@ -191,113 +209,73 @@
   
   /* Service cards */
   .service-card {
-    padding: var(--spacing-md);
+    padding: 1.5rem;
   }
   
   .service-icon {
-    font-size: 2.5rem;
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
   }
   
   .service-card h3 {
     font-size: 1.125rem;
   }
   
-  /* Buttons */
-  .btn {
-    padding: 0.625rem 1.25rem;
-    font-size: 0.95rem;
-  }
-  
-  .btn-lg {
-    padding: 0.875rem 1.75rem;
-    font-size: 1rem;
-  }
-  
-  .btn-sm {
-    padding: 0.5rem 0.875rem;
-    font-size: 0.8125rem;
-  }
-  
   /* Stats */
   .stats-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   
-  .stat-value {
+  .stat-number {
     font-size: 2rem;
   }
   
-  /* Provider cards */
-  .provider-avatar {
-    height: 150px;
-    font-size: 3rem;
+  .stat-label {
+    font-size: 0.95rem;
   }
   
-  .provider-name {
+  /* Steps */
+  .step-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 1.75rem;
+  }
+  
+  .step-number {
+    width: 35px;
+    height: 35px;
     font-size: 1.125rem;
   }
   
-  /* Forms */
-  input, textarea, select {
-    padding: 0.625rem 0.875rem;
+  /* CTA */
+  .cta h2 {
+    font-size: 1.5rem;
+  }
+  
+  .cta p {
     font-size: 0.95rem;
   }
   
-  .form-label {
-    font-size: 0.95rem;
-  }
-  
-  /* Cards */
-  .card {
-    padding: var(--spacing-sm);
-  }
-  
-  .card-title {
+  /* Logo */
+  .logo {
     font-size: 1.25rem;
   }
   
-  /* Badges */
-  .badge {
-    font-size: 0.6875rem;
-    padding: 0.25rem 0.625rem;
-  }
-  
-  /* Tabs */
-  .tabs {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  .tab {
-    white-space: nowrap;
-    font-size: 0.875rem;
-  }
-  
-  /* Pagination */
-  .pagination {
-    gap: 0.25rem;
-  }
-  
-  .pagination button {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-  }
-  
-  /* Modal */
-  .modal-content {
-    padding: var(--spacing-sm);
-    border-radius: var(--radius-md);
+  .logo i {
+    font-size: 1.5rem;
   }
 }
 
-/* Très grands écrans (min 1440px) */
-@media (min-width: 1440px) {
+/* Très grands écrans (min 1400px) */
+@media (min-width: 1400px) {
   .container {
-    max-width: 1400px;
+    max-width: 1320px;
   }
   
   .hero h1 {
-    font-size: 3.5rem;
+    font-size: 3rem;
   }
   
   .hero p {
@@ -305,61 +283,55 @@
   }
   
   .section-title {
-    font-size: 3rem;
+    font-size: 2.75rem;
   }
   
   .services-grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 
-/* Mode paysage pour smartphones */
-@media (max-height: 500px) and (orientation: landscape) {
-  .hero {
-    padding: var(--spacing-md) 0;
-  }
-  
-  .hero h1 {
-    font-size: 1.5rem;
-    margin-bottom: var(--spacing-sm);
-  }
-  
-  .hero p {
-    font-size: 0.875rem;
-    margin-bottom: var(--spacing-md);
-  }
-  
-  .modal-content {
-    max-height: 95vh;
-  }
-}
-
-/* Impression */
+/* Optimisations pour l'impression */
 @media print {
   .header,
-  .footer,
+  .nav-toggle,
+  .nav-overlay,
   .btn,
-  .nav-links,
-  .nav-toggle {
-    display: none !important;
+  .cta {
+    display: none;
   }
   
   body {
-    background-color: white;
+    background: white;
     color: black;
   }
   
+  .service-card,
   .card {
     box-shadow: none;
-    border: 1px solid #ddd;
-  }
-  
-  a {
-    text-decoration: underline;
+    border: 1px solid #ccc;
   }
 }
 
-/* Accessibilité - Réduction des animations */
+/* Animations pour mobile */
+@media (max-width: 768px) {
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .nav-links.active {
+    animation: slideInRight 0.3s ease;
+  }
+}
+
+/* Amélioration de l'accessibilité */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -367,81 +339,98 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-/* Dark mode (optionnel - préparation future) */
+/* Mode sombre (préparation) */
 @media (prefers-color-scheme: dark) {
-  /* Décommenter pour activer le dark mode automatique
+  /* Pour une future implémentation du mode sombre */
+  /* Commenté pour l'instant
   :root {
     --background: #1F2937;
     --card: #374151;
     --text: #F9FAFB;
     --text-light: #D1D5DB;
-    --text-lighter: #9CA3AF;
     --border: #4B5563;
-  }
-  
-  .hero {
-    background: linear-gradient(135deg, #047857 0%, #065F46 100%);
-  }
-  
-  .footer {
-    background-color: #111827;
   }
   */
 }
 
-/* Utility classes pour responsive */
-.mobile-only {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .mobile-only {
-    display: block;
+/* Orientation paysage sur mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero {
+    padding: 2rem 0;
   }
   
-  .desktop-only {
-    display: none;
-  }
-}
-
-.tablet-only {
-  display: none;
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  .tablet-only {
-    display: block;
-  }
-}
-
-/* Grid responsive helper */
-.grid-responsive {
-  display: grid;
-  gap: var(--spacing-md);
-}
-
-@media (min-width: 768px) {
-  .grid-responsive {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .grid-responsive {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* Flex helpers pour mobile */
-@media (max-width: 768px) {
-  .flex-mobile-col {
-    flex-direction: column;
+  .hero h1 {
+    font-size: 1.5rem;
   }
   
-  .flex-mobile-wrap {
-    flex-wrap: wrap;
+  .nav-links {
+    padding-top: 3rem;
+  }
+}
+
+/* Support des notches (iPhone X+) */
+@supports (padding: max(0px)) {
+  .container {
+    padding-left: max(1.5rem, env(safe-area-inset-left));
+    padding-right: max(1.5rem, env(safe-area-inset-right));
+  }
+  
+  .header {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Amélioration du focus pour l'accessibilité */
+@media (hover: none) and (pointer: coarse) {
+  /* Styles tactiles pour mobile */
+  .btn,
+  .nav-links a,
+  .service-card {
+    -webkit-tap-highlight-color: rgba(76, 175, 80, 0.2);
+  }
+}
+
+/* États de focus visibles */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Optimisation des images responsive */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Grid responsive générique */
+@media (max-width: 768px) {
+  .grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Espacements responsive */
+@media (max-width: 768px) {
+  section {
+    padding: 2rem 0;
+  }
+  
+  .card {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  section {
+    padding: 1.5rem 0;
+  }
+  
+  .card {
+    padding: 1.25rem;
   }
 }
