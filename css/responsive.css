@@ -1,437 +1,436 @@
-1	/* ============================================
-     2	   IVOISERVICE - Responsive Styles
-     3	   ============================================ */
-     4	
-     5	/* Tablettes et écrans moyens (max 1024px) */
-     6	@media (max-width: 1024px) {
-     7	  .hero h1 {
-     8	    font-size: 2rem;
-     9	  }
-    10	  
-    11	  .hero p {
-    12	    font-size: 1.125rem;
-    13	  }
-    14	  
-    15	  .section-title {
-    16	    font-size: 2rem;
-    17	  }
-    18	  
-    19	  .services-grid {
-    20	    grid-template-columns: repeat(2, 1fr);
-    21	    gap: 1.5rem;
-    22	  }
-    23	  
-    24	  .steps {
-    25	    grid-template-columns: 1fr;
-    26	    gap: 2rem;
-    27	  }
-    28	  
-    29	  .footer-grid {
-    30	    grid-template-columns: repeat(2, 1fr);
-    31	  }
-    32	}
-    33	
-    34	/* Tablettes moyennes (max 768px) */
-    35	@media (max-width: 768px) {
-    36	  /* Navigation mobile */
-    37	  .nav-toggle {
-    38	    display: block;
-    39	  }
-    40	  
-    41	  .nav-links {
-    42	    position: fixed;
-    43	    top: 0;
-    44	    right: -100%;
-    45	    width: 280px;
-    46	    height: 100vh;
-    47	    background: white;
-    48	    flex-direction: column;
-    49	    align-items: flex-start;
-    50	    padding: 5rem 2rem 2rem;
-    51	    gap: 1.5rem;
-    52	    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
-    53	    transition: right 0.3s ease;
-    54	    z-index: 999;
-    55	    overflow-y: auto;
-    56	  }
-    57	  
-    58	  .nav-links.active {
-    59	    right: 0;
-    60	  }
-    61	  
-    62	  .nav-links li {
-    63	    width: 100%;
-    64	  }
-    65	  
-    66	  .nav-links a,
-    67	  .nav-links button {
-    68	    width: 100%;
-    69	    justify-content: flex-start;
-    70	  }
-    71	  
-    72	  /* Hero */
-    73	  .hero {
-    74	    padding: 3rem 0;
-    75	  }
-    76	  
-    77	  .hero h1 {
-    78	    font-size: 1.75rem;
-    79	    margin-bottom: 1rem;
-    80	  }
-    81	  
-    82	  .hero p {
-    83	    font-size: 1rem;
-    84	    margin-bottom: 1.5rem;
-    85	  }
-    86	  
-    87	  .hero-buttons {
-    88	    flex-direction: column;
-    89	    width: 100%;
-    90	    max-width: 300px;
-    91	    margin: 0 auto;
-    92	  }
-    93	  
-    94	  .hero-buttons .btn {
-    95	    width: 100%;
-    96	  }
-    97	  
-    98	  /* Services */
-    99	  .services {
-   100	    padding: 3rem 0;
-   101	  }
-   102	  
-   103	  .services-grid {
-   104	    grid-template-columns: 1fr;
-   105	    gap: 1.5rem;
-   106	  }
-   107	  
-   108	  .section-title {
-   109	    font-size: 1.75rem;
-   110	  }
-   111	  
-   112	  .section-subtitle {
-   113	    font-size: 1rem;
-   114	    margin-bottom: 2rem;
-   115	  }
-   116	  
-   117	  /* Stats */
-   118	  .stats {
-   119	    padding: 3rem 0;
-   120	  }
-   121	  
-   122	  .stats-grid {
-   123	    grid-template-columns: repeat(2, 1fr);
-   124	    gap: 2rem;
-   125	  }
-   126	  
-   127	  .stat-number {
-   128	    font-size: 2.5rem;
-   129	  }
-   130	  
-   131	  .stat-label {
-   132	    font-size: 1rem;
-   133	  }
-   134	  
-   135	  /* CTA */
-   136	  .cta {
-   137	    padding: 3rem 0;
-   138	  }
-   139	  
-   140	  .cta h2 {
-   141	    font-size: 1.75rem;
-   142	  }
-   143	  
-   144	  .cta p {
-   145	    font-size: 1rem;
-   146	  }
-   147	  
-   148	  /* Footer */
-   149	  .footer {
-   150	    padding: 2rem 0 1rem;
-   151	  }
-   152	  
-   153	  .footer-grid {
-   154	    grid-template-columns: 1fr;
-   155	    gap: 2rem;
-   156	  }
-   157	  
-   158	  /* How it works */
-   159	  .how-it-works {
-   160	    padding: 3rem 0;
-   161	  }
-   162	  
-   163	  .step-icon {
-   164	    width: 80px;
-   165	    height: 80px;
-   166	    font-size: 2rem;
-   167	  }
-   168	  
-   169	  .step h3 {
-   170	    font-size: 1.25rem;
-   171	  }
-   172	}
-   173	
-   174	/* Petits mobiles (max 480px) */
-   175	@media (max-width: 480px) {
-   176	  /* Container */
-   177	  .container {
-   178	    padding: 0 1rem;
-   179	  }
-   180	  
-   181	  /* Hero */
-   182	  .hero h1 {
-   183	    font-size: 1.5rem;
-   184	  }
-   185	  
-   186	  .hero p {
-   187	    font-size: 0.95rem;
-   188	  }
-   189	  
-   190	  /* Buttons */
-   191	  .btn {
-   192	    padding: 0.75rem 1.25rem;
-   193	    font-size: 0.95rem;
-   194	  }
-   195	  
-   196	  .btn-lg {
-   197	    padding: 0.875rem 1.5rem;
-   198	    font-size: 1rem;
-   199	  }
-   200	  
-   201	  /* Section titles */
-   202	  .section-title {
-   203	    font-size: 1.5rem;
-   204	  }
-   205	  
-   206	  .section-subtitle {
-   207	    font-size: 0.95rem;
-   208	  }
-   209	  
-   210	  /* Service cards */
-   211	  .service-card {
-   212	    padding: 1.5rem;
-   213	  }
-   214	  
-   215	  .service-icon {
-   216	    width: 60px;
-   217	    height: 60px;
-   218	    font-size: 1.5rem;
-   219	  }
-   220	  
-   221	  .service-card h3 {
-   222	    font-size: 1.125rem;
-   223	  }
-   224	  
-   225	  /* Stats */
-   226	  .stats-grid {
-   227	    grid-template-columns: 1fr;
-   228	    gap: 1.5rem;
-   229	  }
-   230	  
-   231	  .stat-number {
-   232	    font-size: 2rem;
-   233	  }
-   234	  
-   235	  .stat-label {
-   236	    font-size: 0.95rem;
-   237	  }
-   238	  
-   239	  /* Steps */
-   240	  .step-icon {
-   241	    width: 70px;
-   242	    height: 70px;
-   243	    font-size: 1.75rem;
-   244	  }
-   245	  
-   246	  .step-number {
-   247	    width: 35px;
-   248	    height: 35px;
-   249	    font-size: 1.125rem;
-   250	  }
-   251	  
-   252	  /* CTA */
-   253	  .cta h2 {
-   254	    font-size: 1.5rem;
-   255	  }
-   256	  
-   257	  .cta p {
-   258	    font-size: 0.95rem;
-   259	  }
-   260	  
-   261	  /* Logo */
-   262	  .logo {
-   263	    font-size: 1.25rem;
-   264	  }
-   265	  
-   266	  .logo i {
-   267	    font-size: 1.5rem;
-   268	  }
-   269	}
-   270	
-   271	/* Très grands écrans (min 1400px) */
-   272	@media (min-width: 1400px) {
-   273	  .container {
-   274	    max-width: 1320px;
-   275	  }
-   276	  
-   277	  .hero h1 {
-   278	    font-size: 3rem;
-   279	  }
-   280	  
-   281	  .hero p {
-   282	    font-size: 1.375rem;
-   283	  }
-   284	  
-   285	  .section-title {
-   286	    font-size: 2.75rem;
-   287	  }
-   288	  
-   289	  .services-grid {
-   290	    grid-template-columns: repeat(5, 1fr);
-   291	  }
-   292	}
-   293	
-   294	/* Optimisations pour l'impression */
-   295	@media print {
-   296	  .header,
-   297	  .nav-toggle,
-   298	  .nav-overlay,
-   299	  .btn,
-   300	  .cta {
-   301	    display: none;
-   302	  }
-   303	  
-   304	  body {
-   305	    background: white;
-   306	    color: black;
-   307	  }
-   308	  
-   309	  .service-card,
-   310	  .card {
-   311	    box-shadow: none;
-   312	    border: 1px solid #ccc;
-   313	  }
-   314	}
-   315	
-   316	/* Animations pour mobile */
-   317	@media (max-width: 768px) {
-   318	  @keyframes slideInRight {
-   319	    from {
-   320	      transform: translateX(100%);
-   321	      opacity: 0;
-   322	    }
-   323	    to {
-   324	      transform: translateX(0);
-   325	      opacity: 1;
-   326	    }
-   327	  }
-   328	  
-   329	  .nav-links.active {
-   330	    animation: slideInRight 0.3s ease;
-   331	  }
-   332	}
-   333	
-   334	/* Amélioration de l'accessibilité */
-   335	@media (prefers-reduced-motion: reduce) {
-   336	  *,
-   337	  *::before,
-   338	  *::after {
-   339	    animation-duration: 0.01ms !important;
-   340	    animation-iteration-count: 1 !important;
-   341	    transition-duration: 0.01ms !important;
-   342	    scroll-behavior: auto !important;
-   343	  }
-   344	}
-   345	
-   346	/* Mode sombre (préparation) */
-   347	@media (prefers-color-scheme: dark) {
-   348	  /* Pour une future implémentation du mode sombre */
-   349	  /* Commenté pour l'instant
-   350	  :root {
-   351	    --background: #1F2937;
-   352	    --card: #374151;
-   353	    --text: #F9FAFB;
-   354	    --text-light: #D1D5DB;
-   355	    --border: #4B5563;
-   356	  }
-   357	  */
-   358	}
-   359	
-   360	/* Orientation paysage sur mobile */
-   361	@media (max-width: 768px) and (orientation: landscape) {
-   362	  .hero {
-   363	    padding: 2rem 0;
-   364	  }
-   365	  
-   366	  .hero h1 {
-   367	    font-size: 1.5rem;
-   368	  }
-   369	  
-   370	  .nav-links {
-   371	    padding-top: 3rem;
-   372	  }
-   373	}
-   374	
-   375	/* Support des notches (iPhone X+) */
-   376	@supports (padding: max(0px)) {
-   377	  .container {
-   378	    padding-left: max(1.5rem, env(safe-area-inset-left));
-   379	    padding-right: max(1.5rem, env(safe-area-inset-right));
-   380	  }
-   381	  
-   382	  .header {
-   383	    padding-top: env(safe-area-inset-top);
-   384	  }
-   385	}
-   386	
-   387	/* Amélioration du focus pour l'accessibilité */
-   388	@media (hover: none) and (pointer: coarse) {
-   389	  /* Styles tactiles pour mobile */
-   390	  .btn,
-   391	  .nav-links a,
-   392	  .service-card {
-   393	    -webkit-tap-highlight-color: rgba(76, 175, 80, 0.2);
-   394	  }
-   395	}
-   396	
-   397	/* États de focus visibles */
-   398	*:focus-visible {
-   399	  outline: 2px solid var(--primary);
-   400	  outline-offset: 2px;
-   401	}
-   402	
-   403	/* Optimisation des images responsive */
-   404	img {
-   405	  max-width: 100%;
-   406	  height: auto;
-   407	  display: block;
-   408	}
-   409	
-   410	/* Grid responsive générique */
-   411	@media (max-width: 768px) {
-   412	  .grid-responsive {
-   413	    grid-template-columns: 1fr !important;
-   414	  }
-   415	}
-   416	
-   417	/* Espacements responsive */
-   418	@media (max-width: 768px) {
-   419	  section {
-   420	    padding: 2rem 0;
-   421	  }
-   422	  
-   423	  .card {
-   424	    padding: 1.5rem;
-   425	  }
-   426	}
-   427	
-   428	@media (max-width: 480px) {
-   429	  section {
-   430	    padding: 1.5rem 0;
-   431	  }
-   432	  
-   433	  .card {
-   434	    padding: 1.25rem;
-   435	  }
-   436	}
-   437	
+/* ============================================
+   IVOISERVICE - Responsive Styles
+   ============================================ */
+
+/* Tablettes et écrans moyens (max 1024px) */
+@media (max-width: 1024px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  
+  .hero p {
+    font-size: 1.125rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablettes moyennes (max 768px) */
+@media (max-width: 768px) {
+  /* Navigation mobile */
+  .nav-toggle {
+    display: block;
+  }
+  
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: white;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 5rem 2rem 2rem;
+    gap: 1.5rem;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+    z-index: 999;
+    overflow-y: auto;
+  }
+  
+  .nav-links.active {
+    right: 0;
+  }
+  
+  .nav-links li {
+    width: 100%;
+  }
+  
+  .nav-links a,
+  .nav-links button {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  /* Hero */
+  .hero {
+    padding: 3rem 0;
+  }
+  
+  .hero h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .hero p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  
+  .hero-buttons .btn {
+    width: 100%;
+  }
+  
+  /* Services */
+  .services {
+    padding: 3rem 0;
+  }
+  
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .section-title {
+    font-size: 1.75rem;
+  }
+  
+  .section-subtitle {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Stats */
+  .stats {
+    padding: 3rem 0;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  
+  .stat-number {
+    font-size: 2.5rem;
+  }
+  
+  .stat-label {
+    font-size: 1rem;
+  }
+  
+  /* CTA */
+  .cta {
+    padding: 3rem 0;
+  }
+  
+  .cta h2 {
+    font-size: 1.75rem;
+  }
+  
+  .cta p {
+    font-size: 1rem;
+  }
+  
+  /* Footer */
+  .footer {
+    padding: 2rem 0 1rem;
+  }
+  
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  /* How it works */
+  .how-it-works {
+    padding: 3rem 0;
+  }
+  
+  .step-icon {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+  
+  .step h3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Petits mobiles (max 480px) */
+@media (max-width: 480px) {
+  /* Container */
+  .container {
+    padding: 0 1rem;
+  }
+  
+  /* Hero */
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+  
+  .hero p {
+    font-size: 0.95rem;
+  }
+  
+  /* Buttons */
+  .btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+  }
+  
+  .btn-lg {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  /* Section titles */
+  .section-title {
+    font-size: 1.5rem;
+  }
+  
+  .section-subtitle {
+    font-size: 0.95rem;
+  }
+  
+  /* Service cards */
+  .service-card {
+    padding: 1.5rem;
+  }
+  
+  .service-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+  
+  .service-card h3 {
+    font-size: 1.125rem;
+  }
+  
+  /* Stats */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
+  
+  .stat-label {
+    font-size: 0.95rem;
+  }
+  
+  /* Steps */
+  .step-icon {
+    width: 70px;
+    height: 70px;
+    font-size: 1.75rem;
+  }
+  
+  .step-number {
+    width: 35px;
+    height: 35px;
+    font-size: 1.125rem;
+  }
+  
+  /* CTA */
+  .cta h2 {
+    font-size: 1.5rem;
+  }
+  
+  .cta p {
+    font-size: 0.95rem;
+  }
+  
+  /* Logo */
+  .logo {
+    font-size: 1.25rem;
+  }
+  
+  .logo i {
+    font-size: 1.5rem;
+  }
+}
+
+/* Très grands écrans (min 1400px) */
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+  
+  .hero h1 {
+    font-size: 3rem;
+  }
+  
+  .hero p {
+    font-size: 1.375rem;
+  }
+  
+  .section-title {
+    font-size: 2.75rem;
+  }
+  
+  .services-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+/* Optimisations pour l'impression */
+@media print {
+  .header,
+  .nav-toggle,
+  .nav-overlay,
+  .btn,
+  .cta {
+    display: none;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
+  
+  .service-card,
+  .card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+/* Animations pour mobile */
+@media (max-width: 768px) {
+  @keyframes slideInRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .nav-links.active {
+    animation: slideInRight 0.3s ease;
+  }
+}
+
+/* Amélioration de l'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Mode sombre (préparation) */
+@media (prefers-color-scheme: dark) {
+  /* Pour une future implémentation du mode sombre */
+  /* Commenté pour l'instant
+  :root {
+    --background: #1F2937;
+    --card: #374151;
+    --text: #F9FAFB;
+    --text-light: #D1D5DB;
+    --border: #4B5563;
+  }
+  */
+}
+
+/* Orientation paysage sur mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero {
+    padding: 2rem 0;
+  }
+  
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+  
+  .nav-links {
+    padding-top: 3rem;
+  }
+}
+
+/* Support des notches (iPhone X+) */
+@supports (padding: max(0px)) {
+  .container {
+    padding-left: max(1.5rem, env(safe-area-inset-left));
+    padding-right: max(1.5rem, env(safe-area-inset-right));
+  }
+  
+  .header {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Amélioration du focus pour l'accessibilité */
+@media (hover: none) and (pointer: coarse) {
+  /* Styles tactiles pour mobile */
+  .btn,
+  .nav-links a,
+  .service-card {
+    -webkit-tap-highlight-color: rgba(76, 175, 80, 0.2);
+  }
+}
+
+/* États de focus visibles */
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Optimisation des images responsive */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Grid responsive générique */
+@media (max-width: 768px) {
+  .grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Espacements responsive */
+@media (max-width: 768px) {
+  section {
+    padding: 2rem 0;
+  }
+  
+  .card {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  section {
+    padding: 1.5rem 0;
+  }
+  
+  .card {
+    padding: 1.25rem;
+  }
+}
