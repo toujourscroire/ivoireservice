@@ -20,7 +20,6 @@
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
-  
   <style>
     /* Popup de connexion */
     .login-overlay {
@@ -69,11 +68,6 @@
       cursor: pointer;
       color: #999;
       transition: color 0.3s;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
     .login-close:hover {
       color: #333;
@@ -138,7 +132,6 @@
       border-radius: 8px;
       font-size: 1rem;
       transition: all 0.3s;
-      box-sizing: border-box;
     }
     .login-input-wrapper input:focus {
       outline: none;
@@ -165,6 +158,11 @@
       background: var(--primary-dark);
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(76,175,80,0.3);
+    }
+    .login-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
     }
     .login-demo {
       margin-top: 1.5rem;
@@ -200,7 +198,7 @@
           <li><a href="#services">Services</a></li>
           <li><a href="#about">À propos</a></li>
           <li id="authLinks">
-            <button onclick="openLoginPopup()" class="btn btn-outline btn-sm" style="cursor: pointer;">Connexion</button>
+            <button onclick="openLoginPopup()" class="btn btn-outline btn-sm">Connexion</button>
             <a href="register-client.html" class="btn btn-primary btn-sm">S'inscrire</a>
           </li>
         </ul>
@@ -254,7 +252,7 @@
           </div>
         </div>
 
-        <button type="submit" class="login-btn">
+        <button type="submit" class="login-btn" id="loginBtn">
           <i class="fas fa-sign-in-alt"></i> Se connecter
         </button>
       </form>
@@ -359,7 +357,7 @@
             <i class="fas fa-key"></i>
           </div>
           <h3>Serrurier</h3>
-          <p>Ouverture et installation de serrures</p>
+          <p>Dépannage serrurerie 24/7</p>
         </div>
         
         <div class="service-card">
@@ -381,172 +379,125 @@
     </div>
   </section>
 
-  <!-- How it works Section -->
-  <section class="services" style="background-color: white;">
+  <!-- How It Works Section -->
+  <section class="how-it-works">
     <div class="container">
       <h2 class="section-title">Comment ça marche ?</h2>
       <p class="section-subtitle">
         Trois étapes simples pour trouver votre prestataire
       </p>
       
-      <div class="services-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-        <div class="service-card">
-          <div class="service-icon" style="color: #3B82F6;">
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-icon">
             <i class="fas fa-search"></i>
           </div>
-          <h3>1. Recherchez</h3>
-          <p>Sélectionnez le service dont vous avez besoin et définissez votre rayon de recherche</p>
+          <h3>Recherchez</h3>
+          <p>
+            Trouvez un prestataire près de chez vous selon le service dont vous avez besoin
+          </p>
         </div>
         
-        <div class="service-card">
-          <div class="service-icon" style="color: #8B5CF6;">
-            <i class="fas fa-user-check"></i>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-icon">
+            <i class="fas fa-star"></i>
           </div>
-          <h3>2. Comparez</h3>
-          <p>Consultez les profils, avis et tarifs des prestataires disponibles près de chez vous</p>
+          <h3>Comparez</h3>
+          <p>
+            Consultez les profils, tarifs et avis des clients pour faire votre choix
+          </p>
         </div>
         
-        <div class="service-card">
-          <div class="service-icon" style="color: #10B981;">
-            <i class="fas fa-handshake"></i>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-icon">
+            <i class="fas fa-phone"></i>
           </div>
-          <h3>3. Contactez</h3>
-          <p>Demandez un service directement au prestataire de votre choix</p>
+          <h3>Contactez</h3>
+          <p>
+            Prenez directement contact avec le prestataire et planifiez votre intervention
+          </p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Stats Section -->
-  <section class="services" id="about">
+  <section class="stats">
     <div class="container">
-      <h2 class="section-title">Pourquoi Ivoiservice ?</h2>
-      
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-value">500+</div>
+        <div class="stat-item">
+          <div class="stat-number">500+</div>
           <div class="stat-label">Prestataires vérifiés</div>
         </div>
         
-        <div class="stat-card">
-          <div class="stat-value">10</div>
+        <div class="stat-item">
+          <div class="stat-number">10</div>
           <div class="stat-label">Services disponibles</div>
         </div>
         
-        <div class="stat-card">
-          <div class="stat-value">1000+</div>
+        <div class="stat-item">
+          <div class="stat-number">1000+</div>
           <div class="stat-label">Clients satisfaits</div>
         </div>
         
-        <div class="stat-card">
-          <div class="stat-value">4.8/5</div>
+        <div class="stat-item">
+          <div class="stat-number">4.8/5</div>
           <div class="stat-label">Note moyenne</div>
-        </div>
-      </div>
-      
-      <div class="card mt-lg">
-        <div class="grid-responsive" style="align-items: center;">
-          <div>
-            <h3 style="font-size: 1.75rem; margin-bottom: 1rem; color: var(--primary);">
-              <i class="fas fa-shield-alt"></i> Sécurité et confiance
-            </h3>
-            <p style="color: var(--text-light); margin-bottom: 1rem;">
-              Tous nos prestataires sont vérifiés avec pièce d'identité et selfie. 
-              Consultez les avis clients pour faire le bon choix en toute confiance.
-            </p>
-            <ul style="list-style: none; padding: 0;">
-              <li style="margin-bottom: 0.5rem;">
-                <i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i>
-                Identité vérifiée par notre équipe
-              </li>
-              <li style="margin-bottom: 0.5rem;">
-                <i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i>
-                Avis et notes authentiques
-              </li>
-              <li style="margin-bottom: 0.5rem;">
-                <i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i>
-                Support client disponible
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 style="font-size: 1.75rem; margin-bottom: 1rem; color: var(--primary);">
-              <i class="fas fa-map-marker-alt"></i> Proximité garantie
-            </h3>
-            <p style="color: var(--text-light); margin-bottom: 1rem;">
-              Trouvez des prestataires dans un rayon de 5 à 20 km autour de vous. 
-              Réduisez les délais d'intervention et les frais de déplacement.
-            </p>
-            <ul style="list-style: none; padding: 0;">
-              <li style="margin-bottom: 0.5rem;">
-                <i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i>
-                Recherche géolocalisée
-              </li>
-              <li style="margin-bottom: 0.5rem;">
-                <i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i>
-                Distance calculée en temps réel
-              </li>
-              <li style="margin-bottom: 0.5rem;">
-                <i class="fas fa-check-circle" style="color: var(--success); margin-right: 0.5rem;"></i>
-                Intervention rapide
-              </li>
-            </ul>
-          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- CTA Section -->
-  <section class="hero" style="padding: 3rem 0;">
-    <div class="container" style="text-align: center;">
-      <h2 style="font-size: 2rem; margin-bottom: 1rem;">Prêt à commencer ?</h2>
-      <p style="margin-bottom: 2rem; opacity: 0.95;">
-        Rejoignez des milliers d'utilisateurs qui font confiance à Ivoiservice
+  <section class="cta">
+    <div class="container">
+      <h2>Vous êtes un professionnel ?</h2>
+      <p>
+        Rejoignez notre plateforme et développez votre activité en touchant des milliers de clients potentiels en Côte d'Ivoire
       </p>
-      <div class="hero-buttons">
-        <a href="register-client.html" class="btn btn-secondary btn-lg" style="background-color: white; color: var(--primary);">
-          <i class="fas fa-user-plus"></i> Créer un compte client
-        </a>
-        <a href="register-provider.html" class="btn btn-outline btn-lg" style="border-color: white; color: white;">
-          <i class="fas fa-briefcase"></i> Devenir prestataire
-        </a>
-      </div>
+      <a href="register-provider.html" class="btn btn-white btn-lg">
+        <i class="fas fa-user-plus"></i> Devenir prestataire
+      </a>
     </div>
   </section>
 
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h3>Ivoiservice</h3>
-          <p style="color: rgba(255, 255, 255, 0.8);">
-            La plateforme de référence pour trouver des prestataires locaux de confiance en Côte d'Ivoire.
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>
+            <i class="fas fa-handshake"></i> Ivoiservice
+          </h3>
+          <p>
+            La plateforme qui connecte les prestataires de services locaux
+            avec les clients en Côte d'Ivoire.
           </p>
         </div>
         
-        <div class="footer-section">
-          <h3>Services</h3>
+        <div class="footer-col">
+          <h4>Services</h4>
           <ul>
-            <li><a href="search.html">Rechercher</a></li>
+            <li><a href="search.html">Trouver un prestataire</a></li>
             <li><a href="register-provider.html">Devenir prestataire</a></li>
-            <li><a href="subscription.html">Abonnement</a></li>
+            <li><a href="register-client.html">S'inscrire</a></li>
           </ul>
         </div>
         
-        <div class="footer-section">
-          <h3>Entreprise</h3>
+        <div class="footer-col">
+          <h4>Entreprise</h4>
           <ul>
             <li><a href="#about">À propos</a></li>
-            <li><a href="#">Conditions d'utilisation</a></li>
-            <li><a href="#">Politique de confidentialité</a></li>
+            <li><a href="privacy.html">Politique de confidentialité</a></li>
+            <li><a href="#contact">Contact</a></li>
           </ul>
         </div>
         
-        <div class="footer-section">
-          <h3>Contact</h3>
+        <div class="footer-col">
+          <h4>Contact</h4>
           <ul>
             <li><i class="fas fa-envelope"></i> contact@ivoiservice.ci</li>
             <li><i class="fas fa-phone"></i> +225 XX XX XX XX XX</li>
@@ -563,101 +514,57 @@
 
   <!-- Scripts -->
   <script>
-// UTILS EMBARQUÉ
-const Utils = {
-  Storage: {
-    get: (key, defaultValue = null) => {
-      try {
-        const item = localStorage.getItem(key);
-        return item ? JSON.parse(item) : defaultValue;
-      } catch (e) {
-        return defaultValue;
+    // ============================================
+    // UTILITIES EMBARQUÉES (pas de dépendance externe)
+    // ============================================
+    const Utils = {
+      Storage: {
+        get: (key, defaultValue = null) => {
+          try {
+            const item = localStorage.getItem(key);
+            return item ? JSON.parse(item) : defaultValue;
+          } catch (e) {
+            console.error('Storage get error:', e);
+            return defaultValue;
+          }
+        },
+        set: (key, value) => {
+          try {
+            localStorage.setItem(key, JSON.stringify(value));
+          } catch (e) {
+            console.error('Storage set error:', e);
+          }
+        }
+      },
+      Session: {
+        login: (user) => {
+          Utils.Storage.set('currentUser', user);
+          Utils.Storage.set('isLoggedIn', true);
+        },
+        logout: () => {
+          localStorage.removeItem('currentUser');
+          localStorage.removeItem('isLoggedIn');
+        },
+        isLoggedIn: () => {
+          return Utils.Storage.get('isLoggedIn', false) === true;
+        },
+        getCurrentUser: () => {
+          return Utils.Storage.get('currentUser', null);
+        }
       }
-    },
-    set: (key, value) => {
-      try {
-        localStorage.setItem(key, JSON.stringify(value));
-      } catch (e) {
-        console.error('Storage error:', e);
-      }
-    }
-  },
-  
-  Session: {
-    login: (user) => {
-      Utils.Storage.set('currentUser', user);
-      Utils.Storage.set('isLoggedIn', true);
-    },
-    logout: () => {
-      localStorage.removeItem('currentUser');
-      localStorage.removeItem('isLoggedIn');
-    },
-    isLoggedIn: () => Utils.Storage.get('isLoggedIn', false) === true,
-    getCurrentUser: () => Utils.Storage.get('currentUser', null)
-  },
-  
-  showToast: (message, type = 'info') => {
-    const toast = document.createElement('div');
-    toast.style.cssText = 'position: fixed; top: 2rem; right: 2rem; background: ' + (type === 'success' ? '#4CAF50' : '#f44336') + '; color: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 99999;';
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-  }
-};
-</script>
+    };
 
-  <script>
-    // ==========================================
-    // SYSTÈME DE CONNEXION POPUP
-    // ==========================================
-    
-    // Ouvrir le popup de connexion
-    function openLoginPopup() {
-      document.getElementById('loginOverlay').classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-    
-    // Fermer le popup de connexion
-    function closeLoginPopup() {
-      document.getElementById('loginOverlay').classList.remove('active');
-      document.body.style.overflow = '';
-    }
-    
-    // Fermer en cliquant sur l'overlay
-    document.getElementById('loginOverlay').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeLoginPopup();
-      }
-    });
-    
-    // Afficher une erreur
-    function showLoginError(message) {
-      const alert = document.getElementById('loginAlertError');
-      document.getElementById('loginErrorMessage').textContent = message;
-      alert.classList.add('show');
-      document.getElementById('loginAlertSuccess').classList.remove('show');
-      setTimeout(() => alert.classList.remove('show'), 5000);
-    }
-    
-    // Afficher un succès
-    function showLoginSuccess(message) {
-      const alert = document.getElementById('loginAlertSuccess');
-      document.getElementById('loginSuccessMessage').textContent = message;
-      alert.classList.add('show');
-      document.getElementById('loginAlertError').classList.remove('show');
-    }
-    
-    // Hasher le mot de passe
-    function hashPassword(password) {
+    // Hash simple pour mot de passe (version simplifiée)
+    function simpleHash(str) {
       let hash = 0;
-      for (let i = 0; i < password.length; i++) {
-        const char = password.charCodeAt(i);
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
         hash = hash & hash;
       }
-      return 'hashed_' + Math.abs(hash).toString(36).substring(0, 6);
+      return 'hashed_' + Math.abs(hash).toString(36);
     }
-    
+
     // Générer UUID
     function generateUUID() {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -666,23 +573,27 @@ const Utils = {
         return v.toString(16);
       });
     }
-    
-    // Identifiants admin
+
+    // ============================================
+    // CONFIGURATION ADMIN
+    // ============================================
     const ADMIN_EMAIL = 'admin@ivoiservice.ci';
     const ADMIN_PASSWORD = 'admin2024';
-    
-    // Initialiser les utilisateurs démo
+
+    // ============================================
+    // INITIALISATION DES COMPTES DEMO
+    // ============================================
     function initDemoUsers() {
-      const users = Utils.Storage.get('users', []);
-      if (users.length === 0) {
+      const existingUsers = Utils.Storage.get('users', []);
+      if (existingUsers.length === 0) {
         const demoUsers = [
           {
             id: generateUUID(),
             email: 'client@demo.com',
-            password: hashPassword('demo123'),
-            firstName: 'Kouassi',
-            lastName: 'Konan',
-            phone: '+2250701020304',
+            password: simpleHash('demo123'),
+            firstName: 'Jean',
+            lastName: 'Kouassi',
+            phone: '+225 07 00 00 00 01',
             role: 'CLIENT',
             latitude: 5.3213,
             longitude: -4.0114,
@@ -691,34 +602,37 @@ const Utils = {
           {
             id: generateUUID(),
             email: 'prestataire@demo.com',
-            password: hashPassword('demo123'),
-            firstName: 'Adjoua',
+            password: simpleHash('demo123'),
+            firstName: 'Kouadio',
             lastName: 'Yao',
-            phone: '+2250705060708',
+            phone: '+225 07 00 00 00 02',
             role: 'PROVIDER',
             latitude: 5.3480,
             longitude: -3.9838,
             createdAt: Date.now()
           }
         ];
+        
         Utils.Storage.set('users', demoUsers);
         
-        Utils.Storage.set('providerProfiles', [{
+        // Profil prestataire
+        const providerProfile = {
           id: generateUUID(),
           userId: demoUsers[1].id,
           profession: 'PLOMBIER',
           basePrice: 15000,
-          radius: 10,
-          description: 'Plombier professionnel. Intervention rapide.',
-          photos: [],
+          serviceRadius: 10,
+          description: 'Plombier professionnel avec 10 ans d\'expérience',
           rating: 4.5,
           reviewCount: 12,
-          isVerified: true,
+          verified: true,
           isFreelance: false,
           createdAt: Date.now()
-        }]);
+        };
+        Utils.Storage.set('providerProfile_' + demoUsers[1].id, providerProfile);
         
-        Utils.Storage.set('subscriptions', [{
+        // Abonnement client
+        const subscription = {
           id: generateUUID(),
           userId: demoUsers[0].id,
           amount: 5000,
@@ -727,76 +641,153 @@ const Utils = {
           endDate: Date.now() + (30 * 24 * 60 * 60 * 1000),
           status: 'ACTIVE',
           createdAt: Date.now()
-        }]);
+        };
+        Utils.Storage.set('subscription_' + demoUsers[0].id, subscription);
+        
+        console.log('✅ Comptes de démonstration créés');
+        console.log('Client:', demoUsers[0]);
+        console.log('Prestataire:', demoUsers[1]);
       }
     }
-    
-    // Fonction de connexion
+
+    // ============================================
+    // GESTION DE LA POPUP DE CONNEXION
+    // ============================================
+    function openLoginPopup() {
+      document.getElementById('loginOverlay').classList.add('active');
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginPassword').value = '';
+      hideLoginAlerts();
+    }
+
+    function closeLoginPopup() {
+      document.getElementById('loginOverlay').classList.remove('active');
+      hideLoginAlerts();
+    }
+
+    function showLoginError(message) {
+      const errorAlert = document.getElementById('loginAlertError');
+      const errorMessage = document.getElementById('loginErrorMessage');
+      errorMessage.textContent = message;
+      errorAlert.classList.add('show');
+      
+      document.getElementById('loginAlertSuccess').classList.remove('show');
+    }
+
+    function showLoginSuccess(message) {
+      const successAlert = document.getElementById('loginAlertSuccess');
+      const successMessage = document.getElementById('loginSuccessMessage');
+      successMessage.textContent = message;
+      successAlert.classList.add('show');
+      
+      document.getElementById('loginAlertError').classList.remove('show');
+    }
+
+    function hideLoginAlerts() {
+      document.getElementById('loginAlertError').classList.remove('show');
+      document.getElementById('loginAlertSuccess').classList.remove('show');
+    }
+
+    // ============================================
+    // FONCTION DE CONNEXION
+    // ============================================
     function performLogin(email, password) {
+      // Vérifier admin d'abord
       if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
         const adminUser = {
-          id: generateUUID(),
+          id: 'admin-001',
           email: ADMIN_EMAIL,
           firstName: 'Admin',
-          lastName: 'Master',
-          phone: '+2250700000000',
+          lastName: 'Ivoiservice',
           role: 'ADMIN',
           createdAt: Date.now()
         };
+        
         Utils.Session.login(adminUser);
-        return { success: true, user: adminUser };
+        showLoginSuccess('✅ Connexion admin réussie ! Redirection...');
+        
+        setTimeout(() => {
+          window.location.href = 'admin-dashboard.html';
+        }, 1500);
+        
+        return;
       }
-
+      
+      // Vérifier utilisateurs normaux
       const users = Utils.Storage.get('users', []);
-      const hashedPassword = hashPassword(password);
+      const hashedPassword = simpleHash(password);
       const user = users.find(u => u.email === email && u.password === hashedPassword);
-
+      
       if (user) {
-        const userSession = { ...user };
-        delete userSession.password;
-        Utils.Session.login(userSession);
-        return { success: true, user: userSession };
-      }
-
-      return { success: false, message: 'Email ou mot de passe incorrect' };
-    }
-    
-    // Gérer le formulaire de connexion
-    document.getElementById('loginPopupForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value;
-
-      if (!email || !email.includes('@')) {
-        showLoginError('Adresse email invalide');
-        return;
-      }
-
-      if (!password || password.length < 6) {
-        showLoginError('Mot de passe requis (minimum 6 caractères)');
-        return;
-      }
-
-      const result = performLogin(email, password);
-
-      if (result.success) {
+        // Créer session sans mot de passe
+        const sessionUser = {...user};
+        delete sessionUser.password;
+        
+        Utils.Session.login(sessionUser);
         showLoginSuccess('✅ Connexion réussie ! Redirection...');
         
         setTimeout(() => {
-          let url = 'client-dashboard.html';
-          if (result.user.role === 'PROVIDER') url = 'provider-dashboard.html';
-          if (result.user.role === 'ADMIN') url = 'admin-dashboard.html';
-          window.location.href = url;
+          if (user.role === 'PROVIDER') {
+            window.location.href = 'provider-dashboard.html';
+          } else if (user.role === 'CLIENT') {
+            window.location.href = 'client-dashboard.html';
+          } else {
+            window.location.href = 'index.html';
+          }
         }, 1500);
       } else {
-        showLoginError(result.message);
+        showLoginError('❌ Email ou mot de passe incorrect');
       }
+    }
+
+    // ============================================
+    // GESTION DU FORMULAIRE DE CONNEXION
+    // ============================================
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialiser les comptes demo
+      initDemoUsers();
+      
+      // Gérer la soumission du formulaire
+      const loginForm = document.getElementById('loginPopupForm');
+      const loginBtn = document.getElementById('loginBtn');
+      
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        
+        if (!email || !password) {
+          showLoginError('❌ Veuillez remplir tous les champs');
+          return;
+        }
+        
+        // Désactiver le bouton pendant la connexion
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
+        
+        // Simuler un délai réseau
+        setTimeout(() => {
+          performLogin(email, password);
+          loginBtn.disabled = false;
+          loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
+        }, 500);
+      });
+      
+      // Fermer la popup en cliquant sur l'overlay
+      document.getElementById('loginOverlay').addEventListener('click', (e) => {
+        if (e.target.id === 'loginOverlay') {
+          closeLoginPopup();
+        }
+      });
+      
+      // Mettre à jour les liens d'authentification
+      updateAuthLinks();
     });
-    
-    // ==========================================
-    // MENU MOBILE
-    // ==========================================
+
+    // ============================================
+    // GESTION DU MENU MOBILE
+    // ============================================
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.getElementById('navLinks');
     const navOverlay = document.getElementById('navOverlay');
@@ -825,9 +816,9 @@ const Utils = {
       navOverlay.classList.remove('active');
     });
     
-    // ==========================================
-    // GESTION DE L'AUTHENTIFICATION
-    // ==========================================
+    // ============================================
+    // GESTION DE L'AFFICHAGE DES LIENS D'AUTHENTIFICATION
+    // ============================================
     function updateAuthLinks() {
       const authLinksContainer = document.getElementById('authLinks');
       
@@ -855,23 +846,14 @@ const Utils = {
     function logout() {
       if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
         Utils.Session.logout();
-        if (typeof Utils.showToast === 'function') {
-          Utils.showToast('Vous êtes déconnecté', 'success');
-        }
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        window.location.reload();
       }
     }
     
-    // ==========================================
-    // INITIALISATION
-    // ==========================================
+    // ============================================
+    // SMOOTH SCROLL
+    // ============================================
     document.addEventListener('DOMContentLoaded', () => {
-      initDemoUsers();
-      updateAuthLinks();
-      
-      // Smooth scroll
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
           const href = this.getAttribute('href');
